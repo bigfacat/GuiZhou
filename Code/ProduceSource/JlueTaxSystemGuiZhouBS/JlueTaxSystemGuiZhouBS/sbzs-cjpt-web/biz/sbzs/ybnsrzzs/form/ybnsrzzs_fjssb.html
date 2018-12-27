@@ -1,0 +1,64 @@
+<!doctype html>
+<html id="ng-app"  xmlns:ng="http://angularjs.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" >
+<title>附加税（费）申报信息</title>
+<style>
+
+	
+</style>
+</head>
+
+<body style="overflow: scroll;">
+
+<ng-codetable url="dm_gy_zsxm.json" name="zsxmCT" node="" dm="" mc=""></ng-codetable>
+<ng-codetable url="dm_gy_zspm.json" name="zspmCT" node="" dm="" mc=""></ng-codetable>
+<ng-codetable url="dm_fjssb_jmxz.json" name="jmxzdmCT" node="" dm="" mc=""></ng-codetable>
+<div style="width:96%; margin:auto;" id="viewCtrlId" ng-controller="viewCtrl">
+	<div class="NewTableHead">
+	     <h1 style="letter-spacing:2px">附加税（费）申报信息</h1>
+	</div>
+	<div class="NewTableMain">
+		<table width="1600" border="0" cellspacing="1" cellpadding="0" ng-jprefix="zzsybsbSbbdxxVO.zzsfjssb.fjsxxGrid.fjsxxGridlb">
+		  <tr>
+		  	<td align="center" class="title01">征收项目</td>
+		    <td align="center" class="title01">征收品目</td>
+		    <td align="center" class="title01">计税依据</td>
+		    <td align="center" class="title01">税率</td>
+		    <td align="center" class="title01">本期应纳税额</td>
+		    <td align="center" class="title01">减免性质代码</td>
+		    <td align="center" class="title01">减免税额</td>
+		    <td align="center" class="title01">本期应补（退）税额</td>
+		  </tr>
+		  <tr ng-repeat="p in fjsxxGridlb track by $index" ng-repeat-init="fjsxxGridlb" >
+		    <td class="read mid">
+		    	<input type="text" ng-model="p.zsxmDm" ng-value="CT.zsxmCT[p.zsxmDm]" readonly>
+		    </td>
+    		<td class="read mid">
+    			<input type="text" ng-model="p.zspmDm" ng-value="CT.zspmCT[p.zspmDm]" readonly>
+    		</td>
+		    <td class="read right">
+		    	<input ng-datatype="number" ng-model="p.jsyj" readonly>
+		    </td>
+		    <td class="read right">
+		    	<input ng-datatype="number{6}" ng-model="p.sl1" readonly></td>
+		    <td class="read right">
+		    	<input ng-datatype="number" ng-model="p.ynse" readonly>
+		   </td>
+		   
+		   <td class="read">
+		    	<select disabled style="height:100%;border:0px; text-align:center;" ng-model="p.ssjmxzDm" ng-options="value.dm as value.mc for (key,value) in CT.jmxzdmCT[p.zsxmDm]" ng-selected="value.dm==p.ssjmxzDm">		    		
+		    		<option value=""></option>
+		    	</select>
+		    </td>
+		    <!-- <td class="EditInput02 mid"><input ng-model="p.ssjmxzDm" readonly class="td_readonly"/></td> -->
+		    <td class="read right"><input ng-datatype="number" readonly ng-model="p.jmse"></td>
+		    <td class="read right"><input ng-datatype="number" readonly ng-model="p.ybtse"></td>
+		  </tr>
+		  <tr ng-render-finish=""></tr>
+		</table>
+	</div>
+</div>
+</body>
+</html>

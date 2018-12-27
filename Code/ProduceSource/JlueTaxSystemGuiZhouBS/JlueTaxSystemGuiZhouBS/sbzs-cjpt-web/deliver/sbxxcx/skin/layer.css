@@ -1,0 +1,26 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=8; IE=EDGE">
+<title>404</title>
+<link charset="utf-8" rel="stylesheet"
+	href="/style-error.css" type="text/css" />
+</head>
+<body>
+	<div class="errorbox">
+		<div class="errorbox-left"></div>
+		<div class="errorbox-right">
+			<span>错误报告：请求的资源不存在</span>
+			<ul>
+				<li>请求的资源不存在，请核对链接地址后重新尝试。</li>
+				<li>
+					<!--  <a href="#" onclick="history.back(-1);"><p>返 回</p></a> -->
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
+

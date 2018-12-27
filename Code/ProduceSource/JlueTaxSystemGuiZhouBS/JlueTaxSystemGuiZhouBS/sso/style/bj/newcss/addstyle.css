@@ -1,0 +1,163 @@
+body{ font-family: "微软雅黑";}
+
+
+.headbox{background:#0082d5; width: 1200px; background-image: url(../images/login/logintop.png); height: 105px; margin: auto; position: relative; z-index: 1;}
+.headbox .logo{ background-image: url(../images/login/logo.png); height: 105px; width: 570px; background-repeat: no-repeat; background-position:29px center;}
+.headbox .head-right{ position: absolute; right: 20px; top:35px; }
+.headbox .head-right .head-search,.headbox .head-right .head-user{ display: inline-block;}
+.headbox .head-right .head-search{ background-color: #fff; height: 34px;border-radius: 3px; margin-right: 60px;}
+.headbox .head-right .head-search input{ background-color: #fff; line-height: 34px; border: 0px;border-radius: 3px;text-indent: 20px;outline: medium; width: 190px;}
+.headbox .head-right .head-search a{display: inline-block; background-color: #5fa3f1; color: #fff; line-height: 34px; height: 34px; padding: 0 15px;}
+.headbox .head-right .head-user{ color: #fff; font-size: 16px; margin-right: 20px; position: relative;}
+.headbox .head-right .head-user span{ cursor: pointer; font-size: 16px; position: relative;}
+.headbox .head-right .head-user span img{ display: inline-block; position: absolute;  }
+.headbox .head-right .head-user .user-menu{ position: absolute; background-color: #fff; width:120px;right: 0px; margin-right: -20px; padding: 5px 0px; border: 1px solid #dcdee2;
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, .2);display: none;}
+.headbox .head-right .head-user .user-menu a{display: block; color: #666666; height: 38px; line-height: 38px; padding: 0 10px;font-size: 14px;}
+.headbox .head-right .head-user .user-menu a:hover{ background-color: #f0f2f4;}
+
+
+
+
+.layui-container{ width: 1200px; padding:0; margin: 0 auto;}
+.nextweb_h3{ font-size: 16px;}
+.nextweb_h4{ font-size: 14px; color: #333; padding: 0 0 0 10px; height: 16px; line-height: 16px;}
+.nextweb_h5{ font-size: 12px; color: #333; padding: 20px 0; font-weight: bold;}
+.nextweb_p{ font-size: 12px; color: #666; padding: 12px 0;}
+.pad-top{ padding-top: 20px;}
+.txt-a-left{ text-align: left;}
+.txt-a-right{ text-align: right;}
+.txt-a-center{ text-align:center;}
+.p-relative{position: relative;}
+
+.bodybg-1{ background: #f0f2f4;}
+.bodybg-2{ background: #e7e8e8;}
+
+.txt-green { color: #00a73a;}
+.txt-red { color: #C00;}
+
+/**header**/
+.indextop{ display: block; width: 100%; height: 427px; background: url(../images/login/indextop.png) no-repeat top;}
+.logo img{position: relative; top: 13px; left: 30px;}
+.rcon{}
+.rcon .list{ display: block; text-align: right; padding-top: 10px;}
+.rcon .list a{ font-size: 16px; color: #fff; display: inline-block; margin-right: 30px; }
+.rcon .list a img{ position: relative;top: -1px; right: 8px;}
+.rcon .dlbox{ text-align: right !important; display: block;}
+.rcon .dlbox .loginico{width: 44px; margin:15px 30px 0 0; float: right; display: block; text-align: center; color: #fff;}
+.rcon .dlbox .loginico h4{ margin-top: 4px;}
+.indextop .bigbox{ display: block; text-align: center;}
+.indextop .bigbox ul{ padding: 0; margin:125px 0 0 0; display: block; text-align: center;}
+.indextop .bigbox ul li{ width: 102px; display: inline-block; text-align: center; margin: 0 60px; background: url(../images/login/index_bigico.png) no-repeat top;}
+.indextop .bigbox ul li img{position: relative; top: 30px; left: 0; width: 46px; height: 46px;}
+.indextop .bigbox ul li h3{ color: #fff; margin-top: 76px;}
+.indexbom{ display: block; height: 303px; background: #fff; padding: 0 36px; }
+.indexbom a{ margin: 100px 11px 0 11px; display: inline-block; border-radius: 3px; width: 200px; height: 36px; padding: 32px 0; line-height: 36px; text-align: center; color: #fff; font-size: 16px; }
+.indexbom a.bg1{ background: #31bde6;}
+.indexbom a.bg2{ background: #89de6d;}
+.indexbom a.bg3{ background: #89aaeb;}
+.indexbom a.bg4{ background: #f8cf62;}
+.indexbom a.bg5{ background: #ffaf88;}
+.indexbom a img{ width: 36px; height: 36px; margin: 0 15px 0 0;}
+
+.logindiv{ display: block; width: 100%; height: 650px; background: url(../images/login/bg01.png) no-repeat top #0082d5;}
+.login-box { background: #fff; border-radius: 3px; box-shadow: 0px 2px 12px rgba(0, 0, 0, .45); width: 336px; padding: 16px 32px; position: absolute; left: 50%; margin-left: -200px; margin-top: 80px;}
+.login-box .layui-tab .layui-tab-title li {font-size: 16px;}
+.login-box .layui-tab .layui-tab-content {	padding: 12px 0;}
+.login-box .layui-tab-content ul{ margin: 4px 0 0 0;}
+.login-box .layui-tab-content ul li{ margin: 0 0 12px 0;}
+.login-box .layui-tab-content ul li input.txt{  border:1px solid #d4d4d4; border-radius:3px; width:302px; height:32px; line-height:32px; font-size:14px;}
+.login-box .layui-tab-content ul li input.bg1{ background:url(../images/login/yhmico.png) no-repeat 8px center #FFF; padding-left:32px;}
+.login-box .layui-tab-content ul li input.bg2{ background:url(../images/login/mimaico.png) no-repeat 8px center #FFF; padding-left:32px;}
+.login-box .layui-tab-content ul li input.bg3{ background:url(../images/login/yzmico.png) no-repeat 8px center #FFF; padding-left:32px;}
+.login-box .layui-tab-content ul li input.bg4{ background:url(../images/login/pin.png) no-repeat 8px center #FFF; padding-left:32px;}
+.login-box .layui-tab-content .tjbtn{ width:336px; height:36px; border-radius:3px; line-height:36px; display:inline-block; text-align:center; color:#FFF; font-size:14px; background:#53acf3;}
+.login-box .layui-tab-content .tjbtn:hover{ background:#3e9be5;}
+.login-link { margin: 0 auto; width: 336px; position: absolute; bottom:24px; left: 32px;}
+.login-link li { width: 33.33%; float: left; text-align: center;}
+.login-link li a { text-align: center; font-size:14px; color:#0994DC; text-decoration: none;}
+.login-link li a:hover { color:#0994DC; text-decoration: underline;}
+.login-link p { font-size:14px; text-align: center; display: block; width: 100%;}
+.login-link p a { text-align: center; font-size:14px; color:#0994DC; text-decoration: none;}
+.login-link p a:hover { color:#0994DC; text-decoration: underline;}
+
+.login-txt { padding: 16px 0 32px 0; line-height: 18px; font-size: 14px; display: block; width: 336px; text-align: center;}
+
+.footbom{ width: 100%; padding: 20px 0; text-align: center;}
+.footbom img{ position: relative; top:-14px; margin-right: 15px; display: inline-block;}
+.footbom p{ display: inline-block; height: 46px; line-height: 23px; font-size: 14px; color: #6d6d6d; text-align: left;}
+
+/**header**/
+.header{ width: 1200px; margin: auto; height: 105px; display: block; background:url(../images/login/logintop.png) no-repeat right #0082d5;}
+.header .logo img{ position: relative; top: 13px; left: 30px;}
+.header .righbox{ width: 360px; float: right;}
+.header .righbox .layui-form-item .layui-input-inline{ margin-right: 0;margin-top: 36px;}
+.header .righbox .layui-form-item input{border: none; height: 34px; line-height: 34px; }
+.header .righbox .layui-form-item label{ width: 60px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; color: #fff; padding: 7px 0px; text-align: center; background: #5fa3f1; margin: 0;margin-top: 36px;}
+.header .righbox .loginico{ width: 44px; margin-top: 16px; display: block; margin-left: 30px; text-align: center; color: #fff;}
+.header .righbox .loginico h4{ margin-top: 4px;}
+
+/**conbox**/
+.con-side{ width: 328px; height: 673px; background: #ffffff; border: 1px solid #dcdee2; border-top-left-radius:3px; border-top-right-radius:3px;}
+.con-side .title{ width: 100%; height: 38px; background: #74b1ee; border-top-left-radius:3px; border-top-right-radius:3px; position: relative;}
+.con-side .titnbar{ border-top-left-radius:0; border-top-right-radius:0;}
+.con-side .title h3{ display: inline-block; line-height: 38px; padding:0 0 0 18px; color: #f0f2f5;}
+.con-side .title h3 img{ margin-right: 16px; position: relative; top: -1px;}
+.con-side .title-r{ position: absolute; right:0; top: 0; padding: 0 20px; height: 38px; line-height: 38px; text-align: center;}
+.con-side .title-r a{ font-size: 14px; color: #f0f2f5; }
+.con-side .listcon{ display: block; border-top: 1px solid #dcdee2; }
+.con-side .listcon ul{ list-style: none; padding: 0; margin: 0;}
+.con-side .listcon ul li{ height: 47px; border-bottom: 1px dashed #dcdee2; display: block;}
+.con-side .listcon ul li a{ font-size: 14px; line-height: 47px; color: #333333; margin-left: 20px; padding-left: 20px; background: url(../images/login/login_d.png) no-repeat left center; }
+.con-side .listcon ul li.listnobar{ border-bottom: none;}
+
+.con-rcon{ width: 850px; margin-left: 20px;}
+.con-rcon .contit, .con-rcon .nexttab .contit{ display: block; height: 46px;  border: 1px solid #dcdee2; background: #fff;}
+.con-rcon .contit li, .con-rcon .nexttab .contit li{ height: 46px; line-height: 46px; font-size: 16px; color: #666; margin: 0 10px;}
+.con-rcon .layui-tab-title .layui-this:after{height: 47px; border-bottom-color: #4585eb;}
+.con-rcon .layui-tab-title .layui-this{ color: #4585eb;}
+.con-rcon .tabbox{ padding: 0 0 30px 0;}
+.con-rcon .layui-tab-bar{ border: none !important; padding-top: 0;}
+.con-rcon .layui-tab{ margin-top: 0; }
+
+.con-rcon .conbox{ display: block; border: 1px solid #dcdee2; border-top: none; height: 250px; background: #ffffff;}
+.con-rcon .layui-tab-content{ margin: 0; padding: 0;}
+.con-rcon .layui-tab-content .tabico .imgbox{ display: block; margin-bottom: 8px;}
+.con-rcon .layui-tab-content .tabico a{ margin-top: 20px; display: block; text-align: center;}
+
+.con-rcon .nexttab{ margin-top: 20px; display: block; background: #fff;}
+.con-rcon .nexttab .layui-tab-title{}
+.con-rcon .nexttab .layui-tab-title .layui-this:after{height: 47px; border-bottom-color: #4585eb;}
+.con-rcon .nexttab .layui-tab-title .layui-this{ color: #4585eb;}
+.con-rcon .nexttab .secondcon{border:0;border-top: none; margin: 0; padding: 0;}
+.con-rcon .nexttab .secondcon .tablecon{ margin: 0; padding: 0;}
+.con-rcon .nexttab .secondcon .tablecon .layui-table-view{margin: 0; border-top: none;}
+.con-rcon .nexttab .secondcon .tablecon .layui-table{margin: 0;}
+.con-rcon .nexttab .secondcon .layui-table-header{border-width: 0;}
+.con-rcon .nexttab .secondcon .tablecon .layui-table-cell a{ margin-top: 0; padding: 0 16px !important; border-radius: 0; background: #74b1ee; border: none; color: #fff; height: 24px; line-height: 24px; padding: 0 5px; font-size: 12px;}
+.con-rcon .nexttab .secondcon .tablecon .layui-table thead tr{ background: #f9fafd;}
+.con-rcon .nexttab .secondcon .tablecon .layui-table[lay-even] tr:nth-child(even){ background: #f9fafd;}
+.con-rcon .nexttab .newlist ul{border-left:1px solid #dcdee2; border-right:1px solid #dcdee2; height: 306px; overflow-y: auto;}
+.con-rcon .nexttab .newlist li{ border-bottom:1px solid #dcdee2; line-height: 50px; position: relative; }
+.con-rcon .nexttab .newlist li span{ width: 120px; line-height: 50px; color: #999; text-align: left; position: absolute; right: 0; top: 0;}
+.con-rcon .nexttab .newlist li a{  padding-left: 24px; color: #333333; text-decoration: none; font-size: 14px}
+
+.con-rcon .gzfwbox{ display: block;}
+.con-rcon .gzfwbox .title{ height: 36px; margin-top: 16px; line-height: 36px; text-align: center; background: url(../images/login/gzfw_tit1.png) no-repeat center;}
+.con-rcon .gzfwbox .title span{ background: #fff; font-size: 16px; display: inline-block; padding: 0 10px; line-height: 36px;}
+.con-rcon .gzfwbox .title span.con-1{ color: #2497d0;}
+.con-rcon .gzfwbox .title span.con-2{ color: #1fa11b;}
+.con-rcon .gzfwbox .title span img{ margin-right: 5px;}
+.con-rcon .gzfwbox .ttbg2{ background: url(../images/login/gzfw_tit2.png) no-repeat center;}
+.con-rcon .gzfwbox .listcon{ padding:15px 20px;}
+.con-rcon .gzfwbox .listcon li{ display:inline-block; padding-bottom: 25px; height: 20px; line-height: 20px; width: 49%;}
+.con-rcon .gzfwbox .listcon li a{ color: #333; text-decoration: none; font-size: 14px}
+.con-rcon .gzfwbox .listcon li a i{ font-size: 10px; display: inline-block; color: #666; margin-right: 5px;}
+
+.home-table-01 { border-left:1px solid #e7e7e7; border-right:1px solid #e7e7e7;}
+.txt-color-orange { color: #ff8475;}
+.txt-color-red { color: #D00;}
+.home-search-input { height: 41px !important; line-height: 41px !important; background-color: #fff; border-radius: 2px; display: block;	width: 100%; padding-left: 10px;}
+
+
+

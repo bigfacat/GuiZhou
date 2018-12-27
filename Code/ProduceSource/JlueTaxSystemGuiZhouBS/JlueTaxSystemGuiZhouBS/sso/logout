@@ -1,0 +1,91 @@
+
+
+
+ 
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="/sso/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/sso/js/plugs/layer-v2.2/layer/layer.js"></script>
+<title>国家税务总局贵州省税务局</title>
+	
+<script type="text/javascript">
+$(document).ready(function(){
+    try {
+		/*  $("form").submit();  */
+        //解决https访问http/跨域问题
+        $("form").each(function(){
+            var url = $(this).attr("action");
+            var paramName = $(this).find("input").attr("name");
+            var paramValue = encodeURIComponent($(this).find("input").val());
+            $.getJSON(url+"&callback=?&"+paramName+"="+paramValue, function(d) {
+            });
+        });
+    } catch(err) {
+        //console.log('SSO注销其他应用失败');
+    } finally {
+		var index = layer.load(0,{shade: 0.2});
+		window.setTimeout(function(){
+			var service = parameterForURL("service");
+			if(service==null){
+				layer.close(index);
+				layer.msg('注销成功');
+				window.setTimeout(function(){
+					window.location.href ="/";
+				},1500);
+			}else{
+				 
+					service = decodeURIComponent(service);
+					window.location.href = service;
+				
+			}
+		}, 500);
+}
+
+	//发票领购 退出判断
+    var localStr = location.href;
+    var fplgLogoutUrl = "http://www.gzgs12366.gov.cn";
+    if (localStr.indexOf("test") > 0) {
+        fplgLogoutUrl =fplgLogoutUrl +":9988"; //测试环境添加端口：9988
+    }
+    fplgLogoutUrl = fplgLogoutUrl + "/taxpayer/logout";
+    $("#fplgFrame").attr("src", fplgLogoutUrl);
+});
+/**
+ * 获取url中的参数
+ * @param name
+ * @returns
+ */
+function parameterForURL(name) {
+    var url = window.location.href;
+    var p = -1;
+    var value = undefined;
+    if (((p = Math.max(url.indexOf("&" + name + "="), url.indexOf("?" + name
+            + "="))) > -1)) {
+        value = url.substring(p + name.length + 2);
+        if (value.indexOf("&") > -1) {
+            value = value.substring(0, value.indexOf("&"));
+        } else if (value.indexOf("#") > -1) {
+            value = value.substring(0, value.indexOf("#"));
+        }
+    }
+    return value;
+};
+</script>
+
+</head>
+<body>
+	
+		<iframe name="http://dzswj.gz-l-tax.gov.cn/sbzs-cjpt-web/biz/sbqc/sbqc_qtsb?cdId=233&gnDm=gndm-231&gdslxDm=3" style="display: none;"></iframe>
+		<form action="http://dzswj.gz-l-tax.gov.cn/sbzs-cjpt-web/biz/sbqc/sbqc_qtsb?cdId=233&gnDm=gndm-231&gdslxDm=3" target="http://dzswj.gz-l-tax.gov.cn/sbzs-cjpt-web/biz/sbqc/sbqc_qtsb?cdId=233&gnDm=gndm-231&gdslxDm=3" method="get" style="display: none;">
+			<input name="SAMLRequest" value="eJx9kE1Pg0AURf9KM/tRBqTWFyAl0gVKawII0Y0hMCJfM5Q3xNJfL7UxqS7c3pd77smzMOvaHgJZylGFfD9yVItD1wqE74tNxkGAzLBCEFnHEVQOkbsNQL/SoB+kkrlsycL3bBKE1DSWJi25qvQ+mB6aR610p9htbosirfs21NKPehThCyeLhA9YSWGTmTPXEUfuC1SZUHOksRVljGosZgboJtyYr8SxTkKwmyV870Lxf8MMkQ9qHiLOevcUvz1HG29tXV+gztweIo4nIV8U/OBEMWX6nbmiRp5O99tks5+SZhmw7vC+a2hZFEf8rM+YP82f8NdHnS8KxHno"/>
+		</form>
+	
+	
+		<iframe src="https://its.gz-l-tax.gov.cn/web/zh/oauth2/logout" style="display: none;"></iframe>
+	
+	<iframe src="" name="发票领购"  id="fplgFrame" style="display: none;"></iframe>
+</body>
+</html>

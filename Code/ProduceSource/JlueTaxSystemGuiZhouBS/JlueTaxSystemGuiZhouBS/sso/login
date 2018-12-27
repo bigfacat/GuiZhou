@@ -1,0 +1,2221 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8; IE=EDGE"/>
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <title>国家税务总局贵州省电子税务局</title>
+    <link rel="stylesheet" href="/sso/style/bj/layui/css/layui.css">
+    <link rel="stylesheet" href="/sso/style/bj/newcss/addstyle.css">
+    <script src="/sso/style/bj/layui/layui.js"></script>
+    <script src="/sso/style/bj/layui/transfer.js"></script>
+    <script type="text/javascript" src="/sso/js/jquery/jquery.min.js"></script>
+    <script src="/sso/style/bj/js/html5.min.js"></script>
+    <script src="/sso/style/bj/js/respond.min.js"></script>
+    <script type="text/javascript"
+            src="/sso/js/jquery/jquery.placeholder.min.js"></script>
+    <!-- 此段必须要引入 t为小时级别的时间戳 -->
+    <link type="text/css" href="//g.alicdn.com/sd/ncpc/nc.css?t=1504708202648" rel="stylesheet"/>
+    <script type="text/javascript" src="//g.alicdn.com/sd/ncpc/nc.js?t=1504708202648"></script>
+    <!-- 引入结束 -->
+    <link href="/sso/style/qystyle.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript"
+            src="/sso/js/plugs/formvalidator/formValidator-4.1.1.js"></script>
+    <script type="text/javascript"
+            src="/sso/js/plugs/layer-v2.2/layer/layer.js"></script>
+    <script type="text/javascript" src="/sso/js/ca/CAPlugin.js"></script>
+    <script type="text/javascript" src="/sso/style/bj/ca/crypt.js"></script>
+
+    <script type="text/javascript" src="/sso/js/plugs/floatad.js"
+            OLDSRC="/sso/js/plugs/floatad.js" OLDID="8934" RELATED="1"></script>
+    <script type="text/javascript" src="/sso/js/plugs/getOsBrower.js"></script>
+</head>
+<style>
+    .login-radio .layui-form-radio {
+        margin-right: 0px;
+    }
+
+    .login-radio .layui-form-radio .layui-icon {
+        margin-right: 0px;
+    }
+
+    .zjlxDm {
+        height: 27px;
+        line-height: 1.3;
+        border-width: 1px;
+        border-style: solid;
+        background-color: #fff;
+        width: 100%;
+        padding-left: 10px;
+        border-radius: 2px;
+    }
+
+    #cjwtContent ul li {
+        list-style-type: none;
+        line-height: 30px;
+        /* position:absolute;*/
+    }
+
+    #cjwtList {
+        padding: 10px 0px;
+        margin-bottom: 80px;
+    }
+
+    #cjwtList div {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    #cjwtList div div {
+        margin-top: 0px;
+        font-size: 16px;
+    }
+
+    .cjwt__list a:hover {
+        color: #00a2c9;
+        text-decoration: underline;
+    }
+
+    #cjwtList div h3 {
+        margin-top: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .cjwt__list a {
+        text-decoration: none;
+        color: #000
+
+    }
+
+    #detailPage {
+        padding: 10px 40px;
+        margin-bottom: 100px;
+    }
+
+    #detailPage div p {
+        text-indent: 2em;
+        margin: 0;
+        line-height: 30px;
+        font-size: 16px;
+        /*padding:10px 0;*/
+    }
+
+    #detailPage div div div {
+        text-align: center;
+        margin-top: 20px;
+
+    }
+
+    .cjwtbtn {
+        line-height: 28px;
+        margin-right: 20px;
+        border-radius: 1px;
+        padding: 0px 15px;
+        display: inline-block;
+        border: 1px solid transparent;
+        text-decoration: none;
+        color: #fff;
+        cursor: pointer;
+        background-color: #00a2c9;
+    }
+
+    .arrow_point {
+
+        display: block;
+        margin-right: 70px;
+        float: right;
+        line-height: 20px;
+        margin-top: 3px;
+    }
+
+</style>
+<script>
+
+    //获取url参数值
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+    }
+
+    var Hide_Suspend = "";
+    var Hide_Suspend = "";
+    //placeholder兼容性代码配置(IE9下不支持placeholder属性,使用jquery.placeholder.min.js插件解决某些浏览器有兼容性问题,改下列实现)
+    $(function () {
+        //  codeType = "Y";
+        layer.config({
+            extend: 'extend/layer.ext.js'
+        });//加载额外的方法
+        //初始化验证码
+        if (codeType == "N" || codeType == "" || codeType == null || codeType == "null") {
+            $("#aliyunCore").hide();
+            $("#aliyunCoreQy").hide();
+        } else {
+            $("#dzswjCore").hide();
+            $("#dzswjCoreQy").hide();
+        }
+
+        //验证码自动刷新
+        setInterval(function () {
+            refreshYzm();
+        }, 120000);
+
+        Hide_Suspend = GetQueryString("Hide_Suspend");
+        if (null != Hide_Suspend && Hide_Suspend != '') {
+            document.cookie = ("Hide_Suspend=" + Hide_Suspend);
+        } else {
+            var results = document.cookie.match('(^|;) ?' + "Hide_Suspend" + '=([^;]*)(;|$)');
+            if (results) {
+                Hide_Suspend = results[2];
+            }
+        }
+
+    });
+
+    var xxmhAddr = window.location.href.substring(0, window.location.href.indexOf("/sso")) + "/xxmh";
+    var yhglAddr = "http://dzswj.gz-l-tax.gov.cn/yhgl";
+    var gsMhAddr = "http://dzswj.gz-l-tax.gov.cn/wsswj/";
+    var dsMhAddr = "http://dzswj.gz-l-tax.gov.cn/wsswj/";
+    var dszrrMhAddr = "null";
+    var codeType = "null";
+    var loginType = "";
+    var yhmcs = ""; //用于企业登录时判断是否已经实名
+    //获取浏览器信息
+    var brower = "";
+    var os = "";
+    var browerName = "";
+    var browerVersion = "";
+    var osName = "";
+    var osVersion = "";
+    try {
+        var brower = getBrowerInfo();
+        var os = getOsInfo();
+        var browerName = brower.client.name;
+        var browerVersion = brower.client.version;
+        var osName = os.name;
+        var osVersion = os.version;
+    } catch (e) {
+
+    }
+
+
+    $(document).ready(function () {
+
+        //initUpValid();
+        var ieVersion = parseInt(browerVersion.substring(0, 2));
+        //初始化事件
+        $(".qysf_rnav li").live("click", function () {
+            $(this).addClass("active").siblings().removeClass("active")
+        });
+        window.setTimeout(function () {
+            if ($("#hiddenFrame")[0].attachEvent) {
+                $("#hiddenFrame")[0].attachEvent("onload", function () {
+                    checkLoginState();
+                });
+            } else {
+                $("#hiddenFrame")[0].onload = function () {
+                    checkLoginState();
+                };
+            }
+        }, 1000);
+        /* window.setInterval(function(){
+            checkUserName();
+        }, 500); */
+
+        if (null != Hide_Suspend && Hide_Suspend != "" && typeof Hide_Suspend != "undefined") {
+
+        } else {
+            if (browerName == "IE") {
+                if (ieVersion < 9) {
+                    IeEnoReadyReady();
+                }
+            } else {
+                IeEnoReady();
+            }
+        }
+        //IE9以下的浏览器 样式兼容修改
+        if (ieVersion <= 9) {
+            $("#dssjly").css("padding-left", "0px");
+        }
+        var strCookie = document.cookie;
+        //将多cookie切割为多个名/值对
+        var arrCookie = strCookie.split("; ");
+
+        //遍历cookie数组，处理每个cookie对
+        var begin = document.cookie.indexOf("userGuide=false");
+
+        if (begin >= 0) {
+            $("#lightbox").hide();
+            $(".lightbox02,.lightbox03,.lightbox04,.lightbox05,.lightbox06").hide();
+        }
+
+        $(".qysf_rnav li").live("click", function () {
+            $(this).addClass("active").siblings().removeClass("active")
+        });
+        window.setTimeout(function () {
+            if ($("#hiddenFrame")[0].attachEvent) {
+                $("#hiddenFrame")[0].attachEvent("onload", function () {
+                    checkLoginState();
+                });
+            } else {
+                $("#hiddenFrame")[0].onload = function () {
+                    checkLoginState();
+                };
+            }
+        }, 1000);
+        window.setInterval(function () {
+            //checkUserName();
+        }, 500);
+    });
+
+    function initUpValid() {
+        //设置校验规则，第一组
+        $.formValidator.initConfig({
+            validatorGroup: "1"
+        });
+        $("#userName").formValidator({
+            onFocus: "用户名至少6个字符,最多20个字符",
+            validatorGroup: "1",
+            tipCss: {left: 30, top: 0}
+        }).inputValidator({
+            min: 6,
+            max: 20,
+            onError: "你输入的用户名非法,请确认"
+        })
+        $("#passWord").formValidator({
+            onFocus: "密码必须包含6到16位大小写字母和数字",
+            validatorGroup: "1",
+            tipCss: {left: 30, top: 0}
+        }).inputValidator({
+            min: 6,
+            max: 16,
+            onError: "你输入的密码非法,请确认"
+        })
+    }
+
+    function setTab(cursel) {
+        //关闭全局变量：wxsmbz;微信扫码标志
+        wxsmbz = false;
+
+        //隐藏校验提示框
+        try {
+            $.formValidator.hideAutoTip("1");
+        } catch (e) {
+
+        }
+
+        if (cursel == 2) {
+            checkUserNameQy();
+        }
+        if (cursel == 1) {
+            $("input[name='RadioGroup1'][value=5]").attr("checked", true);
+            $("#person03").show();
+            $("#upLoginButton").show();
+            if (browerName == "IE") {
+                $(".zjlxDm").show();
+            }
+            $("#person01,#person02").hide();
+        }
+        if (cursel == 3) {
+            //显示二维码登录界面
+            wxsmbz = true;
+            refreshAndListenQRCode();
+        }
+        layui.form.render('radio');
+    }
+
+    function refreshYzm() {
+        $("#yzmImg").attr("src", "/sso/base/captcha.do?t=" + new Date().getTime());
+        $("#yzmImgQy").attr("src", $("#yzmImg").attr("src"));
+    }
+
+    function genWxEwm() {
+        var data = new Date().getTime();
+        $("#wxEwm").attr("src", "/sso/base/qrCode.do?data=" + data);
+    }
+
+    // 回传系数
+    function upLogin(tabType) {
+        loginType = "up";
+        //if($.formValidator.pageIsValid("1")){
+        //等待提示
+        var type;
+        if (tabType == 1) {
+            type = $("input[name='RadioGroup1']:checked").val();
+        } else {
+            type = $("input[name='RadioGroup2']:checked").val();
+        }
+        if (codeType == "Y") {
+            if (type == '0' || type == '4' || type == '5') {
+                //校验是否滑动验证成功
+                var index = layer.load(0, {shade: 0.2});
+                if (!document.getElementById('sig').value) {
+                    layer.alert("请滑动验证码", {icon: 5});
+//		 	 			location.reload();
+                    layer.close(index);
+                    return;
+                }
+            } else if (type == '1') {
+                if (!document.getElementById('sigQy').value) {
+                    layer.alert("请滑动验证码", {icon: 5});
+//			 			location.reload();
+                    layer.close(index);
+                    return;
+                }
+            }
+        }
+
+        $("#loginType").val(type);
+        $("#sjly").val(0);
+
+        if (type == "0") { //个人用户名登录
+            $("#userName").val($("#userNameYhm").val());
+        }
+        if (type == "4") { //个人手机号登录
+            $("#userName").val($("#userNameSjh").val());
+        }
+        if (type == "5") { //个人证件号码登录
+            $("#userName").val($("#userNameZjhm").val());
+        }
+        if (type == "1") { //企业用户名登录
+            $("#userName").val($("#userNameQy").val());
+            $("#passWord").val($("#passWordQy").val());
+            $("#loginType").val(0);
+            $("#captchCode").val($("#captchCodeQy").val());
+            var sjly = $("input[name='sjly']:checked").val();
+            $("#sjly").val(sjly);
+        }
+        $("#upLoginForm").submit();
+        //}
+    }
+
+    function checkQyCa() {
+        var loadImg = "/sso/js/plugs/layer-v2.2/layer/skin/default/loading-2.gif";
+        $("#qyCaState").html("<font color='red'>企业CA控件检测中，请稍候...<img style='width:14px;margin-left:10px;' src='" + loadImg + "'/></font>");
+        window.setTimeout(function () {
+            if (CheckPlugin()) {
+                $("#qyCaState").html("<font color='green'>企业CA控件正常！可正常使用。</font>");
+            } else {
+                $("#qyCaState").html("<font color='red'>企业CA控件未安装，请<a href='javascript:downLoadCa();'>下载CA控件安装</a>。</font>");
+            }
+        }, 500);
+    }
+
+    function sign(randnum) {
+        var signAlgo = "sha1WithRsa";//签名算法
+        //创建控件对象
+        var ca = "";
+        try {
+            ca = new ActiveXObject("PSIAtv.PSIAPP");		//如果不是IE浏览器或者没有安装证联客户端就会被catch,
+        } catch (e) {
+            //alert('不是IE浏览器或者没有安装证联客户端');
+            return null;//这里处理没有安装控件的处理
+        }
+        //alert('调用初始化');
+        var rt = ca.AtvInit();//首先调用初始化
+        //rt = ca.Login(1, "123456");//介质登录接口，123456是一个证书的pin码，根据具体的密码修改
+        var sCert = ca.GetCert(2); //获取签名证书
+        //alert("签名证书："+sCert);
+        //var certXml = ca.GetCertInfo(sCert);//解析证书，解析成xml信息
+        //alert("解析证书:"+certXml);
+        //对随机数进行签名，这里的随机数为"123456"，是要进行签名的原文, 第三个参数0代表p1,1代表p7,
+        var sSign = ca.SignData(randnum, 32772, 0);
+        //alert("gzca对字符串123456的签名值为:"+sSign);
+        var ret = {};
+        ret.randnum = randnum;
+        ret.signData = sSign;
+        ret.signCert = sCert;
+        ret.signAlgo = signAlgo;
+        return ret;
+    }
+
+    function qyCaLogin() {
+        loginType = "ca";
+        //TODO 调用客户端的 authHello()方法
+        var clientHelloResult = ClientHello();
+        //clientHelloResult = "123456";
+        if (clientHelloResult == null && clientHelloResult == "") {
+            return null;
+        }
+        //var index = layer.load(0,{shade: 0.2});
+        //对clientHelloResult进行编码
+    }
+
+    function getCaRumAndAuth(clientHelloResult) {
+        var _loading = layer.load(0, {shade: 0.2});
+        $.post("/sso/auth/genCaRandnum.do", {clientHellos: escape(clientHelloResult)}, function (srvHelloResult) {
+            layer.close(_loading);
+
+            if ("00" === srvHelloResult.rtnCode) {
+                index = layer.load(0, {shade: 0.2});
+                $("input[name=randNum]").val(srvHelloResult.serverHelloVo.serverRandom);//服务端产生的随机数
+
+                //TODO 调用客户端的 clientAuth 方法，对服务端的数据包前行验证
+                var srvAuthInfo = ClientAuth(srvHelloResult.serverHelloVo.serverPacket);
+
+                $("input[name=signData]").val(srvAuthInfo);
+                /*客户端验证后产生的数据包*/
+                $("input[name=signAlgo]").val("0x0000000001");//对山东无效
+                $("input[name=signCert]").val("0x0000000001");//对山东无效
+                $("input[name=caType]").val("01"); //总局ca
+                $("#caLoginForm").submit();
+
+            } else {
+                layer.alert(srvHelloResult.errMsg, {title: "提示", icon: 5});
+            }
+        }).error(function () {
+            layer.close(_loading);
+        });
+
+    }
+
+    function showNsrs(nsrQysqVos, yhm) {
+        //封装html
+        var html = [];
+        for (var i in nsrQysqVos) {
+            if (nsrQysqVos[i].yhsfdm != "08") {
+                if (nsrQysqVos[i].nsrmc != null && nsrQysqVos[i].nsrmc != "" && typeof(nsrQysqVos[i].nsrmc) != "undefined" && nsrQysqVos[i].dsNsrmc != null && nsrQysqVos[i].dsNsrmc != "" && typeof(nsrQysqVos[i].dsNsrmc) != "undefined") {
+                    html.push('<li class="' + (i == 0 ? 'active' : '') + '" qybdid=' + nsrQysqVos[i].qybdid + '>' + nsrQysqVos[i].nsrmc + '（' + nsrQysqVos[i].zzNsrmc + '-' + nsrQysqVos[i].yhsfmc + '）  </li>');
+                    //var nsrztHtml = '<li class="'+(i==0?'active':'')+'" qybdid='+nsrQysqVos[i].qybdid+'>'+nsrQysqVos[i].nsrmc+'（'+nsrQysqVos[i].zzNsrmc+'-'+nsrQysqVos[i].yhsfmc+'）  </li>';
+                } else if (nsrQysqVos[i].nsrmc != null && nsrQysqVos[i].nsrmc != "" && typeof(nsrQysqVos[i].nsrmc) != "undefined") {
+                    html.push('<li class="' + (i == 0 ? 'active' : '') + '" qybdid=' + nsrQysqVos[i].qybdid + '>' + nsrQysqVos[i].nsrmc + '（' + nsrQysqVos[i].zzNsrmc + '-' + nsrQysqVos[i].yhsfmc + '）  （国税）</li>');
+                    //var nsrztHtml = '<li class="'+(i==0?'active':'')+'" qybdid='+nsrQysqVos[i].qybdid+'>'+nsrQysqVos[i].nsrmc+'（'+nsrQysqVos[i].zzNsrmc+'-'+nsrQysqVos[i].yhsfmc+'）  （国税）</li>';
+                } else if (nsrQysqVos[i].dsNsrmc != null && nsrQysqVos[i].dsNsrmc != "" && typeof(nsrQysqVos[i].dsNsrmc) != "undefined") {
+                    html.push('<li class="' + (i == 0 ? 'active' : '') + '" qybdid=' + nsrQysqVos[i].qybdid + '>' + nsrQysqVos[i].dsNsrmc + '（' + nsrQysqVos[i].zzNsrmc + '-' + nsrQysqVos[i].yhsfmc + '）  （地税）</li>');
+                    //var nsrztHtml = '<li class="'+(i==0?'active':'')+'" qybdid='+nsrQysqVos[i].qybdid+'>'+nsrQysqVos[i].dsNsrmc+'（'+nsrQysqVos[i].zzNsrmc+'-'+nsrQysqVos[i].yhsfmc+'）  （地税）</li>';
+                }
+                //$("#nsrzt").append(nsrztHtml);
+            }
+        }
+        $("#nsrzt").html(html.join(""));
+
+        /* 	if(nsrQysqVos.length>0){
+            $("#qysfTitle").html("请选择企业");
+            $("#addQysf").remove();
+            $("#qyjrBtn").attr("class","btn btn01");
+        }else {
+            //判断是否需要跳转到国地税老门户系统
+            if(loginType == "ca"){
+                layer.open({
+                      type: 1, //弹窗
+                      closeBtn: 0, //不显示关闭按钮
+                      shift: 0, //动画效果
+                      area: ['300px', '150px'],
+                      title:"请选择国税或地税网上办税大厅",
+                      content: $("#chooseGds")
+                    });
+                return;
+            }else if($("input[name=sjly]:checked").val()=="2"){//直接跳转到国税门户
+                layer.load(0,{shade: 0.2});
+                try{saveLoginLog(yhm,"1","1"); }catch(e){}//国税账号密码
+                window.location.href=gsMhAddr;
+                return;
+            }else if($("input[name=sjly]:checked").val()=="4"){//直接跳转到地税门户
+                layer.load(0,{shade: 0.2});
+                try{saveLoginLog(yhm,"2","1");}catch(e){}//地税账号密码
+                window.location.href=dsMhAddr;
+                return;
+            }
+            $("#addQysf2").remove();
+        } */
+        var Searchhtml = '<div class="tax-search">选择企业：'
+            + '<input type="text" id="qykeywords" name="qykeywords" placeholder="请输入关键词" class="search-input">'
+            + '<a href="#" id="seachQy" name="seachQy">查询</a></div>';
+        $("#qysfTitle").html(Searchhtml);
+        $("#addQysf").remove();
+        $("#qyjrBtn").attr("class", "btn btn01");
+
+        layer.open({
+            type: 1, //弹窗
+            closeBtn: 0, //不显示关闭按钮
+            shift: 0, //动画效果
+            area: ['800px', '440px'],
+            title: "办税身份选择",
+            content: $("#chooseNsr")
+        });
+
+        $("#seachQy").live("click", function () {
+            var qykeywords = "";
+            qykeywords = $("#qykeywords").val();
+            if (qykeywords != "") {
+                $("#nsrzt li").show().each(function () {
+                    var text = $(this).text();
+                    if (text.search(qykeywords) == -1) {
+                        $(this).hide()
+                    }
+                })
+                $("#nsrzt").children(".active").removeClass("active");
+                $("#nsrzt").children(":visible").first().addClass("active");
+            } else {
+                $("#nsrzt li").show()
+            }
+        });
+
+
+    }
+
+    /**
+     * 展示自然人信息
+     */
+    function showZrrs(zrrs) {
+
+        var zrrHtml = new Array();
+        for (var i in zrrs) {
+
+            if (null != zrrs[i] && zrrs[i].xm != null && zrrs[i].xm != "" && typeof(zrrs[i].xm) != "undefined") {
+                zrrHtml.push('<li class="' + (i == 0 ? 'active' : '') + '" zrrDjxh=' + zrrs[i].djxh + '>姓名：' + zrrs[i].xm + '（证件号码：' + zrrs[i].sfzjhm + '）  </li>');
+            }
+        }
+        var searchHtml = new Array();
+        searchHtml.push("<span>请选择个人身份</span>");
+        searchHtml.push("<input type=\"text\" id=\"gykeywords\" style=\"margin-left: 20px;height:30px;\"  name=\"gykeywords\" >");
+        searchHtml.push("<input type=\"button\" id=\"seachGr\" name=\"seachGr\" value=\"查询\">");
+
+        $("#grsfTitle").html(searchHtml.join(""));
+        $("#smzTitle").remove();
+        $("#addSmz").remove();
+        $("#smzxx").remove();
+        $("#zrrsList").html(zrrHtml.join(''));
+
+        $("#seachGr").live("click", function () {
+            var grkeywords = "";
+            grkeywords = $("#grkeywords").val();
+            if (grkeywords != "") {
+                $("#zrrsList li").show().each(function () {
+                    var text = $(this).text();
+                    if (text.search(grkeywords) == -1) {
+                        $(this).hide();
+                    }
+                })
+                $("#zrrsList").children(".active").removeClass("active");
+                $("#zrrsList").children(":visible").first().addClass("active");
+            } else {
+                $("#zrrsList li").show();
+            }
+        });
+    }
+
+    function selectQy(qybdId) {
+        if (typeof(qybdId) == "undefined" && $("#qyjrBtn").attr("class") == "btn_read") {
+            return;
+        }
+        var bdid = typeof(qybdId) == "undefined" ? $(".qysf_rnav:visible .nsrsList").find("li.active").attr("qybdid") : qybdId;
+        if (typeof(bdid) == "undefined" || null == bdid || '' == bdid) {
+            return;
+        }
+        var index = layer.load(0, {shade: 0.2});
+        $.post("/sso/auth/changeQySf.do", {qybdid: bdid}, function (d) {
+            layer.close(index);
+            if (d.flag == "error") {
+                layer.alert(d.errMsg, {title: "提示", icon: 5});
+            } else {
+                /* 			if(null != Hide_Suspend && Hide_Suspend != "" && typeof Hide_Suspend != "undefined"){
+                                try{
+                                    window.external.InvokeService("OmniContainer", "NotifyChagneQY", JSON.stringify(str));
+                                }
+                                catch (e){
+                                }
+                            } */
+                loginSuccess();
+            }
+        });
+    }
+
+    function selectGr() {
+        var length = $(".qysf_rnav:visible .zrrsList").find("li").length;
+        var zrrDjxh = '';
+        if (length > 0) {
+            zrrDjxh = $(".qysf_rnav:visible .zrrsList").find("li.active").attr("zrrdjxh");
+            if (typeof(zrrDjxh) == "undefined" || null == zrrDjxh || '' == zrrDjxh) {
+                layer.alert("请选择个人身份", {title: "提示", icon: 5});
+                return;
+            }
+        }
+        var index = layer.load(0, {shade: 0.2});
+        $.post("/sso/auth/changeGrSf.do", {djxh: zrrDjxh}, function (d) {
+            layer.close(index);
+            if (d.flag == "error") {
+                layer.alert(d.errMsg, {title: "提示", icon: 5});
+            } else {
+                /* 			if(null != Hide_Suspend && Hide_Suspend != "" && typeof Hide_Suspend != "undefined"){
+                                try{
+                                    window.external.InvokeService("OmniContainer", "NotifyChagneGR", JSON.stringify(str));
+                                }
+                                catch (e){
+                                }
+                            } */
+                loginSuccess();
+                if (d.externalRedirect) {
+                    window.location.href = d.externalRedirect;
+                }
+            }
+        });
+    }
+
+    function regist() {
+        layer.open({
+            type: 2,
+            //skin: 'layui-layer-lan',
+            title: '注册',
+            fix: false,
+            maxmin: false,
+            area: ['1100px', '500px'],
+            //content: yhglAddr+'/service/um/user/init'
+            content: '/yhgl/service/um/user/init' //说要改成跳转到各自的地址
+        });
+    }
+
+    function resetPwd() {
+        layer.open({
+            type: 2,
+            //skin: 'layui-layer-lan',
+            title: '找回密码',
+            fix: false,
+            maxmin: false,
+            area: ['1100px', '500px'],
+            // content: yhglAddr+'/service/um/user/init/zhmm'
+            content: '/yhgl/service/um/user/init/zhmm' //保证同个域名下，不然会导致不会自动关闭对话框
+        });
+    }
+
+    /**
+     * 新增 ==start==
+     * 修改时间：2018.6.29
+     * 修改人：huangpeiyuan
+     * 清除登录信息
+     */
+    function clearLogin() {
+        $.ajax({
+            url: "/sso/auth/c.do",
+            asycn: false,
+            success: function () {
+            }
+        });
+        return;
+    }
+
+    //==end==
+
+    function checkLoginState() {
+        //检查session中是否有登录信息
+        $.post("/sso/auth/checkLoginState.do",
+            {yhm: $("#userName").val()}, function (d) {
+                layer.closeAll();
+                if (d.flag == "error") {
+                    //如果没有会话信息则表示登录失败，尝试从hiddenFrame中获取错误信息，并且把里面的lt和execution取出来替换当前form中对应的值
+                    var errMsg = $("#hiddenFrame").contents().find("#errMsg").html();
+                    if (errMsg == '用户不存在') {
+                        errMsg = "用户不存在(如果您有社会信用代码，请用社会信用代码登录)";
+                    }
+                    //如果登录失败的原因是用户被禁用 则提示用户被禁用 否则提示用户密码错误
+                    if (d.isty == "true" || d.isty) {
+                        layer.alert(d.tipmsg, {title: "提示", icon: 5, offset: '200px'});
+                    } else {
+                        if(errMsg == '用户名或密码错误'){
+                            layer.alert("密码不正确，请使用原国税或地税网报账号密码登录。如果忘记密码，可<a href='#' style='color: red' onclick='resetPwd()'>\"点击这里\"</a>找回，或者前往所属办税服务厅重置，或者拨打95113、12366咨询", {
+                                title: "提示",
+                                icon: 5,
+                                offset: '200px',
+                                btn: '重新输入'
+                            }, function (index, item) {
+                                //密码输入框刷新
+                                $("input[type=password]").each(function () {
+                                    $(this).val("");
+                                });
+                                layer.close(index);
+                            });
+                        }else{
+                            layer.alert(errMsg, {title: "提示", icon: 5});
+                        }
+                    }
+                    //$("input[name=lt]").val($("#hiddenFrame").contents().find("input[name=lt]").val());
+                    //$("input[name=execution]").val($("#hiddenFrame").contents().find("input[name=execution]").val());
+                    //刷新验证码
+                    $("#captchCodeQy").val("");
+                    $("#captchCode").val("");
+                    refreshYzm();
+                } else {
+                    /**
+                     * 新增 ==start==
+                     * 修改时间：2018.6.29
+                     * 修改人：huangpeiyuan
+                     */
+                    //如果是弱密码，则强制用户改密码。
+                    if (d.needToChangePwd == "Y") {
+                        window._layerPwdId = layer.open({
+                            type: 2,
+                            title: '提示',
+                            shadeClose: true,
+                            closeBtn: 0,
+                            shade: false,
+                            maxmin: false, //开启最大化最小化按钮
+                            area: ['700px', '350px'],
+                            content: ['/yhgl/service/um/user/updateWeekPwd?cdId=912&gnDm=gndm-912&gdslxDm=3', 'no']
+                        });
+                        return;
+                    }
+                    //==end==
+
+                    var flag = true;
+                    if (d.sjly == "5") {
+                        try {
+                            saveLoginLog(d.yhm, "2", "1");
+                        } catch (e) {
+                        }//地税账号密码
+                        //window.location.href=dszrrMhAddr;
+                        //flag = false;
+                    } else if ((d.sjly == "3" || d.sjly == "4") && (typeof(d.nsrQysqVos) == "undefined" || d.nsrQysqVos == "" || d.nsrQysqVos == null || d.nsrQysqVos.length == 0) && (!d.nsr)) {
+                        try {
+                            saveLoginLog(d.yhm, "2", "1");
+                        } catch (e) {
+                        }//地税账号密码
+                        window.location.href = dsMhAddr;
+                        flag = false;
+                    } else if ((d.sjly == "1" || d.sjly == "2") && (typeof(d.nsrQysqVos) == "undefined" || d.nsrQysqVos == "" || d.nsrQysqVos == null || d.nsrQysqVos.length == 0) && (!d.nsr)) {
+                        try {
+                            saveLoginLog(d.yhm, "1", "1");
+                        } catch (e) {
+                        }//国税账号密码
+                        window.location.href = gsMhAddr;
+                        flag = false;
+                    }
+
+                    if ('' != d.zrrs && typeof(d.zrrs) != "undefined" && null != d.zrrs) {
+                        if (d.zrrs.length == 1) {
+                            $("#addSmz").remove();
+                            $("#smzTitle").remove();
+                            $("#selectZrrs").hide();
+                            $("#qhsf_yhmc").html("用户姓名：" + d.xm);
+                            $("#qhsf_zjlx").html("证件类型：" + d.zjlx);
+                            $("#qhsf_zjhm").html("证件号码：" + (d.zjhm ? d.zjhm : ''));
+                            $("#qhsf_zjyxq").html("证件有效期：" + (d.zjyxq ? d.zjyxq : ''));
+                        } else {
+                            showZrrs(d.zrrs);
+                        }
+
+                    } else if (d.needToSmz) {
+                        $("#addSmz").show();
+                        $("#smzTitle").show();
+                        $("#smzxx").hide();
+                        $("#selectZrrs").hide();
+                    } else {
+                        $("#addSmz").remove();
+                        $("#selectZrrs").hide();
+                        $("#smzTitle").remove();
+                        $("#qhsf_yhmc").html("用户姓名：" + d.xm);
+                        yhmcs = d.xm; //将用户名设置给变量，用户企业办税进去时判断
+                        $("#qhsf_zjlx").html("证件类型：" + d.zjlx);
+                        $("#qhsf_zjhm").html("证件号码：" + (d.zjhm ? d.zjhm : ''));
+                        $("#qhsf_zjyxq").html("证件有效期：" + (d.zjyxq ? d.zjyxq : ''));
+
+                        /* $("#smzTitle").remove();
+                        $("#addSmz").remove();
+                        $("#smzxx").hide(); */
+                    }
+
+                    if (flag) {
+                        if (d.nsr) {
+                            loginSuccess();
+                        } else {
+                            showNsrs(d.nsrQysqVos, d.yhm);
+                        }
+                    }
+                }
+            });
+    }
+
+    function loginSuccess() {
+        var $hiddenForm = $("#hiddenForm");
+        $hiddenForm.attr("action", $hiddenForm.attr("action"));
+        $hiddenForm.submit();
+    }
+
+    function newQysf() {
+        if (yhmcs != '') {
+            var index = layer.load(0, {shade: 0.2});
+            $.post("/sso/auth/changeGrSf.do", {}, function (d) {
+                layer.close(index);
+                if (d.flag == "error") {
+                    layer.alert(d.errMsg, {title: "提示", icon: 5});
+                } else {
+                    window.location.href = xxmhAddr + "/html/index.html?bszmFrom=qxgl";
+                }
+            });
+        } else {
+            layer.alert("请点击个人办税框里实名制申请进行实名制", {title: "提示", icon: 5}); //没有实名
+        }
+    }
+
+    function newSmz() {
+        var index = layer.load(0, {shade: 0.2});
+        $.post("/sso/auth/changeGrSf.do", {}, function (d) {
+            layer.close(index);
+            if (d.flag == "error") {
+                layer.alert(d.errMsg, {title: "提示", icon: 5});
+            } else {
+                window.location.href = xxmhAddr + "/html/index.html?bszmFrom=smzsq";
+            }
+        });
+    }
+
+    function goMh(gds) {
+        layer.load(0, {shade: 0.2});
+        if (gds == "gs") {
+            try {
+                saveLoginLog(yhm, "1", "2");
+            } catch (e) {
+            }//国税证书
+            window.location.href = gsMhAddr;
+        } else if (gds == "ds") {
+            try {
+                saveLoginLog(yhm, "2", "2");
+            } catch (e) {
+            }//地税证书
+            window.location.href = dsMhAddr;
+        }
+    }
+
+    $(function () {
+        //upLogin();
+    });
+
+    function checkUserName() {
+        var userName = $("#userNameQy").val().substring(0, 1);
+        var number = "0123456789";
+        //兼容临时登记的纯社保用户登录电子税务局系统，判断输入的用户名前四位是否有数字
+        if ((userName != "" && number.indexOf(userName) != -1) || checkNeedToShowSjly($("#userNameQy").val())) {//数字开头的账号都是旧系统迁移账号，需要选择国地税属性
+            /* if($("input[name=sjly]:checked").val()=="0"){
+                $("input[name=sjly][value=4]").attr("checked","checked");
+            } */
+            $("#sjlyLi").show();
+        } else {
+            //$("input[name=sjly][value=0]").attr("checked","checked");
+            $("#sjlyLi").hide();
+        }
+    }
+
+    function checkUserNameYh() {
+        $("input[name='RadioGroup1'][value=0]").attr("checked", true);
+    }
+
+    function checkUserNameSjh() {
+        $("input[name='RadioGroup1'][value=4]").attr("checked", true);
+        var userNameSjh = $("#userNameSjh").val();
+        var pattern = /^1[34578]\d{9}$/;
+        if (!userNameSjh == '' && !pattern.test(userNameSjh)) {
+            layer.alert("手机号码格式不正常，请重新输入！", {title: "提示", icon: 5});
+            $("#userNameSjh").val("");
+        }
+    }
+
+    function checkUserNameZjhm() {
+        $("input[name='RadioGroup1'][value=5]").attr("checked", true);
+        var userNameZjhm = $("#userNameZjhm").val();
+        var pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if (!userNameZjhm == '' && !pattern.test(userNameZjhm)) {
+            layer.alert("证件号码格式不正常，请重新输入！", {title: "提示", icon: 5});
+            $("#userNameZjhm").val("");
+        }
+    }
+
+    /**
+     * 检查用户手机号是否存在
+     */
+    function checkUserSJH() {
+        $.ajax({
+            url: "/yhgl/service/um/user/init/checkSjhm.do",
+            data: {
+                yhm: $("#userNameQy").val()
+            },
+            type: 'post',
+            cache: false,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                //如果用户不存在 给出提示
+                if (!data.flag && data.msg == "用户不存在") {
+                    layer.alert("用户名不存在，请使用原网报账号登录", {title: "提示", icon: 5, offset: '200px'});
+                }
+            },
+            error: function () {
+                layer.alert("异常！", {title: "提示", icon: 5, offset: '200px'});
+            }
+        });
+
+    }
+
+    function checkUserNameQy() {
+        $("input[name='RadioGroup2'][value=1]").attr("checked", true);
+        checkUserName();
+
+    }
+
+    function sub(str, n) {
+        var r = /[^\x00-\xff]/g;
+        if (str.replace(r, "mm").length <= n) {
+            return str;
+        }
+        var m = Math.floor(n / 2);
+        for (var i = m; i < str.length; i++) {
+            if (str.substr(0, i).replace(r, "mm").length >= n) {
+                return str.substr(0, i);
+            }
+        }
+        return str;
+    }
+
+    //判断前面4个字符（中文算两个）里如果有数字，则需显示数据来源
+    function checkNeedToShowSjly(yhm) {
+        var ss = sub(yhm, 4);
+        var regUpper = /^[A-Za-z\u4e00-\u9fa5]+$/;
+        if (yhm == "") {
+            return false;
+        }
+        if (regUpper.test(ss)) {
+            if (yhm.indexOf("+") > -1) { //需要显示数据来源
+                return true;
+            } else {
+                return false;
+            }
+        } else {//需要显示数据来源
+            return true;
+        }
+    }
+
+    function downLoadCa() {
+        //window.open("http://download.etaxcn.com/gddzswj/gddzswj_ca_setup-7540.zip","_blank");
+        window.open("http://download.etaxcn.com/GZDS/DZSWJ/CAQD.rar", "_blank");
+    }
+
+    function downLoadIE() {
+        window.open("http://download.etaxcn.com/GZWSSWJ/BSRJ/gzwsswjyjszgj.zip", "_blank");
+    }
+
+    //dlmb登录目标 1国税2地税  dlfs登录方式 1账号密码 2证书
+    //增加浏览器名称，浏览器版本，操作系统，操作系统版本
+    //	     llqmc，llqbb，czxt，czxtbb
+    function saveLoginLog(yhm, dlmb, dlfs) {
+        $.post("/sso/auth/saveUserLoginLog.do",
+            {
+                yhm: yhm,
+                dlmb: dlmb,
+                dlfs: dlfs,
+                llqmc: browerName,
+                llqbb: browerVersion,
+                czxt: osName,
+                czxtbb: osVersion
+            }, function (d) {
+            });
+    }
+
+    function setOsBrower() {
+        $("input[name=_llqmc]").val(browerName);
+        $("input[name=_llqbb]").val(browerVersion);
+        $("input[name=_czxt]").val(osName);
+        $("input[name=_czxtbb]").val(osVersion);
+    }
+
+    function back() {
+        window.location.href = xxmhAddr + "/html/index.html";
+    }
+
+    function getcookie(objname) {//获取指定名称的cookie的值
+        var arrstr = document.cookie.split("; ");
+        for (var i = 0; i < arrstr.length; i++) {
+            var temp = arrstr[i].split("=");
+            if (temp[0] == objname)
+                return unescape(temp[1]);
+        }
+    }
+
+    $(document).ready(function (e) {
+
+
+        //$(".login-radio label").on("click", function() {
+        //	var val = $(this).children("input").attr("title");
+        //	$("#user").attr("placeholder", val)
+        //})
+
+        $(".login-radio label").click(function () {
+
+            $(this).addClass("hover").siblings().removeClass("hover")
+
+        })
+        $("#person02,#person03,#person05").hide();
+
+        $(".radio03").click(function () {
+            $("#person03").show();
+            $("#upLoginButton").show();
+            $("#upLoginButton").show();
+            if (browerName == "IE") {
+                $(".zjlxDm").show();
+            }
+            $("#person01,#person02").hide();
+        })
+        $(".radio05").click(function () {
+            $("#person05").show();
+            $("#upLoginButton").hide();
+            $("#person04").hide();
+            checkQyCa();
+        })
+        $(".radio04").click(function () {
+            $("#person05").hide();
+            $("#upLoginButton").show();
+            $("#person04").show();
+        })
+        $(".lightbox03,.lightbox04,.lightbox05,.lightbox06").hide();
+        $(".lightbox02 .fbtn03,.lightbox03 .fbtn03,.lightbox04 .fbtn03,.lightbox05 .fbtn03,.lightbox06 .fbtn04,").click(function () {
+            //获取当前时间
+            var date = new Date();
+            var expiresDays = 365;
+            //将date设置为365天以后的时间
+            date.setTime(date.getTime() + expiresDays * 24 * 3600 * 1000);
+            document.cookie = "userGuide=false; path=/; expires=" + date.toGMTString();
+            $("#lightbox").hide();
+            $(".lightbox02,.lightbox03,.lightbox04,.lightbox05,.lightbox06").hide();
+        })
+        $(".lightbox02 #btn02").click(function () {
+            $(".lightbox03").show();
+            $(".lightbox02").hide();
+        })
+        $(".lightbox03 #btn03").click(function () {
+            $(".lightbox04").show();
+            $(".lightbox03").hide();
+        })
+        $(".lightbox04 #btn04").click(function () {
+            $(".lightbox05").show();
+            $(".lightbox04").hide();
+        })
+        $(".lightbox05 #btn05").click(function () {
+            $(".lightbox06").show();
+            $(".lightbox05").hide();
+        })
+        $(".lightbox03 #btn003").click(function () {
+            $(".lightbox02").show();
+            $(".lightbox03").hide();
+        })
+        $(".lightbox04 #btn004").click(function () {
+            $(".lightbox03").show();
+            $(".lightbox04").hide();
+        })
+        $(".lightbox05 #btn005").click(function () {
+            $(".lightbox04").show();
+            $(".lightbox05").hide();
+        })
+
+    });
+
+    $(function () {
+
+        setOsBrower();
+    })
+
+    var resNsrIndex = 0;
+
+    //纳税人主体停用提示
+    function nsrztEno() {
+        layer.close(resNsrIndex);
+        var alerthtml = "<div class=\"tc_nav\" style='padding: 25px 40px 30px 30px;'>"
+            + "<div style=\"line-height: 46px;text-align:center;width: 440px;\">纳税人主体被停用，无法登录电子税务局，请联系当地主管税务机关！</div>"
+            + "<div class=\"page01\" style=\"text-align: center;margin-top: 25px;\">"
+            + "<input class=\"btn btn01\" style=\"margin-left: 176px;\" type=\"button\" onclick=\"logout()\" value=\"确定\"/>"
+            + "</div>"
+            + "</div>";
+        resNsrIndex = layer.open({
+            type: 1, //弹窗
+            closeBtn: 0, //显示关闭按钮
+            offset: 96,
+            shift: 0, //动画效果
+            area: ['490px', '200px'],
+            title: "温馨提醒",
+            content: alerthtml
+        });
+    }
+
+    var resSwjgIndex = 0;
+
+    //税务机关提示
+    function swjgEno() {
+        layer.close(resSwjgIndex);
+        var alerthtml = "<div class=\"tc_nav\" style='padding:30px 30px; width:685px;height:380px;	'>"
+            + "<div style=\"line-height: 40px;\"><div>尊敬的纳税人:<div>"
+            + "<div style=\"text-indent:2em\">根据北京市税务局的工作安排，经研究决定，自2017年7月1日起对纳税人使用北京市电子税务局关闭“税号+密码”和“CA证书+密码”的登录入口。届时纳税人应通过“实名用户+密码”的登录入口进入北京市电子税务局。</div>"
+            + "<div style=\"text-indent:2em\">特别提醒：对于只在地税办理社保业务的单位（即纯社保缴费户），可通过以下两种方式办理业务：一是使用地税的客户端软件“北京市税务局电子办税服务厅”，二是使用地税社保网报系统“社保网报APP”。</div>"
+            + "</div>"
+            + "<div style=\"text-align:right;padding-right:20px;margin-top:20px;\">北京市税务局<br>2017年6月5日</div>"
+            + "<div class=\"page01\" style=\"text-align: center;margin-top: 25px;\">"
+            + "<input class=\"btn btn01\"  type=\"button\" onclick=\"logout()\" value=\"确定\"/>"
+            + "</div>"
+            + "</div>";
+        resSwjgIndex = layer.open({
+            type: 1, //弹窗
+            closeBtn: 0, //显示关闭按钮
+            offset: 96,
+            shift: 0, //动画效果
+            area: ['750px', '500px'],
+            title: "温馨提醒",
+            content: alerthtml
+        });
+    }
+
+    var resIeIndex = 0;
+
+    //IE提示(加载时提示)
+    function IeEnoReady() {
+        layer.close(resIeIndex);
+        var alerthtml = "<div class=\"tc_nav\" style='padding: 29px 40px 0px 43px;width:600px;height:305px;'>"
+            + "<div style=\"height:50px; line-height:50px; text-align:center;font-size:18px;\">系统检测到您正在使用<span style=\"color:red;font-size:18px;\">非IE9及以上版本的IE浏览器</span>访问电子税务局</div>"
+            + "<div style=\"height:40px; line-height:40px; text-align:center;font-size:12px;\">如需正常使用本网站，请确定您已经<span style=\"color:red;\">关闭兼容模式</span></div>"
+            + "<div style=\"height:30px; line-height:30px; text-align:center;font-size:12px;\">如需更好体验本网站，我们推荐您使用如下浏览器</div>"
+            + "<div style=\"height:60px; line-height:60px; padding:0px 18px 15px 270px;\"><img  style=\"width: 60px; height: 60px;\" src=\"/sso/images/ieicon.png\"/></div>"
+            + "<div style=\"margin-left:7px; height:45px; line-height:45px; text-align:center;font-size:12px;color:#22b6e7;\">IE9及以上版本的IE浏览器</div>"
+            + "<div class=\"page01\" style=\"margin-left:267px\">"
+            + "<input class=\"btn btn01\" type=\"button\" onclick=\"openIe();\" value=\"确定\"/>"
+            + "</div>"
+            + "</div>";
+        resIeIndex = layer.open({
+            type: 1, //弹窗
+            closeBtn: 1, //显示关闭按钮
+            offset: 96,
+            shift: 0, //动画效果
+            area: ['700px', '380px'],
+            title: "版本提醒",
+            scrollbar: false,
+            content: alerthtml
+        });
+    }
+
+    function openIe() {
+        layer.close(resIeIndex);
+    }
+
+    //检测环境
+    function checkEnv() {
+        try {
+            brower = getBrowerInfo();
+            os = getOsInfo();
+            browerName = brower.client.name;
+            browerVersion = brower.client.version;
+            osName = os.name;
+            osVersion = os.version;
+            ieVersion = parseInt(browerVersion.substring(0, 2));
+        } catch (e) {
+
+        }
+        IeEno();
+    }
+
+    //IE提示（环境监测按钮提示）
+    function IeEno() {
+        var alerthtml = "";
+        if (browerName == "IE" && ieVersion > 8) {
+            alerthtml += "<div class=\"tc_nav_check\"><div style=\"height:50px; line-height:50px; text-align:center;font-size:18px;\">您的浏览器版本符合系统要求，祝您使用愉快</div>"
+                + "<div style=\"height:40px; line-height:40px; text-align:center;font-size:12px;\">如需正常使用本网站，请确定您已经<span style=\"color:red;\">关闭兼容模式</span></div>"
+                + "<div style=\"height:30px; line-height:30px; text-align:center;font-size:12px;\">如需更好体验本网站，我们推荐您使用如下浏览器</div>"
+                + "<div style=\"height:60px; line-height:60px; width:60px; margin:0px auto; padding-bottom:15px;\"><img  style=\"width: 60px; height: 60px;\" src=\"/xxmh/resources/images/login/ieicon.png\"/></div>"
+                + "<div style=\"height:32px; line-height:32px; text-align:center;font-size:12px;color:#22b6e7;\">IE9及以上版本的IE浏览器</div>"
+                + "<div style=\"height:20px; line-height:20px; text-align:center;font-size:13px;\">您还可以点击“下载检测工具”，安装一键检测工具，完成对运行环境更详细的检测和设置。</div>"
+                + "<div class=\"page01\" style=\"margin-left:267px\">"
+                + "</div>"
+                + "</div>";
+        } else {
+            alerthtml += "<div class=\"tc_nav_check\"><div style=\"height:50px; line-height:50px; text-align:center;font-size:18px;\">系统检测到您正在使用<span style=\"color:red;font-size:18px;\">非IE9及以上版本的IE浏览器</span>访问网上税务局</div>"
+                + "<div style=\"height:40px; line-height:40px; text-align:center;font-size:12px;\">如需正常使用本网站，请确定您已经<span style=\"color:red;\">关闭兼容模式</span></div>"
+                + "<div style=\"height:30px; line-height:30px; text-align:center;font-size:12px;\">如需更好体验本网站，我们推荐您使用如下浏览器</div>"
+                + "<div style=\"height:60px; line-height:60px; width:60px; margin:0px auto; padding-bottom:15px;\"><img  style=\"width: 60px; height: 60px;\" src=\"/xxmh/resources/images/login/ieicon.png\"/></div>"
+                + "<div style=\"height:32px; line-height:32px; text-align:center;font-size:12px;color:#22b6e7;\">IE9及以上版本的IE浏览器</div>"
+                + "<div style=\"height:20px; line-height:20px; text-align:center;font-size:13px;\">您还可以点击“下载检测工具”，安装一键检测工具，完成对运行环境更详细的检测和设置。</div>"
+                + "<div class=\"page01\" style=\"margin-left:267px\">"
+                + "</div>"
+                + "</div>";
+        }
+
+        resIeIndex = layer.open({
+            type: 1, //弹窗
+            btn: ['检测工具下载', '下次再说'],
+            offset: 96,
+            shift: 0, //动画效果
+            area: ['700px', '400px'],
+            title: "版本提醒",
+            content: alerthtml,
+            yes: function downLoadIE() {
+                window.open("http://download.etaxcn.com/gddzswj/gddzswjwybsszgj.zip", "_blank");
+            }
+
+        });
+    }
+
+    $(function () {
+        $("#cjwtList div div ul li").on("click", function () {
+            /*layer.close(cjwt);*/
+            var currentTitle = $(this).children("a").text().substring(2);
+            var id = $(this).attr("id");
+            var index_p1 = id.indexOf("_");
+            var index_p2 = id.lastIndexOf("_");
+            layer.title(currentTitle, cjwt)
+            var index_div = id.substring(index_p1 + 1, index_p2);
+            var index_li = id.substring(index_p2 + 1, id.length);
+            $("#cjwtList").hide();
+            $("#detailPage").show();
+            $("#detailPage").children("div:eq(" + index_div + ")").show();
+            $("#detailPage").children("div:eq(" + index_div + ")").siblings().hide();
+            $("#detailPage").children("div:eq(" + index_div + ")").children("div:eq(" + index_li + ")").show();
+            $("#detailPage").children("div:eq(" + index_div + ")").children("div:eq(" + index_li + ")").siblings().hide();
+
+        })
+
+        $("#cjwtList div h3").on("click", function () {
+            var index = $(this).parent().index();
+            if (index < 3) {
+                $("#detailPage").children("div:eq(" + index + ")").show();
+                $("#detailPage").children("div:eq(" + index + ")").siblings().hide();
+                $("#cjwtList").hide();
+                $("#detailPage").show();
+            } else {
+                var p_src = $(this).children(".arrow_point").children().attr("src");
+                if ("images/cjwt/right.png" == p_src) {
+                    $(this).children(".arrow_point").children().attr("src", "images/cjwt/adown.png");
+                } else {
+                    $(this).children(".arrow_point").children().attr("src", "images/cjwt/right.png");
+                }
+//	         		$(this).parent().children("div").slideToggle("slow",function(){
+
+//	         		});
+            }
+
+        });
+
+    })
+
+    //关闭常见问题弹出框
+    function closeCjwt() {
+        layer.close(cjwt);
+
+    }
+
+    //常见问题返回按钮
+    function backCjwt() {
+        layer.title('常见问题', cjwt)
+        $("#cjwtList").show();
+        $("#detailPage").hide();
+    }
+
+    var cjwt;//常见问题
+    function frequentlyQuestion() {
+        cjwt = layer.open({
+            type: 1, //弹窗
+            closeBtn: 1, //不显示关闭按钮
+            shift: 0, //动画效果
+            area: ['900px', '500px'],
+            title: ['常见问题', 'font-size:18px;text-align:center;background-color:#1a56a8;color: #fff;'],
+            //btn: ['关闭','返回'],
+            success: function (layero, index) {
+                var btn = layero.find('.layui-layer-btn');
+                btn.css('text-align', 'center');
+
+                $("#cjwtList").show();
+                $("#cjwt_btn").show();
+                $("#detailPage").hide();
+
+            },
+            content: $("#cjwtContent")
+        });
+    }
+
+</script>
+
+<body class="bodybg-2">
+<form id="hiddenForm" style="display:none;" action="/sso/login" method="post">
+    
+</form>
+<div class="layui-container">
+    <div class="logindiv">
+        <div class="layui-row">
+            <div class="layui-col-md9 logo">
+                <img
+                        src="/sso/style/bj/images/login/logo.png">
+            </div>
+            <div class="layui-col-md3 rcon">
+                <div class="list">
+                    <a href="#" onclick="checkEnv()"><img
+                            src="/sso/style/bj/images/login/index_minico1.png">环境监测</a>
+                    <a href="#" onclick="downLoad()"><img
+                            src="/sso/style/bj/images/login/index_minico2.png">下载</a>
+                    <a href="#" onclick="frequentlyQuestion()"><img
+                            src="/sso/style/bj/images/login/index_minico3.png">帮助</a>
+                </div>
+
+            </div>
+        </div>
+        <iframe name="hiddenFrame" id="hiddenFrame" style="display: none;"></iframe>
+        <div class="login-box" style="height: 380px;">
+
+
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" onclick="setTab(2);">企业账号登录</li>
+                    <li onclick="setTab(1);">个人账号登录</li>
+                     <li onclick="setTab(3);">扫码登录</li>
+                </ul>
+                <div class="layui-tab-content layui-form" style="height: 280px;">
+
+
+                    <div class="layui-tab-item layui-show">
+                        <form id="caLoginForm" action="/sso/login" method="post" target="hiddenFrame">
+                            <ul>
+                                <li>
+                                    <label><input name="RadioGroup2" type="radio" id="RadioGroup2_0" value="1"
+                                                  class="radio04" title="纳税人识别号/社会信用代码/注册号" checked="checked"></label>
+                                    <label><input name="RadioGroup2" type="radio" id="RadioGroup2_1" value="2"
+                                                  class="radio05" title="CA登录"></label>
+                                </li>
+                            </ul>
+                            <ul id="person04">
+                                <li><input id="userNameQy" name="userNameQy" type="text" class="txt bg1"
+                                           placeholder="请输入企业账号" value="" onchange="checkUserNameQy();checkUserSJH();"/>
+                                </li>
+                                <li><input id="passWordQy" name="passWordQy" type="password" class="txt bg2"
+                                           placeholder="密码" value=""/></li>
+                                <!-- 税务学堂传递参数 -->
+                                <li id="sjlyLi" style="display: none;">
+                                    <div style="margin-left: 20px;color: rgb(136, 133, 133);font-size: 16px;display: none;">
+                                        <input name="sjly" type="radio" value="0" checked="checked"
+                                               style="display: none;"/>
+                                        <input name="sjly" type="radio" value="2"
+                                               style="margin-right: 5px;display: none;"/>
+                                        <input name="sjly" type="radio" value="4"
+                                               style="margin-left: 20px;margin-right: 5px;display: none;"/>
+                                    </div>
+                                </li>
+                                <li id="dzswjCoreQy">
+                                    <input onkeypress="if(event.keyCode=='13'){upLogin();}" id="captchCodeQy"
+                                           name="captchCodeQy" type="text"
+                                           style="border: 1px solid #d4d4d4;height: 32px;no-repeat 8px center #FFF;padding-left: 10px;"
+                                           placeholder="验证码"/>
+                                    <span style="right: 61px;">
+									 	<img id="yzmImgQy" style="height: 32px;" onclick="refreshYzm();"
+                                             src="/sso/base/captcha.do">
+									 </span>
+                                </li>
+                                <div class="ln" id="aliyunCoreQy">
+                                    <div id="dom_idQy"></div>
+                                </div>
+                                <a href="#none" onclick="upLogin(2);" id="upLoginButton" class="tjbtn">登录</a>
+                            </ul>
+                            <ul id="person05" style="height: 139px;">
+                                <li>
+                                    <input type="hidden" name="lt" value="LT-165593-Wr3sxhmxFOe21gJrniLX-gddzswj"/>
+                                    <input type="hidden" name="execution" value="3d9d502d-6792-4f07-9b9e-e977f97e6f88_ZXlKaGJHY2lPaUpJVXpVeE1pSjkuYmpnNWJsRTNTR2hJUVVONFZVSnVlbUl2VDFGV00wRlpVRWQ2YkdaUlVXWmFSV1EzWnpWeGRsZ3pUMnhwVnk5Vk9WbE1hMnRVVURNeFNIRkNXV3BFWjNOVGJqVlBTVzExUjFSU2RFcHFaa3A0VDJ0SU9URTVNV3h1WlVoRFRHeEZkbmhTVkZoRlFsaExlRmRaZUdScmVGUkhjWGQ1UVZNdk9UazVRbW9yV21GVU0yWlliRVpuVURkclJsaHpRbTV2YTJOb1pVTklkR1owWTFNeFJHbHFSVEJtTkROMFZEbEthRkZoT0VKaGFFazVURFZyTWs1NFQwdEhhR2dyWWl0WU9FTk1RMFJsUlhwbWVIQmpUSGxVVXpsSlpXbEVTamd4UjJSd1NURlNZalEyY3pOd1FWSmpiRTVhY3pCa1NVbEVkV1p4TUVKQlYwVmxUVUZTV1d3dmJFOXFiMDFOUmxWRVUwbEZUVGhyVm5OM09VbHVPVFZNVFdkeGRsRXJZVGxoVGs1S00xbHFlblZoVmtscllWcEtXa3RuTlRWcVYyazRkMFJpUVVGbFpESlRZWEpKUjI5elptZzVVRGhUYjNwNWNpdGhXbVU0Ym01U2RHaDVWamgzTTJNMVNXTnBjelo0Y1V0TFdVNDFNa0ZZV1ZOTVZHNXNOMmRZUTB4eWVsRXhOSEJ6VnpWalFUZENVWHB1ZWpGaWVYcHVPVFoxUjI1SFUxY3JVR1pMUlV0TWRGQlJjRTlQU2k5SGEweEVSalZwTkRWWmJuWlBTM3A1VVVkNFYxWk5aV3BRZUc1WFZrdHRZU3MxVms0dlVtRTJNMjFXWWxObGJuZERNekZCTTNWdWFqSXpkM1ZvTVRkRmJqaEZTelJEYjAxMVEzTlBNa3BFUVhaVVltTlFSRGhOTUhRNE9FeE1PRXQ0ZEVwd09UZFdSMnR6TVRWVFdVVllXVFpPUmtJNWRFaDVRVkpNTmpSWmNEUkNTV2w2Y2pGdVlraDBUM2hMVGtjMkswcHhVVWRJV1RObFdFaFFMMWhZYW5CamN6VnRRamxtZFdObFJtUmxTbGQyUlZGVVUybHJVVXRETDJ3eVdWSktURFpLTVRreVVHVmhXazE1UTNod1JVaFpjMnBKVFZwQmRsSlhiRzlNTW5kbFJYSklZVUpUUjBSSWFtUlRURmR6ZGtwMFRFUkZSbmxXV21kd1VVOUZUR2Q1VlZaelVIVjBiVWRuUTJOeldYSTRWbWM1YmtRM2VHaFZaRlJHTTI1RGJGaExNR2R4TUZvM2NGRmlkVXh6VGxFeVUzTktjMFEyVERoNFVHTlNNMFJHU21kRmEyRkpkVXRFV25Kd1VFWTRXV1kxVG1oVmEyMWhhWEp4YmtKa2VFdEtUMEZLV25aMldrNXVUazFrVDNGWmJEZGxTVkZOZFRWelN6WTJjRkpIVm5vek9HYzNSalkyWm1oSU9VYzNVbklyTVc0clRWUmlkMjB4ZDJrek0zZDBaV3MxWlVsVFJWbEJUbGx1VmxkcFNuWTBPVGhYTVdwU1oyWlNkMjVxVHpReWNtUnZlVzlHYXpZcmJYbGphRGxUWVRjNGNqSmFSbXg0ZFRWRlkzQkNOVGRqU25wSFdqZDVjRUVyUVVSTU1IWlVVbkZCUzA4M1YweDJVR1F2VjJ4RWRtOWxSRkZNUjJ0UFl6RjNjRzF2TVRWc2JFTkNjREF3ZENzNVR6WTBhVlpoUjBOb1JVeHdRMlIwYzBoYVNFeHpTa053ZVZKdlNHY3JSMUZtT0N0NVFrUmhaMjB2TjFKSVkycFNTRFY0SzFCdGJHdDRNbnAwVFVWRlNtZHFjVWx1TmpabFdYVmtTMGhEVmtvclRFOXFSV2N3ZW5kdFNEaEdNWGw2VkdnM1dYZHhObmxJVVhWTmRVZ3daV1JMZGtWME9EQkJiRXRGY3pJNGFtTk5lVVZaT0ZKcmVtSmFZbUUyTjFGUlBUMC5RZ2dYTjU0Yjl4c1BiYXl0SFM5ODdLbHlhYmM0ak9oZGk3OExCcGFPcmlVUDZZLTFtVFdCNVRfVWJIQmllSHZMV3o0YUVjekxTNm03aXZ2S255ekV3UQ=="/>
+                                    <input type="hidden" name="_eventId" value="submit"/>
+                                    <input type="hidden" name="authencationHandler" value="CaAuthencationHandler"/>
+                                    <input type="hidden" name="randNum" id="randNum"/>
+                                    <input type="hidden" name="signData" id="signData"/>
+                                    <input type="hidden" name="signCert" id="signCert"/>
+                                    <input type="hidden" name="signAlgo" id="signAlgo"/>
+                                    <input type="hidden" name="caType" id="caType"/>
+                                    <input type="hidden" name="_llqmc" value=""/>
+                                    <input type="hidden" name="_llqbb" value=""/>
+                                    <input type="hidden" name="_czxt" value=""/>
+                                    <input type="hidden" name="_czxtbb" value=""/>
+                                </li>
+                                <li id="qyCaState"
+                                    style="font-size:13px;height: 100px;text-align: center;display: flex;justify-content:center;align-items:Center;"></li>
+                                <a href="#none" onclick="qyCaLogin();" id="qyCaLoginButton" class="tjbtn">登录</a>
+                            </ul>
+                        </form>
+                    </div>
+
+
+                    <div class="layui-tab-item ">
+                        <form id="upLoginForm" class="layui-form login-radio" action="/sso/login" method="post" target="hiddenFrame">
+                            <input type="hidden" name="lt" value="LT-165593-Wr3sxhmxFOe21gJrniLX-gddzswj"/>
+                            <input type="hidden" name="execution" value="3d9d502d-6792-4f07-9b9e-e977f97e6f88_ZXlKaGJHY2lPaUpJVXpVeE1pSjkuYmpnNWJsRTNTR2hJUVVONFZVSnVlbUl2VDFGV00wRlpVRWQ2YkdaUlVXWmFSV1EzWnpWeGRsZ3pUMnhwVnk5Vk9WbE1hMnRVVURNeFNIRkNXV3BFWjNOVGJqVlBTVzExUjFSU2RFcHFaa3A0VDJ0SU9URTVNV3h1WlVoRFRHeEZkbmhTVkZoRlFsaExlRmRaZUdScmVGUkhjWGQ1UVZNdk9UazVRbW9yV21GVU0yWlliRVpuVURkclJsaHpRbTV2YTJOb1pVTklkR1owWTFNeFJHbHFSVEJtTkROMFZEbEthRkZoT0VKaGFFazVURFZyTWs1NFQwdEhhR2dyWWl0WU9FTk1RMFJsUlhwbWVIQmpUSGxVVXpsSlpXbEVTamd4UjJSd1NURlNZalEyY3pOd1FWSmpiRTVhY3pCa1NVbEVkV1p4TUVKQlYwVmxUVUZTV1d3dmJFOXFiMDFOUmxWRVUwbEZUVGhyVm5OM09VbHVPVFZNVFdkeGRsRXJZVGxoVGs1S00xbHFlblZoVmtscllWcEtXa3RuTlRWcVYyazRkMFJpUVVGbFpESlRZWEpKUjI5elptZzVVRGhUYjNwNWNpdGhXbVU0Ym01U2RHaDVWamgzTTJNMVNXTnBjelo0Y1V0TFdVNDFNa0ZZV1ZOTVZHNXNOMmRZUTB4eWVsRXhOSEJ6VnpWalFUZENVWHB1ZWpGaWVYcHVPVFoxUjI1SFUxY3JVR1pMUlV0TWRGQlJjRTlQU2k5SGEweEVSalZwTkRWWmJuWlBTM3A1VVVkNFYxWk5aV3BRZUc1WFZrdHRZU3MxVms0dlVtRTJNMjFXWWxObGJuZERNekZCTTNWdWFqSXpkM1ZvTVRkRmJqaEZTelJEYjAxMVEzTlBNa3BFUVhaVVltTlFSRGhOTUhRNE9FeE1PRXQ0ZEVwd09UZFdSMnR6TVRWVFdVVllXVFpPUmtJNWRFaDVRVkpNTmpSWmNEUkNTV2w2Y2pGdVlraDBUM2hMVGtjMkswcHhVVWRJV1RObFdFaFFMMWhZYW5CamN6VnRRamxtZFdObFJtUmxTbGQyUlZGVVUybHJVVXRETDJ3eVdWSktURFpLTVRreVVHVmhXazE1UTNod1JVaFpjMnBKVFZwQmRsSlhiRzlNTW5kbFJYSklZVUpUUjBSSWFtUlRURmR6ZGtwMFRFUkZSbmxXV21kd1VVOUZUR2Q1VlZaelVIVjBiVWRuUTJOeldYSTRWbWM1YmtRM2VHaFZaRlJHTTI1RGJGaExNR2R4TUZvM2NGRmlkVXh6VGxFeVUzTktjMFEyVERoNFVHTlNNMFJHU21kRmEyRkpkVXRFV25Kd1VFWTRXV1kxVG1oVmEyMWhhWEp4YmtKa2VFdEtUMEZLV25aMldrNXVUazFrVDNGWmJEZGxTVkZOZFRWelN6WTJjRkpIVm5vek9HYzNSalkyWm1oSU9VYzNVbklyTVc0clRWUmlkMjB4ZDJrek0zZDBaV3MxWlVsVFJWbEJUbGx1VmxkcFNuWTBPVGhYTVdwU1oyWlNkMjVxVHpReWNtUnZlVzlHYXpZcmJYbGphRGxUWVRjNGNqSmFSbXg0ZFRWRlkzQkNOVGRqU25wSFdqZDVjRUVyUVVSTU1IWlVVbkZCUzA4M1YweDJVR1F2VjJ4RWRtOWxSRkZNUjJ0UFl6RjNjRzF2TVRWc2JFTkNjREF3ZENzNVR6WTBhVlpoUjBOb1JVeHdRMlIwYzBoYVNFeHpTa053ZVZKdlNHY3JSMUZtT0N0NVFrUmhaMjB2TjFKSVkycFNTRFY0SzFCdGJHdDRNbnAwVFVWRlNtZHFjVWx1TmpabFdYVmtTMGhEVmtvclRFOXFSV2N3ZW5kdFNEaEdNWGw2VkdnM1dYZHhObmxJVVhWTmRVZ3daV1JMZGtWME9EQkJiRXRGY3pJNGFtTk5lVVZaT0ZKcmVtSmFZbUUyTjFGUlBUMC5RZ2dYTjU0Yjl4c1BiYXl0SFM5ODdLbHlhYmM0ak9oZGk3OExCcGFPcmlVUDZZLTFtVFdCNVRfVWJIQmllSHZMV3o0YUVjekxTNm03aXZ2S255ekV3UQ=="/>
+                            <input type="hidden" name="_eventId" value="submit"/>
+                            <input type="hidden" name="_llqmc" value=""/>
+                            <input type="hidden" name="_llqbb" value=""/>
+                            <input type="hidden" name="_czxt" value=""/>
+                            <input type="hidden" name="_czxtbb" value=""/>
+                            <input type="hidden" id="sjly" name="sjly" value="0"/>
+                            <input type="hidden" id="userName" name="userName" value=""/>
+                            <input type="hidden" id="loginType" name="loginType" value=""/>
+                            <input type="hidden" name="authencationHandler"
+                                   value="UsernamePasswordAuthencationHandler"/>
+                            <input type='hidden' id='csessionid' name='csessionid'/>
+                            <input type='hidden' id='sig' name='sig'/>
+                            <input type='hidden' id='token' name='token'/>
+                            <input type='hidden' id='scene' name='scene'/>
+                            <ul>
+                                <li>
+                                    <label><input type="radio" name="RadioGroup1" value="5" id="zm" title="证件号码" checked
+                                                  class="radio03"></label>
+
+                                </li>
+                                <ul id="person03">
+                                    <li>
+                                        <select name="zjlxDm" id="zjlxDm" class="zjlxDm">
+                                            <!-- <option value='' >请选择证件类型</option> -->
+                                            <option value='201' selected>居民身份证</option>
+                                            <option value='202'>军官证</option>
+                                            <option value='203'>武警警官证</option>
+                                            <option value='204'>士兵证</option>
+                                            <option value='205'>军队离退休干部证</option>
+                                            <option value='206'>残疾人证</option>
+                                            <option value='207'>残疾军人证（1-8级）</option>
+                                            <option value='208'>外国护照</option>
+                                            <option value='210'>港澳居民来往内地通行证</option>
+                                            <option value='212'>中华人民共和国往来港澳通行证</option>
+                                            <option value='213'>台湾居民来往大陆通行证</option>
+                                            <option value='214'>大陆居民往来台湾通行证</option>
+                                            <option value='215'>外国人居留证</option>
+                                            <option value='216'>外交官证</option>
+                                            <option value='217'>使（领事）馆证</option>
+                                            <option value='218'>海员证</option>
+                                            <option value='219'>香港永久性居民身份证</option>
+                                            <option value='220'>台湾身份证</option>
+                                            <option value='221'>澳门特别行政区永久性居民身份证</option>
+                                            <option value='222'>外国人身份证件</option>
+                                            <option value='224'>就业失业登记证</option>
+                                            <option value='225'>退休证</option>
+                                            <option value='226'>离休证</option>
+                                            <option value='227'>中国护照</option>
+                                            <option value='228'>城镇退役士兵自谋职业证</option>
+                                            <option value='233'>外国人永久居留证</option>
+                                            <option value='234'>就业创业证</option>
+                                            <option value='235'>香港特别行政区护照</option>
+                                            <option value='236'>澳门特别行政区护照</option>
+                                            <option value='291'>医学出生证明</option>
+                                            <option value='299'>其他个人证件</option>
+                                        </select>
+                                    </li>
+                                    <li>
+                                        <input id="userNameZjhm" name="userNameZjhm" type="text" class="txt bg1"
+                                               placeholder="请输入证件号码" value="" onchange="checkUserNameZjhm()"/>
+                                    </li>
+                                </ul>
+                                <li><input type="password" id="passWord" name="passWord" placeholder="密码"
+                                           class="txt bg2"></li>
+                                <li id="dzswjCore">
+                                    <input onkeypress="if(event.keyCode=='13'){upLogin();}" id="captchCode"
+                                           name="captchCode" type="text"
+                                           style="border: 1px solid #d4d4d4;height: 32px;no-repeat 8px center #FFF;padding-left: 10px;"
+                                           placeholder="验证码"/>
+                                    <span style="right: 61px;"><img id="yzmImg" style="height: 32px;"
+                                                                    onclick="refreshYzm();"
+                                                                    src="/sso/base/captcha.do"></span>
+                                </li>
+                            </ul>
+                            <div class="ln" id="aliyunCore">
+                                <div id="dom_id"></div>
+                            </div>
+                            <a href="#none" onclick="upLogin(1);" id="upLoginButton" class="tjbtn">登录</a>
+                        </form>
+                    </div>
+                    <div class="layui-tab-item ">
+                        <form id="casLoginQRcodeForm" class="layui-form login-radio" action="/sso/login" method="post" target="hiddenFrame" autocomplete="off">
+                            <input type="hidden" name="lt" value="LT-165593-Wr3sxhmxFOe21gJrniLX-gddzswj"/>
+                            <input type="hidden" name="execution" value="3d9d502d-6792-4f07-9b9e-e977f97e6f88_ZXlKaGJHY2lPaUpJVXpVeE1pSjkuYmpnNWJsRTNTR2hJUVVONFZVSnVlbUl2VDFGV00wRlpVRWQ2YkdaUlVXWmFSV1EzWnpWeGRsZ3pUMnhwVnk5Vk9WbE1hMnRVVURNeFNIRkNXV3BFWjNOVGJqVlBTVzExUjFSU2RFcHFaa3A0VDJ0SU9URTVNV3h1WlVoRFRHeEZkbmhTVkZoRlFsaExlRmRaZUdScmVGUkhjWGQ1UVZNdk9UazVRbW9yV21GVU0yWlliRVpuVURkclJsaHpRbTV2YTJOb1pVTklkR1owWTFNeFJHbHFSVEJtTkROMFZEbEthRkZoT0VKaGFFazVURFZyTWs1NFQwdEhhR2dyWWl0WU9FTk1RMFJsUlhwbWVIQmpUSGxVVXpsSlpXbEVTamd4UjJSd1NURlNZalEyY3pOd1FWSmpiRTVhY3pCa1NVbEVkV1p4TUVKQlYwVmxUVUZTV1d3dmJFOXFiMDFOUmxWRVUwbEZUVGhyVm5OM09VbHVPVFZNVFdkeGRsRXJZVGxoVGs1S00xbHFlblZoVmtscllWcEtXa3RuTlRWcVYyazRkMFJpUVVGbFpESlRZWEpKUjI5elptZzVVRGhUYjNwNWNpdGhXbVU0Ym01U2RHaDVWamgzTTJNMVNXTnBjelo0Y1V0TFdVNDFNa0ZZV1ZOTVZHNXNOMmRZUTB4eWVsRXhOSEJ6VnpWalFUZENVWHB1ZWpGaWVYcHVPVFoxUjI1SFUxY3JVR1pMUlV0TWRGQlJjRTlQU2k5SGEweEVSalZwTkRWWmJuWlBTM3A1VVVkNFYxWk5aV3BRZUc1WFZrdHRZU3MxVms0dlVtRTJNMjFXWWxObGJuZERNekZCTTNWdWFqSXpkM1ZvTVRkRmJqaEZTelJEYjAxMVEzTlBNa3BFUVhaVVltTlFSRGhOTUhRNE9FeE1PRXQ0ZEVwd09UZFdSMnR6TVRWVFdVVllXVFpPUmtJNWRFaDVRVkpNTmpSWmNEUkNTV2w2Y2pGdVlraDBUM2hMVGtjMkswcHhVVWRJV1RObFdFaFFMMWhZYW5CamN6VnRRamxtZFdObFJtUmxTbGQyUlZGVVUybHJVVXRETDJ3eVdWSktURFpLTVRreVVHVmhXazE1UTNod1JVaFpjMnBKVFZwQmRsSlhiRzlNTW5kbFJYSklZVUpUUjBSSWFtUlRURmR6ZGtwMFRFUkZSbmxXV21kd1VVOUZUR2Q1VlZaelVIVjBiVWRuUTJOeldYSTRWbWM1YmtRM2VHaFZaRlJHTTI1RGJGaExNR2R4TUZvM2NGRmlkVXh6VGxFeVUzTktjMFEyVERoNFVHTlNNMFJHU21kRmEyRkpkVXRFV25Kd1VFWTRXV1kxVG1oVmEyMWhhWEp4YmtKa2VFdEtUMEZLV25aMldrNXVUazFrVDNGWmJEZGxTVkZOZFRWelN6WTJjRkpIVm5vek9HYzNSalkyWm1oSU9VYzNVbklyTVc0clRWUmlkMjB4ZDJrek0zZDBaV3MxWlVsVFJWbEJUbGx1VmxkcFNuWTBPVGhYTVdwU1oyWlNkMjVxVHpReWNtUnZlVzlHYXpZcmJYbGphRGxUWVRjNGNqSmFSbXg0ZFRWRlkzQkNOVGRqU25wSFdqZDVjRUVyUVVSTU1IWlVVbkZCUzA4M1YweDJVR1F2VjJ4RWRtOWxSRkZNUjJ0UFl6RjNjRzF2TVRWc2JFTkNjREF3ZENzNVR6WTBhVlpoUjBOb1JVeHdRMlIwYzBoYVNFeHpTa053ZVZKdlNHY3JSMUZtT0N0NVFrUmhaMjB2TjFKSVkycFNTRFY0SzFCdGJHdDRNbnAwVFVWRlNtZHFjVWx1TmpabFdYVmtTMGhEVmtvclRFOXFSV2N3ZW5kdFNEaEdNWGw2VkdnM1dYZHhObmxJVVhWTmRVZ3daV1JMZGtWME9EQkJiRXRGY3pJNGFtTk5lVVZaT0ZKcmVtSmFZbUUyTjFGUlBUMC5RZ2dYTjU0Yjl4c1BiYXl0SFM5ODdLbHlhYmM0ak9oZGk3OExCcGFPcmlVUDZZLTFtVFdCNVRfVWJIQmllSHZMV3o0YUVjekxTNm03aXZ2S255ekV3UQ=="/>
+                            <input type="hidden" name="_eventId" value="submit"/>
+                            <input type="hidden" name="_llqmc" value=""/>
+                            <input type="hidden" name="_llqbb" value=""/>
+                            <input type="hidden" name="_czxt" value=""/>
+                            <input type="hidden" name="_czxtbb" value=""/>
+                            <input type="hidden" id="sjly" name="sjly" value="0"/>
+                            <input type="hidden" id="userName" name="userName" value=""/>
+                            <input type="hidden" id="loginType" name="loginType" value=""/>
+                            <input type='hidden' id="uid" name="uid" value="">
+                            <input type="hidden" name="authencationHandler" value="WeChatAuthencationHandler"/>
+
+
+                            <ul>
+                                <li>
+                                    <label><input type="radio" name="RadioGroup3" value="1" id="wxsmdl" title="微信扫码登录"
+                                                  checked
+                                                  class="radio7"></label>
+                                </li>
+                                <li>
+                                    <div style="vertical-align: middle;text-align: center;"
+                                         onclick="refreshAndListenQRCode()"><img id="QCcodeImg"
+                                                                                 style="width: 200px;"
+                                                                                 src="">
+
+                                    </div>
+                                    <div><span id="msg"></span></div>
+                                </li>
+                            </ul>
+
+                        </form>
+                    </div>
+
+
+                    <ul class="login-link">
+                        <li><a href="javascript:regist();">用户注册</a></li>
+                        <li><a href="javascript:resetPwd();">找回密码</a></li>
+                        <li><a href="/xxmh/wordNotice/cjwtjd.htm" target="_blank" style="color:rgb(58, 105, 190);">常见问题解答</a>
+                        </li>
+                        <p class="txt-red">
+                            推荐使用IE9及以上版本浏览器，最低IE8 <a href="javascript:downLoadIE();">IE检测下载</a>
+                        </p>
+                    </ul>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="footbom">
+        <img
+                src="/sso/style/bj/images/login/foot.png">
+        <p>版权所有：国家税务总局贵州省税务局 黔ICP备11001206号-1<br>地址：贵州省贵阳市中山西路83号</p>
+    </div>
+</div>
+<!--start 常见问题 -->
+<div id="cjwtContent" style="display: none;">
+
+    <div style="overflow-y:scroll  ;width:866px;height: 399px;">
+        <!--start 常见问题刘表 -->
+        <div id="cjwtList" style="display: none;">
+
+            <div>
+                <h3>一、使用电子税务局依赖的电脑环境设备<span class="arrow_point"> </span></h3>
+
+                <!--  <div>
+                     <ul>
+                         <li id="li_0_0"><a href="#none">1.支持的操作系统</a></li>
+                         <li id="li_0_1"><a href="#none">2.支持的浏览器叛本和PDF插件</a></li>
+                     </ul>
+                 </div> -->
+            </div>
+
+            <div>
+                <h3>二、电子税务局个人用户注册、实名认证和纳税人绑定流程<span class="arrow_point"> </span></h3>
+                <!--  <div>
+                     <ul>
+                         <li id="li_1_0"><a href="#none">1.个人信息的实名认证</a></li>
+                         <li id="li_1_1"><a href="#none">2.申请绑定企业纳税人</a></li>
+                     </ul>
+                 </div> -->
+            </div>
+
+            <div>
+                <h3>三、电子税务局登录流程<span class="arrow_point"> </span></h3>
+                <!-- <div>
+                    <ul>
+                        <li id="li_2_0"><a href="#none">1.企业账号登录</a></li>
+                        <li id="li_2_1"><a href="#none">2.个人用户登录</a></li>
+                    </ul>
+                </div> -->
+            </div>
+
+            <div>
+                <h3>四、常见问题解答<span class="arrow_point"> </span></h3>
+                <div class="cjwt__list" style="margin-top:15px; margin-left:30px; display:none;">
+                    <ul>
+                        <li id="li_3_0"><a href="#none">1.当用IE浏览器预览提交页面一直在加载中，如下图所示，应如何处理？</a></li>
+                        <li id="li_3_1"><a href="#none">2.登录贵州省电子税务局，选择企业身份登录后提示“纳税人主体被停用”。</a></li>
+                        <li id="li_3_2"><a href="#none">3.税务机关登记的企业基本信息有误，已经在申请变更税务登记信息，为什么还是不能绑定纳税人？</a></li>
+                        <li id="li_3_3"><a href="#none">4.使用国税或地税CA证书是否可以办理对方的涉税业务？</a></li>
+                        <li id="li_3_4"><a href="#none">5.上传附报资料时，页面报：“尊敬的纳税人：您好，您使用的CA数字证书与电子税务局当前登录的账号不匹配，请检查！”
+                            时，如何解决？</a></li>
+                        <li id="li_3_5"><a href="#none">6.提交PDF表单时，页面提示：“纳税人必须签名”，此时怎么办？</a></li>
+                        <li id="li_3_6"><a href="#none">7.在电子税务局注册账号时使用的手机号码已经不用了，可以换成其他手机号码吗？</a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+        <!--end  常见问题列表 -->
+
+        <!--start 常见问题详细页面 -->
+        <div id="detailPage" style="display: none;">
+
+
+            <div>
+                <div>
+                    <h4>1. 支持的操作系统</h4>
+                    <p>电子税务局目前支持操作系统的为：Windows Xp、Windows vista、Windows7、Windows8、Windows10。</p>
+                </div>
+                <div>
+                    <h4>2.支持的浏览器版本和PDF插件</h4>
+                    <p>电子税务局推荐使用IE内核系列版本浏览器，具体有：Internet Explorer8、Internet Explorer9、Internet Explorer10、Internet
+                        Explorer11，推荐使用Internet Explorer9及以上的IE浏览器版本 ，IE8以下版本和非IE内核浏览器兼容性较差，不建议使用。</p>
+                    <p>电子税务局PDF插件仅支持Adobe Reader 10、Adobe Reader XI(11)和Acrobat Reader DC，对于其他版本的PDF插件兼容性较差，不建议使用。</p>
+                    <p>
+                        当浏览器版本不兼容或PDF插件版本不支持时，使用电子税务局的某些功能将无法正常使用，因此，建议使用“电子税务局网页报税设置工具”（在电子税务局主页面点击“登录”按钮，在登录页面的右下侧可下载该工具）检测浏览器版本和插件安装情况：</p>
+                    <div><img src="images/cjwt/1-1.png" alt="登入界面" width="635px" height="276px"/></div>
+                    <div><img src="images/cjwt/1-2.png" alt="安装" width="600px" height="360px"/></div>
+                    <div><img src="images/cjwt/1-3.png" alt="检测" width="600px" height="300px"/></div>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <p>
+                        根据《贵州省省国家税务局关于实行税收实名制管理的公告》（贵州省国家税务局公告〔2016〕14号）要求，税务机关在明确办税人员办税人员身份及办税授权关系的前提下为纳税人办理相关涉税事项。故，对于新注册个人用户使用贵州电子税务局，需先在电子税务局登录页面进行“用户注册”。注册完成后，还需要完成“实名制申请”和“企业绑定”两个步骤的操作，才能登录贵州省电子税务局后办理各项涉税（费）业务：</p>
+                    <h4>1）个人信息的实名认证</h4>
+                    <div><img src="images/cjwt/2-1.png" alt="身份选择" width="799px" height="435px"/></div>
+                    <p> 实名认证可以通过贵州国税手机APP进行办理，也可以携带相关证件信息到国税基层税务局进行实名认证后在贵州省电子税务局网页或贵州国税手机APP进行实名制绑定。</p>
+                    <p> 未实名的个人用户，只能申请授权办理个税社保业务。</p>
+                </div>
+                <div>
+                    <h4>2）申请绑定企业纳税人</h4>
+                    <p>
+                        已实名认证通过的个人用户为金三系统中登记的企业法定代表人、财务负责人或办税员，可通过电子税务局网站申请企业绑定，系统自动审核通过，并授权对应的身份。其中法定代表人和财务负责人具有管理权限，可审核授权其他用户的身份申请。</p>
+                    <p>非金三系统中登记的办税员若需绑定该企业，有三种途径获得企业办税权限，</p>
+                    <p>1）通过电子税务局发起“纳税人授权申请”，需要经过企业法定代表人、财务负责人或其他普通管理权限人员审核通过后，才能为该纳税人办理相关涉税（费）业务。</p>
+                    <p>2）企业法定代表人、财务负责人或普通管理员权限人员直接输入办税员注册账号或手机号码直接进行授权，无需申请。</p>
+                    <p>3）办税员携带《纳税人办税授权委托书》等相关资料到国税前台申请“纳税人身份授权”,然后登录电子税务局发起“纳税人授权申请”，则无需审核，直接通过。</p>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <p>电子税务局支持以下两种用户场景的登录方式：<span style="font-weight:bold;">企业账号登录和个人用户登录。</span></p>
+                    <p>1. <span style="font-weight:bold;">企业账号登录</span>：可使用纳税人识别号（社会信用代码）和CA证书登录两种方式。</p>
+                    <p>
+                        纳税人使用纳税人识别号（社会信用代码）登录电子税务局，登录账号和密码与纳税人之前登录“贵州省国家税务局网上办税大厅”或“贵州省地方税务局电子办税服务厅”的相同；CA证书登录模式支持纳税人插入CA介质的方式登录电子税务局。</p>
+                    <p style="color:red;">后期将逐步实施过渡使用个人账号注册登录电子税局，企业账号登录作为过渡期使用。
+                    <p>
+                </div>
+                <div>
+                    <p><span style="font-weight:bold;">2.	个人用户登录</span>：</p>
+                    <p>贵州省电子税务局注册用户，可以使用用户名方式进行登录；</p>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <div><img src="images/cjwt/4-1.png" alt="预览" width="814px" height="324px"/></div>
+                    <p>当使用IE浏览器在预览提交页面显示“页面加载中，请稍后”时，请检查电脑的IE浏览器版本是否为IE8或以上版本、是否安装了Adober Reader 10或以上的版本。</p>
+                </div>
+                <div>
+                    <div><img src="images/cjwt/4-2.png" alt="主体停用提示" width="667px" height="332px"/></div>
+                    <p>请记录系统提示的停用原因，并联系信息有误一方税务机关进行税务登记信息变更。</p>
+                </div>
+                <div>
+                    <p>1）电子税务局是每个工作日晚六点同步在金三系统中修改的企业基本信息，请耐心等待；</p>
+                    <p>2）若已过了前面所述时间，请联系主管税务机关咨询处理。</p>
+                </div>
+                <div>
+                    <p>根据《贵州省国家税务局
+                        贵州省地方税务局关于推行数字证书（CA证书）全面互认的通告》（2017年第2号），目前国地税CA证书已全面互认，系统支持国税和地税的CA登录贵州省电子税务局，支持贵州省电子税务局所有涉税业务的国税或地税CA签名。</p>
+                </div>
+                <div>
+                    <p>出现此类提示的原因，是当前登录办理业务的纳税人与CA绑定的纳税人不一致，解决方法为切换正确的CA介质，再进行业务办理。</p>
+                </div>
+                <div>
+                    <p>出现此提示说明该纳税人是CA用户，CA用户在提交涉税事项申请表单时必须进行签名，即点击页面的最下方的签名域进行签名即可。</p>
+                </div>
+                <div>
+                    <p>可以更换手机号码。操作方法如下：登录电子税务局，进入“用户信息---账号设置---用户账号信息管理---账号信息”功能可进行手机号码修改。</p>
+                </div>
+            </div>
+
+        </div>
+        <!--end 常见问题详细页面 -->
+    </div>
+    <!--start  关闭 和返回按钮-->
+    <div style="text-align: center;background: #ffffff; padding: 20px 0 40px 0;position:absolute; bottom:0px;  width: 849px;height: 20px;">
+        <a class="cjwtbtn " href="javascript:closeCjwt();">关闭</a>
+        <a class="cjwtbtn " style="margin-left: 80px;" href="javascript:backCjwt();">返回</a>
+    </div>
+    <!--end  关闭 和返回按钮-->
+</div>
+<div id="chooseNsr" style="display: none;">
+    <div class="tc_nav">
+        <div class="sh_title01">
+            <div class="blold">企业办税</div>
+            <span></span></div>
+        <div class="qysf">
+            <div class="qysf_right">
+                <h2 id="qysfTitle">暂无企业，请绑定企业</h2>
+                <div class="qysf_rnav">
+                    <div id="addQysf" style="padding:35px 0 40px 118px;" class="add_com"><a
+                            href="javascript:newQysf();">企业绑定</a></div>
+                    <ul id="nsrzt" class="nsrsList"></ul>
+                    <div id="addQysf2" style="padding:0px 0 0px 118px;" class="add_com2"><a
+                            href="javascript:newQysf();">企业绑定</a></div>
+                </div>
+            </div>
+        </div>
+        <div style=" text-align:center; padding:10px 0;"><a id="qyjrBtn" class="btn_read" href="javascript:selectQy();">
+            企业进入 </a></div>
+    </div>
+    <div class="tc_nav" style="float: right;">
+        <div class="sh_title01">
+            <div class="blold">个人办税</div>
+            <span></span></div>
+        <div class="grsftx">
+            <!-- 没有实名  -->
+            <div id="smzTitle" class="qysf_right">
+                <h2>暂未实名，请先进行实名制申请</h2>
+            </div>
+            <div id="addSmz" style="padding:35px 0 40px 118px;" class="add_com">
+                <a href="javascript:newSmz();">实名制申请</a>
+            </div>
+            <!-- 已经实名，没有授权数据  回传标志-->
+            <ul id="smzxx" style="vertical-align: middle;">
+                <li id="qhsf_yhmc"></li>
+                <li id="qhsf_zjlx"></li>
+                <li id="qhsf_zjhm"></li>
+                <li id="qhsf_zjyxq"></li>
+            </ul>
+
+            <div id="selectZrrs" class="qysf_right">
+                <!-- <h2 id="grsfTitle">暂未实名，请先进行实名制申请</h2> -->
+                <h2 id="grsfTitle"><span>请选择个人身份</span>
+                    <input type="text" id="grkeywords" style="margin-left: 20px;height:30px;" name="grkeywords"/>
+                    <input type="button" id="seachGr" name="seachGr" value="查询"/>
+                </h2>
+                <div class="qysf_rnav">
+                    <ul id="zrrsList" class="zrrsList">
+                    </ul>
+                    <!-- <div id="addGrsqsq" style="padding:0px 0 0px 118px;" class="add_com2">
+                        <a href="javascript:newQysf();">个人授权申请</a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <div style=" text-align:center; padding:10px; 0"><a class="btn btn01" style=" background-color:#00a33a;"
+                                                            href="javascript:selectGr();"> 个人进入 </a></div>
+    </div>
+</div>
+<div id="chooseGds" style="display: none;">
+    <div style=" text-align:center; padding:10px 0;float: left;margin: 20px 20px 20px 30px">
+        <a id="qyjrBtn" class="btn btn01" href="javascript:goMh('gs');"></a>
+    </div>
+    <div style=" text-align:center; padding:10px 0;float: right;margin: 20px 30px 20px 20px">
+        <a id="qyjrBtn" class="btn btn01" href="javascript:goMh('ds');"> 地税</a>
+    </div>
+</div>
+<script>
+    layui.use('element', function () {
+        var $ = layui.jquery, element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+        //触发事件
+        var active = {
+            tabAdd: function () {
+                //新增一个Tab项
+                element.tabAdd('demo', {
+                    title: '新选项' + (Math.random() * 1000 | 0) //用于演示
+                    ,
+                    content: '内容' + (Math.random() * 1000 | 0),
+                    id: new Date().getTime()
+                    //实际使用一般是规定好的id，这里以时间戳模拟下
+                })
+            },
+            tabDelete: function (othis) {
+                //删除指定Tab项
+                element.tabDelete('demo', '44'); //删除：“商品管理”
+
+                othis.addClass('layui-btn-disabled');
+            },
+            tabChange: function () {
+                //切换到指定Tab项
+                element.tabChange('demo', '22'); //切换到：用户管理
+            }
+        };
+
+        $('.site-demo-active').on('click', function () {
+            var othis = $(this), type = othis.data('type');
+            active[type] ? active[type].call(this, othis) : '';
+        });
+
+        //Hash地址的定位
+        var layid = location.hash.replace(/^#test=/, '');
+        element.tabChange('test', layid);
+
+        element.on('tab(test)', function (elem) {
+            location.hash = 'test=' + $(this).attr('lay-id');
+        });
+
+    });
+</script>
+<script type=text/javascript>
+    $.ajax({
+        url: "/sso/auth/getLastPctx.do",
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+            var code = data.code;
+            var body = data.body;
+            if (body.length > 0) {
+                $("#floatAdId").css('display', 'block');
+                $("#bt").html(body[0].bt);
+                $("#nr").html(body[0].nr);
+                var ad1 = new AdMove("floatAdId");
+                ad1.Run();
+            } else {
+                $("#floatAdId").css('display', 'none');
+            }
+        },
+        error: function () {
+
+        }
+    });
+
+    function ClosedivMove(obj) {
+        $("#floatAdId").hide();
+        //obj.style.visibility="hidden";
+    }
+
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    //常见问题
+    $(function () {
+        $("#cjwtList div div ul li").on("click", function () {
+            /*layer.close(cjwt);*/
+            var currentTitle = $(this).children("a").text().substring(2);
+            var id = $(this).attr("id");
+            var index_p1 = id.indexOf("_");
+            var index_p2 = id.lastIndexOf("_");
+            layer.title(currentTitle, cjwt)
+            var index_div = id.substring(index_p1 + 1, index_p2);
+            var index_li = id.substring(index_p2 + 1, id.length);
+            $("#cjwtList").hide();
+            $("#detailPage").show();
+            $("#detailPage").children("div:eq(" + index_div + ")").show();
+            $("#detailPage").children("div:eq(" + index_div + ")").siblings().hide();
+            $("#detailPage").children("div:eq(" + index_div + ")").children("div:eq(" + index_li + ")").show();
+            $("#detailPage").children("div:eq(" + index_div + ")").children("div:eq(" + index_li + ")").siblings().hide();
+
+        })
+
+        $("#cjwtList div h3").on("click", function () {
+            var index = $(this).parent().index();
+            if (index < 3) {
+                $("#detailPage").children("div:eq(" + index + ")").show();
+                $("#detailPage").children("div:eq(" + index + ")").siblings().hide();
+                $("#cjwtList").hide();
+                $("#detailPage").show();
+            } else {
+                var p_src = $(this).children(".arrow_point").children().attr("src");
+                if ("images/cjwt/right.png" == p_src) {
+                    $(this).children(".arrow_point").children().attr("src", "images/cjwt/adown.png");
+                } else {
+                    $(this).children(".arrow_point").children().attr("src", "images/cjwt/right.png");
+                }
+                $(this).parent().children("div").slideToggle("slow", function () {
+
+                });
+            }
+
+        });
+
+    })
+
+    //关闭常见问题弹出框
+    function closeCjwt() {
+        layer.close(cjwt);
+
+    }
+
+    //常见问题返回按钮
+    function backCjwt() {
+        layer.title('常见问题', cjwt)
+        $("#cjwtList").show();
+        $("#detailPage").hide();
+    }
+
+    var cjwt;//常见问题
+    function frequentlyQuestion() {
+        cjwt = layer.open({
+            type: 1, //弹窗
+            closeBtn: 1, //不显示关闭按钮
+            shift: 0, //动画效果
+            area: ['900px', '500px'],
+            title: ['常见问题', 'font-size:18px;text-align:center;background-color:#1a56a8;color: #fff;'],
+            //btn: ['关闭','返回'],
+            success: function (layero, index) {
+                var btn = layero.find('.layui-layer-btn');
+                btn.css('text-align', 'center');
+
+                $("#cjwtList").show();
+                $("#cjwt_btn").show();
+                $("#detailPage").hide();
+
+            },
+            content: $("#cjwtContent")
+        });
+    }
+</script>
+<!-- 此段必须要引入 -->
+<script>
+    var nc = new noCaptcha();
+    var nc_appkey = 'FFFF0000000001779C9F';  // 应用标识,不可更改
+    var nc_scene = 'login';  //场景,不可更改
+    var nc_token = [nc_appkey, (new Date()).getTime(), Math.random()].join(':');
+    var nc_option = {
+        renderTo: '#dom_id',//渲染到该DOM ID指定的Div位置
+        appkey: nc_appkey,
+        scene: nc_scene,
+        token: nc_token,
+        trans: '{"name1":"code100"}',//测试用，特殊nc_appkey时才生效，正式上线时请务必要删除；code0:通过;code100:点击验证码;code200:图形验证码;code300:恶意请求拦截处理
+        callback: function (data) {// 校验成功回调
+            document.getElementById('csessionid').value = data.csessionid;
+            document.getElementById('sig').value = data.sig;
+            document.getElementById('token').value = nc_token;
+            document.getElementById('scene').value = nc_scene;
+        }
+    };
+    nc.init(nc_option);
+</script>
+<!-- 引入结束 -->
+<!-- 此段必须要引入 -->
+<script>
+    var nc = new noCaptcha();
+    var nc_appkey = 'FFFF0000000001779C9F';  // 应用标识,不可更改
+    var nc_scene = 'login';  //场景,不可更改
+    var nc_token = [nc_appkey, (new Date()).getTime(), Math.random()].join(':');
+    var nc_option = {
+        renderTo: '#dom_idQy',//渲染到该DOM ID指定的Div位置
+        appkey: nc_appkey,
+        scene: nc_scene,
+        token: nc_token,
+        trans: '{"name1":"code100"}',//测试用，特殊nc_appkey时才生效，正式上线时请务必要删除；code0:通过;code100:点击验证码;code200:图形验证码;code300:恶意请求拦截处理
+        callback: function (data) {// 校验成功回调
+            document.getElementById('csessionidQy').value = data.csessionid;
+            document.getElementById('sigQy').value = data.sig;
+            document.getElementById('tokenQy').value = nc_token;
+            document.getElementById('sceneQy').value = nc_scene;
+        }
+    };
+    //nc.init(nc_option);//临时注释该行
+
+    /**
+     * 兼容IE9下的placeholder
+     *
+     * @param
+     *
+     * @author
+     * @date 2018.01.25
+     */
+    var PlaceHolder = (function (window, $) {
+
+        // 兼容IE9下的placeholder
+
+        //placeholder兼容性代码配置(IE9下不支持placeholder属性,使用jquery.placeholder.min.js插件解决某些浏览器有兼容性问题,改下列实现)
+        // 判断浏览器是否支持placeholder属性
+        var supportPlaceholder = 'placeholder' in document.createElement('input');
+
+        var placeholder = function (input) {
+
+            var text = input.attr('placeholder'), defaultValue = input.defaultValue;
+
+            if (!defaultValue) {
+                input.val(text).addClass("phcolor");
+            }
+
+            input.focus(function () {
+                if (input.val() == text) {
+                    $(this).val("");
+                }
+            });
+
+            input.blur(function () {
+                if (input.val() == "") {
+                    $(this).val(text).addClass("phcolor");
+                }
+            });
+
+            // 输入的字符不为灰色
+            input.keydown(function () {
+                $(this).removeClass("phcolor");
+            });
+        };
+
+        // 当浏览器不支持placeholder属性时，调用placeholder函数
+        if (!supportPlaceholder) {
+            $('input').each(function () {
+                text = $(this).attr("placeholder");
+                if ($(this).attr("type") == "text") {
+                    placeholder($(this));
+                }
+            });
+
+            // 对password框的特殊处理1.创建一个text框 2获取焦点和失去焦点的时候切换
+            var pwdField = $("input[name=passWord]");
+
+            $(pwdField).each(function (i, item) {
+                $(pwdField[i]).after('<input id="pwdPlaceholder' + i + '" name="pwdPlaceholder" type="text" class="txt bg2" value="密码" autocomplete="off" />');
+                /*****自然人登录密码输入框*****/
+                var id = '#pwdPlaceholder' + i;
+                var pwdPlaceholder02 = $(id);
+                pwdPlaceholder02.show();
+                $(pwdField[i]).hide();
+
+                handlePlaceHolder(pwdPlaceholder02, $(pwdField[i]));
+            });
+
+            /**CA密码输入框**/
+            var pwdFieldCA = $("input[name='passWordCA']");
+            pwdFieldCA.after('<input id="pwdPlaceholderCA" name="pwdPlaceholderCA" type="text" class="txt bg2" value="密钥" autocomplete="off" />');
+
+            var pwdPlaceholderCA = $('#pwdPlaceholderCA');
+            pwdPlaceholderCA.show();
+            pwdFieldCA.hide();
+
+            handlePlaceHolder(pwdPlaceholderCA, pwdFieldCA);
+
+            /**QY密码输入框**/
+            var passWordQy = $("input[name='passWordQy']");
+            if (passWordQy.length !== 0) {
+                $(passWordQy).each(function (i, item) {
+                    $(passWordQy[i]).after('<input id="pwdPlaceholderQy' + i + '" name="pwdPlaceholder" type="text" class="txt bg2" value="密码" autocomplete="off" />');
+                    /*****自然人登录密码输入框*****/
+                    var id = '#pwdPlaceholderQy' + i;
+                    var pwdPlaceholderQy02 = $(id);
+                    pwdPlaceholderQy02.show();
+                    $(passWordQy[i]).hide();
+
+                    handlePlaceHolder(pwdPlaceholderQy02, $(passWordQy[i]));
+                });
+            }
+        }
+
+        /**
+         * $1 : 页面展示的元素
+         * $2 : 后生成的元素
+         */
+        function handlePlaceHolder($1, $2) {
+            $1.focus(function () {
+                $1.hide();
+                $2.show();
+                $2.focus();
+            });
+
+            $2.blur(function () {
+                if ($2.val() == '') {
+                    $1.show();
+                    $2.hide();
+                }
+            });
+        };
+    })(window, jQuery);
+
+
+    layui.use('form', function () {
+        var form = layui.form;
+        form.render('radio');
+    });
+
+    //下载弹框
+    function downLoad() {
+        var alerthtml = "<iframe width=\"100%\" height=\"100%\"  src=\"http://jsnfpt.gz-l-tax.gov.cn/resource/html/gzds/xzzq/bsrj.htm?hidden=true&cdId=dlqcd-253&gnDm=gndm-dlqcd-253&gdslxDm=2\" ></iframe>";
+        resIeIndex = layer.open({
+            type: 1, //弹窗
+            shift: 0, //动画效果
+            area: ['1100px', '500px'],
+            title: "下载专区",
+            content: alerthtml
+        });
+    }
+</script>
+</body>
+<script>
+    //微信二维码定时器 id
+    var intervalId = "";
+    var wxsmbz = false;
+
+    /**
+     *  清除定时
+     */
+    function clean() {
+        window.clearInterval(intervalId);
+    }
+
+    /**
+     * 扫描二维码，获取信息
+     */
+    function getUserInfo() {
+        $("#msg").html("");//提示信息清空
+        if (wxsmbz) {
+            $.ajax({
+                url: "/sso/auth/getQrcodeInfo.do",
+                asycn: true,
+                dataType: "text",
+                data: {
+                    "id": $("#uid").val()
+                },
+                success: function (data) {
+
+                    if ("ok" == data) {
+                        $("#casLoginQRcodeForm").submit();
+                    } else {
+                        setTimeout(function () {
+                            getUserInfo();
+                        }, 1000);//延迟1000毫秒
+                    }
+
+                },
+                error: function () {
+
+                }
+            });
+        }
+    }
+
+    /**
+     * 获取微信二维码
+     */
+    function getQRcode() {
+        $.ajax({
+            url: "/sso/auth/getQRCode.do",
+            asycn: true,
+            success: function (data) {
+                if (data.code == "0000") {
+                    $("#QCcodeImg").attr("src", data.url);
+                    $("#uid").val(data.uuid);
+                }
+            }
+        });
+    }
+
+    /**
+     *  刷新二维码，并监听是否扫描
+     */
+    function refreshAndListenQRCode() {
+        clean();//清除定时器
+        getQRcode();
+        intervalId = window.setInterval(function () {
+            refreshAndListenQRCode();
+        }, 1000 * 60 * 2);//刷新二维码为两分钟刷新一次。获取新的微信二维码
+
+        //递归获取用户信息
+        getUserInfo();
+    }
+
+    /*$(function(){
+        //界面加载完，生成二维码
+        refreshAndListenQRCode();
+
+        /!*
+         * 每三分钟 刷新二维码
+         *!/
+        window.setInterval(function(){
+            refreshAndListenQRCode();
+        },1000*60*3);
+
+        //递归获取用户信息
+        getUserInfo();
+
+    })*/
+</script>
+</html>
