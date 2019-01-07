@@ -43,19 +43,13 @@ function resizeFrame() {
 
 function loadPage(page) {
     var href = window.location.href;
-
-    var pathname = window.location.pathname;
-    if (pathname.indexOf(".") > 0) {
-        pathname = pathname.substr(0, pathname.indexOf("."));
-    }
-
     if (href.indexOf("?") > -1) {
         href = href.substr(0, href.indexOf("?"));
     }
     if (href.indexOf(";") > -1) {
         href = href.substr(0, href.indexOf(";"));
     }
-    document.getElementById("frmMain").src = window.location.protocol +"//"+ window.location.host + pathname + "/" + page + "?" + queryString;
+    document.getElementById("frmMain").src = href + "/" + page + "?" + queryString;
 }
 
 var index_loading;
@@ -142,6 +136,13 @@ function menuBtnControl(menuBtnConfig, isExporting) {
             showBtnsSet[arr[i]] = 1;
         }
     }
+    // 3、获取配置中心sbzs.btn.title和sxsq.btn.title配置
+    var btnTitle = JSON.parse("{}");
+    if (typeof sbzsBtnTitle!=="undefined" && (document.location.pathname.indexOf("/sbzs/")!=-1 || document.location.pathname.indexOf("/cwbb/")!=-1)) {
+    	btnTitle = JSON.parse(sbzsBtnTitle);
+    } else if (typeof sxsqBtnTitle!=="undefined" && document.location.pathname.indexOf("/sxsq/")!=-1){
+    	btnTitle = JSON.parse(sxsqBtnTitle);
+    }
     /**
      改成map 形式，避免按钮名包含，indexOf 无法正确控制按钮。
      */
@@ -160,20 +161,69 @@ function menuBtnControl(menuBtnConfig, isExporting) {
                 // "下一步" 根据配置中心确定按钮名称 a by C.Q 20180327
                 var btnName = value.name;
                 if (name === 'btnPrepareMake' && makeTypeDefualt === 'HTML'
-                    && ("SBZS" === ywlx || "SBZSB1" === ywlx || "CWBB" === ywlx || "CWBBB1" === ywlx)) {
+                    && ("SBZS" === ywlx || "SBZSB1" === ywlx || "CWBB" === ywlx || "CWBBB1" === ywlx || "SB" === ywlx)) {//添加业务中台的适配，ywlx=SB
                     btnName = '申报';
+                    if (typeof btnTitle!=="undefined") {
+                    	btnTitle['btnPrepareMake'] = btnTitle['btnPrepareMake_sb'];
+                    }
                 }
                 //处理带参数的方法
                 var func=value.func;
                 var reg = new RegExp('\"',"g");
                 func = func.replace(reg,"'");
-                menuBtn += '<li><a id=\"' + name + '\" class="' + clas + '\" onClick=\"javascript:window.frames[0].' + func + ';\">' + btnName + '</a></li>';
+                if (typeof btnTitle[name]!=="undefined") {
+                	menuBtn += '<li><a id=\"' + name + '\" class="' + clas + '\" onClick=\"javascript:window.frames[0].' + func + ';\" title="'+btnTitle[name]+'">' + btnName + '</a></li>';
+                }　else {
+                	menuBtn += '<li><a id=\"' + name + '\" class="' + clas + '\" onClick=\"javascript:window.frames[0].' + func + ';\">' + btnName + '</a></li>';
+                }    
             }
         }
     });
-    $areaHeadBtn.append($(menuBtn));
-    $(".TopHead").show();
-    resetCtrl();
+    var processer = "";
+    try{
+        var processerUrl = $("#frmMain").contents().find("#myform").attr("action");
+        var processerArr = processerUrl.split("/");
+        processer = processerArr[5];
+    }catch(e){
+
+    }
+
+    if(menuBtn.indexOf('btnExport01') == -1 && window.cp && window.curDjxh && window.curNsrsbh
+    && ("SBZS" === ywlx || "SBZSB1" === ywlx || "CWBB" === ywlx || "CWBBB1" === ywlx)
+    && processer == 'make' && ywbm != 'fcssbyd' && ywbm != 'cztdsysbyd'
+        && ywbm != 'fcssbcj' && ywbm != 'cztdsysbcj') {
+        $.getJSON(cp + "/abacus/resources/js/frame/bmd.json").then(function (datas) {
+            if (datas[curDjxh]) {
+                var importExport = {
+                    "btnExport01": {"name": "导出", "func": "exportJson()", "disp": "block"},
+                    "btnImport01": {"name": "导入", "func": "importJson()", "disp": "block"}
+                };
+                $.each(importExport, function (name, value) {
+                    var clas = 'btn btn06';
+                    if (value.isUsual && (value.isUsual === 'true' || value.isUsual === true)) {
+                        clas += ' btn10';
+                    }
+                    //扣缴个税上传文件按钮要黄色显示
+                    if (value.sichuan && (value.sichuan === 'true' || value.sichuan === true)) {
+                        clas += ' btn11';
+                    }
+                    menuBtn += '<li><a id=\"' + name + '\" class="' + clas + '\" onClick=\"javascript:window.frames[0].' + value.func + ';\">' + value.name + '</a></li>';
+                });
+            }
+            $areaHeadBtn.append($(menuBtn));
+            $(".TopHead").show();
+            resetCtrl();
+        }, function (aa, bb, cc, dd) {
+            $areaHeadBtn.append($(menuBtn));
+            $(".TopHead").show();
+            resetCtrl();
+        });
+    }else{
+        $areaHeadBtn.append($(menuBtn));
+        $(".TopHead").show();
+        resetCtrl();
+    }
+
 }
 
 /**
@@ -279,9 +329,9 @@ function fszlMeunBtnShow(ysqxxid) {
         });
         //点击附送资料按钮，弹出附列资料框
         // 2018-05-05 迁移关闭按钮事件，将修改附送资料右上方红标时间迁移到attachment.js的uploadify_updateBlfs函数中
-        var $winclose = $(window.parent.document).find(".winclose");
+        var $winclose = $(window.document).find(".winclose");
         $winclose.click(function () {
-            var $winbox_bg = $(window.parent.document).find(".winbox_bg");
+            var $winbox_bg = $(window.document).find(".winbox_bg");
             $winbox_bg.remove();
             $winclose.parents("#myModa1").animate({top: "-200px", opacity: "0"}, 300).fadeOut();
         });
@@ -446,4 +496,133 @@ function alertWarns() {
         offset: '270px'
     });
     window.parent.layer.close(index);
+}
+/**
+ * 封装业务中台ajax请求
+ * @param reqParams,successCallback,errorCallback, setAsync
+ * @desc reqParams为json格式{"sid":"dzswj.rd.rdSfzrdxxb.cxSfzrdxx","qqbw":{}}
+ * 		qqbw可以为json对象也可以为字符串，请求金三核心报文时qqbw必传。
+ * 		当请求wbzy jsp报文时qqbw可以不传，不传会把会话参数和url参数作为qqbw
+ *		successCallback为数据请求成功的回调函数，errorCallback为数据请求失败的回调函数,
+ *		有errorCallback(msg,code,stack)回调函数就会把错误信息返回给errorCallback回调函数,code="02"为业务错误码
+ *		code="01"为系统错误码。
+ *      默认为异步。
+ */
+function requestYwztData(reqParams,successCallback,errorCallback,setAsync){
+	var url = window.location.protocol + "//" + window.location.host + "/" + cp +"/ywzt/getData.do";
+	var realUrl = window.location.href;
+	//把页面url后的参数拼接到请求参数
+	var index = -1,
+    str = '',
+    requestAsync = false,
+    arr = [],
+    async = false;
+    length = 0,
+    res = {};
+    if(setAsync){
+    	async =setAsync
+    }
+    if(reqParams){
+    	if(realUrl.indexOf('?')!=-1){
+			index = realUrl.indexOf('?');
+			str = realUrl.substring(index+1);
+			arr = str.split('&');
+			length = arr.length;
+			for(var i=0; i<length-1; i++){
+				res[arr[i].split('=')[0]] = arr[i].split('=')[1];
+			}
+		}else{
+			res = {};
+		}
+		if(typeof reqParams.sid != "undefined" && reqParams.sid != null && reqParams.sid != ""){
+			res["sid"] = reqParams.sid;
+	    }
+		
+		if(typeof reqParams.qqbw != "undefined" && reqParams.qqbw != null && reqParams.qqbw != ""){
+			res["qqbw"] = reqParams.qqbw;
+	    }
+		//默认为异步请求
+		if(typeof reqParams.async != "undefined" && reqParams.async != null && reqParams.async != ""){
+			requestAsync = reqParams.async;
+	    }
+		res["projectName"] = "wbzy";
+		$.ajax({        		
+			type : "POST",
+	 		url : url,
+	 		async: async,
+	 		data:res,
+	 		success:function(data){
+	 			//尝试转化为json对象，转化不了直接返回数据
+	 			var json = JSON.parse(data);
+	 			if(json["rtnCode"]){
+	 				if(json["rtnCode"].match(/^[0]*$/)){
+	 					if(json["body"]){
+	 						if(typeof successCallback =="function"){
+		 						try{
+				 					var response = JSON.parse(json["body"]);
+				 					successCallback(response);
+				 				}catch(e){
+				 					var resData = json["body"];
+				 					successCallback(resData);
+				 				}
+	 						}
+	 					}
+	 				}else{
+	 					if(json["errInfo"]){
+			 				if(json["errInfo"]["msg"]){
+			 					//判断是否支持打印
+			 					if (window["console"]){
+			 				        console.log(json["errInfo"]["msg"]);
+			 				    }
+			 					if(errorCallback && typeof(eval(errorCallback))=="function"){
+			 						if(json["errInfo"]["stack"]){
+			 							errorCallback(json["errInfo"]["msg"],"02",json["errInfo"]["stack"]);
+			 						}
+			 					}else{
+			 						layer.alert(json["errInfo"]["msg"]);
+			 						//alert(json["errInfo"]["msg"])
+			 					}
+			 				}
+			 			}
+	 				}
+	 			}
+	 			
+	 		},
+	 		error:function(data,type, err){
+	 			if(errorCallback && typeof(eval(errorCallback))=="function"){
+	 				errorCallback(err,"01");
+	 			}else{
+	 				layer.alert(err);
+	 				//alert(err)
+	 			}	
+	 		}
+	 	});
+    }else{
+    	errorCallback("参数错误","02");
+    }
+	
+}
+
+function resolveYwztResponse(data){
+    //尝试转化为json对象，转化不了直接返回数据
+    var json = JSON.parse(data);
+    if(json["body"]){
+        try{
+            var response = JSON.parse(json["body"]);
+            return response;
+        }catch(e){
+            var resData = json["body"];
+            return resData;
+        }
+    }
+    if(json["errInfo"]){
+        if(json["errInfo"]["msg"]){
+            //判断是否支持打印
+            if (window["console"]){
+                console.log(json["errInfo"]["msg"]);
+            }
+            var errorResponse = json["errInfo"]["msg"];
+            return errorResponse;
+        }
+    }
 }

@@ -401,13 +401,19 @@ function getMrjmseBySsjmxz(jmzlxDm,jsyj,bqynse,fdsl,jmfd,jmed,jmsl){
 		// 需要判断是定期定额自行申报还是定期定额汇总的，取的节点不一样。
 		var ssq, sqz, kyrq, tbrq;
 		if (formData.dqdehfyhzsbxxGridlbVO) {		// 分月汇总
-			// 暂不处理
+			// -- 目前发现和自行申报计算是一致的。
+			sqq = formData.nsrxxForm.skssqq;
+			sqz = formData.nsrxxForm.skssqz;
+			kyrq = formData.qcs.initData.dedehfyhzInitData.kyrq;
+			tbrq = formData.qcs.initData.nsrjbxx.tbrq;
+            // hdjsyj = 0; 核定计税依据不要了
+			return dqdeCalc2018Gs(rtnType, srze, yssdl, zspmDm, jsbz, sjjyyf, 0, nsqxDm, zsl, sqq, sqz, kyrq, tbrq, 'fyhz');
 		} else {				// 自行申报
 			sqq = formData.dqdezxSbbdxxVO.dqdezxsb.sbbhead.skssqq;
 			sqz = formData.dqdezxSbbdxxVO.dqdezxsb.sbbhead.skssqz;
 			kyrq = formData.dqdeqcs.initData.sbDqdezxsbInitData.kyrq;
 			tbrq = formData.dqdeqcs.initData.nsrjbxx.tbrq;
-			return dqdeCalc2018Gs(rtnType, srze, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxDm, zsl, sqq, sqz, kyrq, tbrq);
+			return dqdeCalc2018Gs(rtnType, srze, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxDm, zsl, sqq, sqz, kyrq, tbrq, 'dqde');
 		}
 	}
 	
@@ -791,9 +797,10 @@ function getMrjmseBySsjmxz(jmzlxDm,jsyj,bqynse,fdsl,jmfd,jmed,jmsl){
  * sl:		税率
  * sqq:		属期起
  * sqz:		属期止
+ * type: dqde|fyhz
  */
-function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxDm, sl, sqq, sqz, kyrq, tbrq) {
-	if (arguments.length < 13) {
+function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxDm, sl, sqq, sqz, kyrq, tbrq, type) {
+	if (arguments.length < 14) {
 		throw "Wrong Parameter Number!";
 	}
 	var rtnType = arguments[0];
@@ -809,13 +816,12 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 	var sqz = arguments[10]; 		
 	var kyrq = arguments[11]; 		
 	var tbrq = arguments[12]; 		
+	var type = arguments[13]; 		
 	
 	if (dqde2018Gs.zspmDm.indexOf(zspmDm) == -1) {
 		return 0;
 	}
 	
-	// var sjjyyf = 0; 	
-	var ysbyf = 0; 	
 	var sskcs = 0;
 	var kcs = 0;
 		
@@ -829,7 +835,7 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 	
 	// 优先取暂存的。暂存最多提供20条，如果超过，则移除第一条，添加数据在尾部。
 	var item = {};
-	var key = ysx + "_" + yssdl + "_" + zspmDm + "_" + jsbz + "_" + sjjyyf + "_" + hdjsyj;
+	var key = type + "_" + ysx + "_" + yssdl + "_" + zspmDm + "_" + jsbz + "_" + sjjyyf + "_" + hdjsyj;
 	if (dqde2018Gs.items[key]) {
 		item = dqde2018Gs.items[key];
 		rtnType = rtnType == 'ynssde' ? 'jsyj' : rtnType;
@@ -842,16 +848,10 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 		months = 12;
 	} else if (nsqxDm == '08') {
 		months = 3;
-	} 
-	
-	// var kyrq = formData.dqdeqcs.initData.sbDqdezxsbInitData.kyrq;
-	var kyyf = Number(kyrq.substring(5, 7));
-	var kyrqStr = kyrq.substring(0, 7).replace(new RegExp('-','g'), '');	// 格式化属期起(年月)
-	var thisYearFirstDay = new Date().getFullYear() + '0101';	// 格式化属期起(年月)
-	if (kyrqStr < thisYearFirstDay) {
-		kyyf = 1;
 	}
-	// var tbrq = formData.dqdeqcs.initData.nsrjbxx.tbrq;
+
+	// 开业月份
+    var kyyf = 12 - sjjyyf + 1;
 	
 	// 实际经营月份
 	var sjjyBefore = MAX(0, 10 - kyyf);		// 10月前
@@ -861,15 +861,12 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 	var slRule = 'new';
 	var sSqq = sqq.substring(0, 7).replace('-', '');	// 格式化属期起(年月)
 	var sSqz = sqz.substring(0, 7).replace('-', '');	// 格式化属期止(年月)
-	var sKyNy = kyrq.substring(0, 7).replace('-', '');	// 格式化开业日期(年月)
 	if (sSqz < '201810') {
 		slRule = 'old';	// 税款属期在2018-10之前,旧税率处理
-	} else if (sSqq >= '201810' && sKyNy >= '201810') {
+	} else if (sSqq >= '201810') {
 		slRule = 'new';	// 开业日期为2018-10之后，税款属期在2018-10及之后，采用新税率
-	} else if (sKyNy < '201810' && sSqq >= '201810' && sSqz <= '201812') {
-		slRule = 'transition';	// 开业日期为2018-10之前的，税款属期在2018第4季度，采用过渡期计算
 	} else {
-		// 无需赋值，新税率
+		slRule = 'transition';	// 开业日期为2018-10之前的，税款属期在2018第4季度，采用过渡期计算
 	}
 	
 	// 分别对两个品目进行处理
@@ -886,14 +883,14 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 			// 年应纳税所得额=(计税依据)*实际经营月份=应税项*应税所得率yssdl/Q*实际经营月份
 			// ynssde = ROUND(ysx * yssdl / months * sjjyyf, 2);
 			ynssde = ysx * yssdl * sjjyyf / months;
-			jsyj = ysx * yssdl / months;
+			jsyj = ysx * yssdl;
 			var map = getCommmonGsSlAndSskcs(ynssde, slRule != 'old');
 			sl = map['sl'];
 			sskcs = map['sskcs'];
 			ynse = (jsyj / months * sjjyyf * sl - sskcs) / sjjyyf * months;
 			/** ===== end ===== **/
 		} else if (slRule == 'transition') {
-			jsyj = ysx * yssdl / months;
+			jsyj = ysx * yssdl;
 			ynssde1 = ysx * yssdl / months * sjjyBefore;
 			ynssde2 = ysx * yssdl / months * sjjyAfter;
 			ynssde = ynssde1 + ynssde2;	// 也就是ynssde = ysx*yssdl/months * sjjyyf
@@ -911,16 +908,17 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 		// 新旧版实际是一样的公式，只是税率和速算扣除数变化了
 		if (slRule == 'old' || slRule == 'new') {
 			var ljkcs = (slRule == 'old' ? 3500 : 5000);
-			jsyj = MAX((ysx * yssdl / months - ljkcs) * months, hdjsyj * months);
+			// jsyj = MAX((ysx * yssdl / months - ljkcs) * months, hdjsyj * months); // 暂不考虑核定
+			jsyj = MAX((ysx * yssdl / months - ljkcs) * months, 0);
 			ynssde = jsyj / months * sjjyyf;
 			var map = getCommmonGsSlAndSskcs(ynssde, slRule != 'old');
 			sl = map['sl'];
 			sskcs = map['sskcs'];
 			ynse = (jsyj / months * sjjyyf * sl - sskcs) / sjjyyf * months;
-			/** ===== end ===== **/
-		} else if (slRule == 'transition') {
-			ynssde1 = MAX(ysx * yssdl - 3500, 0) * sjjyBefore;
-			ynssde2 = MAX(ysx * yssdl - 5000, 0) * sjjyAfter;
+            /** ===== end ===== **/
+        } else if (slRule == 'transition') {
+            ynssde1 = MAX(ysx / months * yssdl - 3500, 0) * sjjyBefore;
+			ynssde2 = MAX(ysx / months * yssdl - 5000, 0) * sjjyAfter;
 			ynssde = ynssde1 + ynssde2;
 			var oldMap = getCommmonGsSlAndSskcs(ynssde, false);
 			var newMap = getCommmonGsSlAndSskcs(ynssde, true);
@@ -928,6 +926,9 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 			ynse = (ynssde * oldMap['sl'] - oldMap['sskcs']) * sjjyBefore / sjjyyf;		// 旧版
 			ynse += (ynssde * newMap['sl'] - newMap['sskcs']) * sjjyAfter / sjjyyf;	// 新版
 			ynse = ynse / sjjyyf * months;
+
+			// jsjy 取新税率
+            jsyj = MAX(ysx / months * yssdl - 5000, 0) * months;
 			/** ===== end ===== **/
 		} 
 	} else if (jsbz == '5') {	// 仅在101060200中使用，西藏甘肃特有
@@ -961,7 +962,7 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 	item.sl = sl;
 	item.yssdl = yssdl;
 	item.kcs = kcs;
-	if (item.ynse && item.ynse != 'undefined') {
+	if (item.ynse != 'undefined') {
 		dqde2018Gs.items[key] = item;
 		rtnType = rtnType == 'ynssde' ? 'jsyj' : rtnType;
 		return item[rtnType];
@@ -1151,12 +1152,12 @@ function tysbCalc2018Gs() {
 				/**== finish ==**/
 			} else {						// 过渡情况
 				var oldMap = getCommmonGsSlAndSskcs(yssr, false);
-				var oldSjsl = map['sl'];
-				var oldSskcs = map['sskcs'];
+				var oldSjsl = oldMap['sl'];
+				var oldSskcs = oldMap['sskcs'];
 				
 				var newMap = getCommmonGsSlAndSskcs(yssr, true);
-				var newSjsl = map['sl'];
-				var newSskcs = map['sskcs'];
+				var newSjsl = newMap['sl'];
+				var newSskcs = newMap['sskcs'];
 				
 				ynse = ROUND((yssr * newSjsl - newSskcs) * (sqzMonth - sqqMonth + 1) / sjjyyf, 3);
 				sskcs = ROUND(newSskcs * (sqzMonth - sqqMonth + 1) / sjjyyf, 3);
@@ -1181,12 +1182,12 @@ function tysbCalc2018Gs() {
 				/**== finish ==**/
 			} else {						// 过渡情况
 				var oldMap = getCommmonGsSlAndSskcs(yssr, false);
-				var oldSjsl = map['sl'];
-				var oldSskcs = map['sskcs'];
+				var oldSjsl = oldMap['sl'];
+				var oldSskcs = oldMap['sskcs'];
 				
 				var newMap = getCommmonGsSlAndSskcs(yssr, true);
-				var newSjsl = map['sl'];
-				var newSskcs = map['sskcs'];
+				var newSjsl = newMap['sl'];
+				var newSskcs = newMap['sskcs'];
 				
 				ynse = ROUND((yssr * oldSjsl - oldSskcs) * ysbyfBefore / ysbyf, 3) + ROUND((yssr * newSjsl - newSskcs) * ysbyfAfter / ysbyf, 3);
 				sskcs = ROUND(newSskcs * (sqzMonth - sqqMonth + 1) / sjjyyf, 3);
@@ -1229,44 +1230,43 @@ function tysbCalc2018Gs() {
 function getCommmonGsSlAndSskcs(ynssde, flag) {
 	var result = {};
 	
-	if (!ynssde || isNaN(ynssde) || ynssde <= 0) {
-		result['sl'] = 0;
-		result['sskcs'] = 0;
+	if (!ynssde || isNaN(ynssde)) {
+        ynssde = 0;
+    }
+
+	if (flag) {
+		if (ynssde <= 30000) {
+			result['sl'] = 0.05;
+			result['sskcs'] = 0;
+		} else if (ynssde > 30000 && ynssde <= 90000) {
+			result['sl'] = 0.1;
+			result['sskcs'] = 1500;
+		} else if (ynssde > 90000 && ynssde <= 300000) {
+			result['sl'] = 0.2;
+			result['sskcs'] = 10500;
+		} else if (ynssde > 300000 && ynssde <= 500000) {
+			result['sl'] = 0.3;
+			result['sskcs'] = 40500;
+		} else if (ynssde > 500000) {
+			result['sl'] = 0.35;
+			result['sskcs'] = 65500;
+		}
 	} else {
-		if (flag) {
-			if (ynssde <= 30000) {
-				result['sl'] = 0.05;
-				result['sskcs'] = 0;
-			} else if (ynssde > 30000 && ynssde <= 90000) {
-				result['sl'] = 0.1;
-				result['sskcs'] = 1500;
-			} else if (ynssde > 90000 && ynssde <= 300000) {
-				result['sl'] = 0.2;
-				result['sskcs'] = 10500;
-			} else if (ynssde > 300000 && ynssde <= 500000) {
-				result['sl'] = 0.3;
-				result['sskcs'] = 40500;
-			} else if (ynssde > 500000) {
-				result['sl'] = 0.35;
-				result['sskcs'] = 65500;
-			}
-		} else {
-			if (ynssde <= 15000) {
-				result['sl'] = 0.05;
-				result['sskcs'] = 0;
-			} else if (ynssde > 15000 && ynssde <= 30000) {
-				result['sl'] = 0.1;
-				result['sskcs'] = 750;
-			} else if (ynssde > 30000 && ynssde <= 60000) {
-				result['sl'] = 0.2;
-				result['sskcs'] = 3750;
-			} else if (ynssde > 60000 && ynssde <= 100000) {
-				result['sl'] = 0.3;
-				result['sskcs'] = 9750;
-			} else if (ynssde > 100000) {
-				result['sl'] = 0.35;
-				result['sskcs'] = 14750;
-			}
+		if (ynssde <= 15000) {
+			result['sl'] = 0.05;
+			result['sskcs'] = 0;
+		} else if (ynssde > 15000 && ynssde <= 30000) {
+			result['sl'] = 0.1;
+			result['sskcs'] = 750;
+		} else if (ynssde > 30000 && ynssde <= 60000) {
+			result['sl'] = 0.2;
+			result['sskcs'] = 3750;
+		} else if (ynssde > 60000 && ynssde <= 100000) {
+			result['sl'] = 0.3;
+			result['sskcs'] = 9750;
+		} else if (ynssde > 100000) {
+			result['sl'] = 0.35;
+			result['sskcs'] = 14750;
 		}
 	}
 	
@@ -1700,7 +1700,7 @@ function commonError500Callback(layerInstance, data){// return true 直接返回
 		if(data.responseText.indexOf("获取期初数服务失败，未设置期初数信息，请联系管理员！")>-1){
 			$("body").unmask();
 			layerInstance.closeAll('loading');
-			layerInstance.alert("纳税人本期申报未在系统提交，无法带出申报数据，请选择‘期初数设置’，填写期初数据后，重新填报本期数据！",{icon:5});
+			layerInstance.alert("纳税人本期申报未在系统提交，无法带出申报数据，请选择‘期初数设置’，填写期初数据后，重新填报本期数据！",{icon:5,closeBtn:0});
 			//jumpQcssz();
 			parent.$(".areaHeadBtn").find("li").find("a[id!=btnQcssz]").parent("li").remove();
 			return true;
@@ -1708,7 +1708,7 @@ function commonError500Callback(layerInstance, data){// return true 直接返回
 		if(data.responseText.indexOf("GZSB_QCS_0001_YBNSRZZS")>-1){
 			$("body").unmask();
 			layerInstance.closeAll('loading');
-			layerInstance.alert("纳税人本期因附表勾选变更,暂存数据不可用，期初数未设置，无法进行初始化。请选择‘期初数设置’，填写期初数据后，重新填报本期数据！",{icon:5});
+			layerInstance.alert("纳税人本期因附表勾选变更,暂存数据不可用，期初数未设置，无法进行初始化。请选择‘期初数设置’，填写期初数据后，重新填报本期数据！",{icon:5,closeBtn:0});
 			//jumpQcssz();
 			parent.$(".areaHeadBtn").find("li").find("a[id!=btnQcssz]").parent("li").remove();
 			return true;
@@ -2134,81 +2134,107 @@ function dqczlValidate(dqczl,zspmDm){
    return false;
 }
 
-
-//环保税采集主表污染物类别的校验
-function wrwlbValidate(wrwlb,sfcycs,sywrwlb){
-
-	
-	if(sfcycs=="Y"||sywrwlb==""||sywrwlb==null||wrwlb==""){
+/**
+ * 环保税采集主表污染物类别的校验
+ * @param wrwlb 	表头的污染物集合	字符串a,b,c
+ * @param sfcycs	是否抽样测算 		Y|N
+ * @param sywrwlb	当前动态行的排放口大类
+ * @returns {boolean}
+ */
+function wrwlbValidate(wrwlb, sfcycs, sywrwlb){
+	// 如果是抽样测试后者没有污染物集合，则直接返回
+	if(sfcycs === "Y" || wrwlb === ""){
 		 return true;
 	}
-	
-	
-	var syxx=formData.qcs.hjbhsSyxx;
-	if(syxx.length==0){
+	// 获取动态行信息，如果没有，则直接返回true
+	var syxx = formData.qcs.hjbhsSyxx;
+	if(syxx.length === 0){
 		 return true;
 	}
-	var wrwstr="";
-	var wrwArray=wrwlb.split(",");
-	
-	if(wrwArray.length==0){
+	var wrwstr = "";
+    // 表头污染物类别数据拆分为数组[a, b, c]
+	// 如果没有数据，则返回true(有点多余，最开始已经排除这种情况)
+	var wrwArray = wrwlb.split(",");
+	if(wrwArray.length === 0){
 		 return true;
 	}
-	
-	for(var i=0;i<syxx.length;i++){
-		var zywrwlbDm=syxx[i].zywrwlbDm;
-	
-		wrwstr=wrwstr+zywrwlbDm;
+	// 遍历税源信息动态行，获取污染物类别，拼接为字符串a,b,c
+	for(var i = 0; i < syxx.length; i++){
+		var zywrwlbDm = syxx[i].zywrwlbDm;
+		if (zywrwlbDm && zywrwlbDm !== 'null' && zywrwlbDm != 'undefined') {
+            wrwstr = wrwstr + zywrwlbDm;
+        }
+		//当集合A: wrwlb 不能全包含集合B ： zywrwlbDm 时  则反true  ;这种情况 用 这个方法检验sywrwlbValidate
+		if(zywrwlbDm!=""&&zywrwlbDm!=null&&zywrwlbDm!=undefined&&wrwlb.indexOf(zywrwlbDm)==-1){
+			 return true;
+		}
+		
 	}
 	
-	
-	
-	for(var i=0;i<wrwArray.length;i++){
-		var bz=wrwArray[i]
+	// 遍历表头污染物类别数组，除固体外，表头污染物集合中存在污染物类别，但不存在于动态行污染物类别中，则返回false
+	for(var i = 0; i < wrwArray.length; i++){
+		var bz = wrwArray[i];
 		//固体不需要税源
-		if(bz=="S"){
+		if(bz === "S"){
 			continue;
 		}
-		if(wrwstr.indexOf(bz)==-1){
+		if(wrwstr.indexOf(bz) === -1||wrwstr==""||wrwstr==null||wrwstr==undefined){
 			 return false;
 		}
 	}
-	
 	 return true;
 }
 
-
-
-//环保税采集主表污染物类别的校验
-function sywrwlbValidate(wrwlb,sfcycs,sywrwlb){
-	
-	if(sywrwlb==""||sywrwlb==null){
+/**
+ * 环保税采集主表污染物类别的校验
+ * @param wrwlb 	表头的污染物集合	字符串a,b,c
+ * @param sfcycs	是否抽样测算 		Y|N
+ * @param sywrwlb	当前动态行的排放口大类
+ * @returns {boolean}
+ */
+function sywrwlbValidate(wrwlb, sfcycs, sywrwlb){
+	if (!wrwlb) {
+        wrwlb = '';
+	}
+	if (!sywrwlb) {
+        sywrwlb = '';
+	}
+	// 如果没有动态行，则直接返回
+	var syxx = formData.qcs.hjbhsSyxx;
+	if(syxx.length === 0){
 		 return true;
 	}
-	
-	
-	var syxx=formData.qcs.hjbhsSyxx;
-	if(syxx.length==0){
-		 return true;
-	}
-	
-	var wrwArray=wrwlb.split(",");
-	
-	if(wrwArray.length==0&&syxx.length!=0){
-		 return false;
-	}
-	
-	for(var i=0;i<syxx.length;i++){
-		var zywrwlbDm=syxx[i].zywrwlbDm;
-		if(wrwlb.indexOf(zywrwlbDm)==-1){
+	// 遍历动态行，如果动态行污染物中存在的数据，不存在于表头污染物集合中，则返回false
+	for(var i = 0; i < syxx.length; i++){
+		var zywrwlbDm = syxx[i].zywrwlbDm;
+		if(zywrwlbDm!=""&&zywrwlbDm!=null &&wrwlb.indexOf(zywrwlbDm) === -1){
 			 return false;
 		}
 	}
-	
-	
-	 return true;
+
+	return true;
 }
 
+/**
+ * 环保税采集主表
+ * 判断是否有一条税源信息有【排污许可证副本编号】
+ */
+function checkPhxkzfbbh() {
+    var result = false;
+	var list = formData.qcs.hjbhsSyxx;
+	if (list.length === 0) {
+        result = false;
+	}
+
+	$.each(list, function(i, item) {
+		if (item.pwxkzbh && item.pwxkzbh !== 'null' && item.pwxkzbh !== 'undefined') {
+            result = true;
+            return false;
+		}
+	});
+
+	return result;
+}
 
 //环保税采集主表 判断 初始带出的税源信息 是否全都没有许可证。
 
@@ -2345,7 +2371,9 @@ function copyQcsxx(){
 		
 	}
 	
-	
+	var zbxx='{"dqwrwpfklbDm": "","gjhbjgDm": "","hgbhssybh": "","jd2": "","jdxzDm": "","pffsDm": "","pfkbh": "","zywrwlbDm": "","pfkmc": "","pfkwz": "","pwxkzbh": "","scjydz": "","syyxqq": "","syyxqz": "","wd": "","wspfqxDm": "","pfklxDm": "","xzqhszDm": "","yxqq": "","yxqz": "","zgswskfjDm": "","syuuid": "","hbsjcxxuuid": "","yxbz": "","pfkwybm": "","sbbz": "N","xkzfbwybm": "","wd_d": 0,"wd_f": 0,"wd_m": 0.00,"jd2_d": 0,"jd2_f": 0,"jd2_m": 0.00,"wbjhpfkuuid":""}';
+	var zbvo = eval('('+zbxx+')');
+	syxxArr[syxxArr.length]=zbvo;
 }
 
 
@@ -2443,4 +2471,564 @@ function checkXchyqk() {
 	}
 	
 	return result;
+}
+
+/**
+ * 设置小规模增值税预缴额
+ * 
+ * @returns
+ */
+function setZzsxgmyje(){
+	var ysfwYjye=0.0;
+	var yshwjlwYjye=0.0;
+	var hwfjyjje_302160100=0.0;
+	var hwfjyjje_302030100=0.0;
+	var fwfjyjje_302160100=0.0;
+	var fwfjyjje_302030100=0.0;
+	var yjxxlb =  formData.hq.yjxxGrid.yjxxGridlb;
+	
+	if (yjxxlb != null && yjxxlb.length >0) {
+		var yj302160100 = 0.0;
+		var yj302030100 = 0.0;
+		for(var i=0;i<yjxxlb.length;i++){
+			// 服务类预缴金额
+			if (/^10101[6,7].*$/.test(yjxxlb[i].zspmDm)) {
+				ysfwYjye += yjxxlb[i].yjye1;
+			}else if(yjxxlb[i].zsxmDm =='10101'){  // 非服务类预缴金额
+				yshwjlwYjye += yjxxlb[i].yjye1;
+			}
+			if (/^(0201,0202,0204,0208,0299)$/.test(yjxxlb[i].sksxDm)) {
+				//增值税地方教育附加 预缴金额
+				if (/^(302160100,301270100)$/.test(yjxxlb[i].zspmDm)) {
+					yj302160100 += yjxxlb[i].yjye1;
+				}else if (yjxxlb[i].zspmDm == '302030100'){  //增值税教育费附加 预缴金额
+					yj302030100+=yjxxlb[i].yjye1;
+				}
+			}
+		}
+		var hwfpDkje = formData.hq.sbZzsxgmnsrqtxxVO.yshwlwFpdkbhsxse;
+		var fwfpDkje = formData.hq.sbZzsxgmnsrqtxxVO.ysfwFpdkbhsxse;
+		var hwlwQzd = formData.hq.sbZzsxgmnsrqtxxVO.zzsqzd;
+		var fwQzd = formData.hq.sbZzsxgmnsrqtxxVO.zzsysfwqzd;
+		
+		hwfjyjje_302160100=(hwfpDkje+fwfpDkje)>0?hwfpDkje*yj302160100/(hwfpDkje+fwfpDkje):0.00;
+	    hwfjyjje_302030100=(hwfpDkje+fwfpDkje)>0?hwfpDkje*yj302030100/(hwfpDkje+fwfpDkje):0.00;
+	    fwfjyjje_302160100=(hwfpDkje+fwfpDkje)>0?fwfpDkje*yj302160100/(hwfpDkje+fwfpDkje):0.00;
+	    fwfjyjje_302030100=(hwfpDkje+fwfpDkje)>0?fwfpDkje*yj302030100/(hwfpDkje+fwfpDkje):0.00;
+	}
+	formData.fq.ysfwYjye = ysfwYjye;
+	formData.fq.yshwjlwYjye=yshwjlwYjye;
+	formData.fq.hwfjyjje_302160100=hwfjyjje_302160100;
+	formData.fq.hwfjyjje_302030100=hwfjyjje_302030100;
+	formData.fq.fwfjyjje_302160100=fwfjyjje_302160100;
+	formData.fq.fwfjyjje_302030100=fwfjyjje_302030100;
+	
+	return ysfwYjye;
+}
+
+/**取消下一步的功能,传入的条件为true则隐藏下一步按钮*/
+function cancelClick(condition){
+	if(condition){
+		$($(window.top.document).find("#btnPrepareMake")[0]).attr("style", "display:none");
+	}
+	return condition;
+}
+
+/**
+ * 根据申报期限做逾期申报控制
+* @param sbqx 申报期限 如 ： 2015-11-15
+ * @param sbrq 申报日期
+ * @param yqjy 系统参数配置表中的逾期申报策略配置
+ * @return 是否允许流程继续
+ * 
+ */
+function yqsbControlBySbqx(sbqx, sbrq, yqjy){
+	if(sbqx == null || sbqx == '' || sbqx.length == 1){
+		return "逾期申报控制时，获取申报期限失败。";
+	}
+	if(yqjy == null || yqjy == ''){
+		return "未配置逾期申报处理策略，请配置参数表。";
+	}
+	var reg = /^[0-9]+.?[0-9]*$/;
+	if(!reg.test(yqjy)){
+		return "逾期申报处理策略参数值错误，请检查配置参数表。参数编码：B0000001060000001";
+	}
+	
+	if(yqjy == '2'){
+		//强制性校验逾期
+		var from = new Date(sbqx.replace(/-/g, "/"));
+		var to = new Date(sbrq.replace(/-/g, "/"));//当前日期
+		var days = to.getTime() - from.getTime();
+		if(days > 0){
+			var time = parseInt(days / (1000 * 60 * 60 * 24));
+			return "申报期限为："+sbqx+"，已逾期" + time +"天，请前往办税大厅办理相关业务！";
+		}
+	}
+	return "";
+}
+
+/**
+ * 传入申报期限，进行逾期申报校验
+ * gdslxDm 国地税类型代码
+ * sbqx 申报期限
+ * sfkyqsbbz 是否可预期申报标志（Y 可逾期申报，N，不可逾期申报，由业务决定）
+ */
+function  yqsbVaild(gdslxDm,sbqx,sfkyqsbbz){
+	 var yqsbbz=parent.yqsbbz;//逾期清册入口进入，可允许申报。正常申报进入时，不允许。
+	if(sfkyqsbbz != "Y" && yqsbbz != "Y"){
+	 var sbiniturl = parent.pathRoot+"/biz/yqsb/yqsbqc/enterYqsbUrl?gdslxDm="+gdslxDm+"&sbqx="+sbqx+"&yqsbbz="+yqsbbz;
+		$.ajax({
+			url:sbiniturl,
+			type:"GET",
+			data:{},
+			dataType:"json",
+			contentType:"application/json",
+			success:function(data){
+		 		var sfkyqsbbz=data.sfkyqsbbz;
+				if(sfkyqsbbz=="N"){
+					formData.sfkyqsbbz="N";
+					parent.$(window.parent.document.body).mask("&nbsp;");
+		 			window.parent.parent.cleanMeunBtn();
+					var b=parent.layer.confirm(data.msg,{
+						//area: ['250px','150px'],
+						title:'提示',
+						btn : ['确定']
+					//	btn2:function(index){}
+					},function(index){
+						parent.layer.close(b);
+						var wfurl=data.wfurlList  ;
+						if(wfurl != undefined && wfurl != "" && wfurl != null){
+							var gnurl=wfurl[0].gnurl;
+							var url= parent.location.protocol + "//" + parent.location.host +gnurl
+							parent.parent.window.location.href = url;
+						}else{
+							if (navigator.userAgent.indexOf("MSIE") > 0) {
+			        			if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+			        				window.opener = null;
+			        				window.close();
+			        			} else {
+			        				window.open('', '_top');
+			        				window.top.close();
+			        			}
+			        		} else if (navigator.userAgent.indexOf("Firefox") > 0) {
+			        			window.location.href = 'about:blank ';
+			        			window.close();
+			        		} else if (navigator.userAgent.indexOf("Chrome") > 0) {
+			        			top.open(location, '_self').close();
+			        		}else {
+			        			window.open('', '_top');
+			        			window.top.close();
+			        		} 		
+						}
+					}); 
+			}else{
+				formData.sfkyqsbbz="Y";	
+			}	
+				 			
+			},
+			error:function(){
+				layer.alert('链接超时或网络异常', {icon: 5});
+			}
+		});
+	}
+ }
+
+/**
+ * 申报表页面使用的逾期申报控制
+ * 1、有申报期限，传参及顺序：gdslxDm -> sbywbm -> sbqx, 对于部分可以按次申报的税种，则需要传入属期进行判断。
+ * 2、无申报期限，传参及顺序：gdslxDm -> sbywbm -> zsxmDm -> ssqq -> ssqz -> nsqxDm -> sbqxDm
+ *
+ * 目前仅支持上述两种传参，判断参数个数为2或者7，其他都不执行。
+ */
+function sbbYqsbValid(gdslxDm, sbywbm, sbqx, ssqq, ssqz) {
+	// 仅正常申报使用，更正申报的逾期暂不处理
+	if (parent.location.href.indexOf('gzsb=zx') == -1) {
+        var params = "";
+		var gdslxDm = arguments[0];
+		var sbywbm = arguments[1];	// 基线必须要传入sbywbm
+		var sbqx = arguments[2];
+		var ssqq = arguments[3];
+		var ssqz = arguments[4];
+		params += 'gdslxDm=' + gdslxDm + '&sbqx=' + sbqx + '&sbywbm=' + sbywbm;
+		if (!gdslxDm || !sbqx || !sbywbm) {
+			console.info("Error params, params = [" + params + "]");
+			params = '';
+		}
+
+		if (params && ssqq && ssqz && ssqq == ssqz) {  // 按次申报，不检验
+			console.info("按次申报, 不进行校验. ssqq = " + ssqq + ", ssqz = " + ssqz);
+			params = '';
+		}
+
+        if (params) {
+            var yqsbbz = parent.parent.yqsbbz;
+            params += '&yqsbbz=' + yqsbbz;
+
+            if (yqsbbz != "Y") {
+                var sUrl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
+                $.ajax({
+                    url: sUrl,
+                    type: "GET",
+                    data: {},
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        var sfkyqsbbz = data.sfkyqsbbz;
+                        if (sfkyqsbbz && sfkyqsbbz == "N") {
+                            $(window.parent.document.body).mask("&nbsp;");
+                            window.parent.cleanMeunBtn();
+                            var wfurl = data.wfurlList;
+                            var btnName = wfurl != undefined && wfurl != "" && wfurl != null ? '去办理' : '确定';
+                            var b = parent.layer.confirm(data.msg, {
+                                //area: ['250px','150px'],
+                                title: '提示',
+								closeBtn: false,
+                                btn: [btnName]
+                            }, function (index) {
+                                parent.layer.close(b);
+                                if (wfurl != undefined && wfurl != "" && wfurl != null) {
+                                    var gnurl = wfurl[0].gnurl;
+                                    var url = parent.location.protocol + "//" + parent.location.host + gnurl;
+                                    parent.parent.window.location.href = url;
+                                } else {
+                                    if (navigator.userAgent.indexOf("MSIE") > 0) {
+                                        if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+                                            parent.window.opener = null;
+                                            parent.window.close();
+                                        } else {
+                                            parent.window.open('', '_top');
+                                            parent.window.top.close();
+                                        }
+                                    } else if (navigator.userAgent.indexOf("Firefox") > 0) {
+                                        parent.window.location.href = 'about:blank ';
+                                        parent.window.close();
+                                    } else if (navigator.userAgent.indexOf("Chrome") > 0) {
+                                        parent.top.open(location, '_self').close();
+                                    } else {
+                                        parent.window.open('', '_top');
+                                        parent.window.top.close();
+                                    }
+                                }
+                            });
+                        } else if (sfkyqsbbz === "Y") {	// 弹框提示，不阻断
+                            // modify by dfw - 2018年11月26日15:09:17。
+                            // 可能会返回逾期提示(yqtsmsg)和处罚提示(msg)。
+                            // 处理逻辑->弹出逾期提示（继续申报） -> 弹出行政处罚（确定）
+                            if (data.msg) {
+                                if (data.yqtsmsg) {
+                                    var tab = parent.layer.confirm(data.yqtsmsg, {
+                                        title: '提示',
+                                        closeBtn: false,
+                                        btn: ['继续申报']
+                                    }, function (index) {
+                                        parent.layer.close(tab);
+
+                                        var subTab = parent.layer.confirm(data.msg, {
+                                            title: '提示',
+                                            closeBtn: false,
+                                            btn: ['确定']
+                                        }, function (index1) {
+                                            parent.layer.close(subTab);
+                                        });
+                                    });
+                                } else {
+                                    var tab = parent.layer.confirm(data.msg, {
+                                        title: '提示',
+                                        closeBtn: false,
+                                        btn: ['确定']
+                                    }, function (index) {
+                                        parent.layer.close(tab);
+                                    });
+                                }
+                            } else {
+                                if (data.yqtsmsg) {
+                                    var tab = parent.layer.confirm(data.yqtsmsg, {
+                                        title: '提示',
+                                        closeBtn: false,
+                                        btn: ['继续申报']
+                                    }, function (index) {
+                                        parent.layer.close(tab);
+                                    });
+                                } else {
+                                    // 不存在这种返回。阻断必须要给出提示。
+                                    // layer.alert('无效的提示信息，请联系系统管理员！', {icon: 5});
+                                }
+                            }
+						}
+                    },
+                    error: function () {
+                        layer.alert('由于链接超时或网络异常导致逾期申报校验失败，请稍候刷新重试！', {icon: 5});
+                    }
+                });
+            }
+        }
+    }
+}
+
+/**
+ * 申报表页面使用的逾期申报控制
+ * 1、有申报期限，传参及顺序：gdslxDm -> sbywbm -> sbqx, 对于部分可以按次申报的税种，则需要传入属期进行判断。
+ * 2、无申报期限，传参及顺序：gdslxDm -> sbywbm -> zsxmDm -> ssqq -> ssqz -> nsqxDm -> sbqxDm
+ *
+ * 目前仅支持上述两种传参，判断参数个数为2或者7，其他都不执行。
+ */
+function sbbYqsbValidEx(gdslxDm, sbywbm, zsxmDm, ssqq, ssqz, nsqxDm, sbqxDm) {
+	// 仅正常申报使用，更正申报的逾期暂不处理
+	if (parent.location.href.indexOf('gzsb=zx') == -1) {
+        var params = "";
+		var gdslxDm = arguments[0];
+		var sbywbm = arguments[1];
+		var zsxmDm = arguments[2];
+		var ssqq = arguments[3];
+		var ssqz = arguments[4];
+		var nsqxDm = arguments[5];
+		var sbqxDm = arguments[6];
+		var djxh = $("#djxh").val();
+        var nsrsbh = $("#nsrsbh").val();
+		var test = $("#test").val();
+
+		params += 'gdslxDm=' + gdslxDm + '&sbywbm=' + sbywbm +
+			'&zsxmDm=' + zsxmDm + '&skssqq=' + ssqq +
+			'&skssqz=' + ssqz + '&nsqxDm=' + nsqxDm +
+			'&sbqxDm=' + sbqxDm;
+        if(test == 'true'){
+            params += '&djxh='+djxh + '&nsrsbh=' + nsrsbh + '&test=' + test;
+        }
+		if (!gdslxDm || !sbywbm || !zsxmDm || !ssqq || !ssqz || !nsqxDm || !sbqxDm) {
+			console.info("Error params, params = [" + params + "]");
+			params = '';
+		}
+
+		if (params && ssqq && ssqz && ssqq == ssqz) {  // 按次申报，不检验
+			console.info("按次申报, 不进行校验. ssqq = " + ssqq + ", ssqz = " + ssqz);
+			params = '';
+		}
+
+        if (params) {
+            var yqsbbz = parent.parent.yqsbbz;
+            params += '&yqsbbz=' + yqsbbz;
+
+            if (yqsbbz != "Y") {
+                var sUrl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
+                $.ajax({
+                    url: sUrl,
+                    type: "GET",
+                    data: {},
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        var sfkyqsbbz = data.sfkyqsbbz;
+                        if (sfkyqsbbz && sfkyqsbbz == "N") {
+                            $(window.parent.document.body).mask("&nbsp;");
+                            window.parent.cleanMeunBtn();
+                            var wfurl = data.wfurlList;
+                            var btnName = wfurl != undefined && wfurl != "" && wfurl != null ? '去办理' : '确定';
+                            var b = parent.layer.confirm(data.msg, {
+                                //area: ['250px','150px'],
+                                title: '提示',
+								closeBtn: false,
+                                btn: [btnName]
+                            }, function (index) {
+                                parent.layer.close(b);
+                                if (wfurl != undefined && wfurl != "" && wfurl != null) {
+                                    var gnurl = wfurl[0].gnurl;
+                                    var url = parent.location.protocol + "//" + parent.location.host + gnurl;
+                                    parent.parent.window.location.href = url;
+                                } else {
+                                    if (navigator.userAgent.indexOf("MSIE") > 0) {
+                                        if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+                                            parent.window.opener = null;
+                                            parent.window.close();
+                                        } else {
+                                            parent.window.open('', '_top');
+                                            parent.window.top.close();
+                                        }
+                                    } else if (navigator.userAgent.indexOf("Firefox") > 0) {
+                                        parent.window.location.href = 'about:blank ';
+                                        parent.window.close();
+                                    } else if (navigator.userAgent.indexOf("Chrome") > 0) {
+                                        parent.top.open(location, '_self').close();
+                                    } else {
+                                        parent.window.open('', '_top');
+                                        parent.window.top.close();
+                                    }
+                                }
+                            });
+                        } else if (sfkyqsbbz === "Y") {	// 弹框提示，不阻断
+                        	// modify by dfw - 2018年11月26日15:09:17。
+							// 可能会返回逾期提示(yqtsmsg)和处罚提示(msg)。
+							// 处理逻辑->弹出逾期提示（继续申报） -> 弹出行政处罚（确定）
+							if (data.msg) {
+								if (data.yqtsmsg) {
+                                    var tab = parent.layer.confirm(data.yqtsmsg, {
+                                        title: '提示',
+                                        closeBtn: false,
+                                        btn: ['继续申报']
+                                    }, function (index) {
+                                        parent.layer.close(tab);
+
+                                        var subTab = parent.layer.confirm(data.msg, {
+                                            title: '提示',
+                                            closeBtn: false,
+                                            btn: ['确定']
+                                        }, function (index1) {
+                                            parent.layer.close(subTab);
+                                        });
+                                    });
+								} else {
+                                    var tab = parent.layer.confirm(data.msg, {
+                                        title: '提示',
+                                        closeBtn: false,
+                                        btn: ['确定']
+                                    }, function (index) {
+                                        parent.layer.close(tab);
+                                    });
+								}
+							} else {
+								if (data.yqtsmsg) {
+                                    var tab = parent.layer.confirm(data.yqtsmsg, {
+                                        title: '提示',
+                                        closeBtn: false,
+                                        btn: ['继续申报']
+                                    }, function (index) {
+                                        parent.layer.close(tab);
+                                    });
+								} else {
+									// 不存在这种返回。阻断必须要给出提示。
+                                    // layer.alert('无效的提示信息，请联系系统管理员！', {icon: 5});
+								}
+							}
+                        }
+                    },
+                    error: function () {
+                        layer.alert('由于链接超时或网络异常导致逾期申报校验失败，请稍候刷新重试！', {icon: 5});
+                    }
+                });
+            }
+        }
+    }
+}
+
+/**
+ * 申报表页面使用的逾期申报控制
+ * 1、有申报期限，传参及顺序：gdslxDm -> sbywbm -> sbqx -> skssqq -> skssqz -> yqsbbz -> djxh -> nsrsbh -> test
+ * 2、因为获取参数的方式不同，无法在此统一获取，只能在原本的位置传过来；
+ * 3、abledBtnPrepareForm()与disabledBtnPrepareForm()方法也会因为有无引导页调用的层级不同，所以都要求写在原来的位置。
+ */
+function sfkyqsbCheck(gdslxDm, sbywbm, sbqx, skssqq, skssqz,yqsbbz,djxh,nsrsbh,test){
+	var params = "";
+	params += 'gdslxDm=' + gdslxDm + '&sbywbm=' + sbywbm +'&sbqx=' + sbqx + '&yqsbbz=' + yqsbbz;
+	
+	if (!gdslxDm || !sbywbm || !sbqx || !yqsbbz) {
+		console.info("Error params, params = [" + params + "]");
+		params = '';
+	}
+	
+	if(test == 'true'){
+        params += '&djxh='+djxh + '&nsrsbh=' + nsrsbh + '&test=' + test;
+    }
+	
+	if (params && skssqq && skssqz && skssqq == skssqz) {  // 按次申报，不检验
+		console.info("按次申报, 不进行校验. skssqq = " + skssqz + ", skssqz = " + skssqz);
+		params = '';
+	}	
+	 var sbiniturl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
+	yqsbVaildByUrl(sbiniturl);
+}
+
+/**
+ * 申报表页面使用的逾期申报控制
+ * 1、无申报期限，传参及顺序：gdslxDm -> sbywbm -> zsxmDm -> skssqq -> skssqz -> nsqxDm -> sbqxDm -> yqsbbz -> djxh -> nsrsbh -> test
+ * 2、因为获取参数的方式不同，无法在此统一获取，只能在原本的位置传过来；
+ * 3、abledBtnPrepareForm()与disabledBtnPrepareForm()方法也会因为有无引导页调用的层级不同，所以都要求写在原来的位置。
+ */
+function sfkyqsbCheckEx(gdslxDm, sbywbm, zsxmDm, skssqq, skssqz, nsqxDm, sbqxDm, yqsbbz,djxh,nsrsbh,test){
+	var params = "";
+	params += 'gdslxDm=' + gdslxDm + '&sbywbm=' + sbywbm +'&zsxmDm=' + zsxmDm + '&skssqq=' + skssqq
+			     +'&skssqz=' + skssqz + '&nsqxDm=' + nsqxDm +'&sbqxDm=' + sbqxDm + '&yqsbbz=' + yqsbbz;
+	
+	if (!gdslxDm || !sbywbm || !zsxmDm || !skssqq || !skssqz || !nsqxDm || !sbqxDm || !yqsbbz) {
+		console.info("Error params, params = [" + params + "]");
+		params = '';
+	}
+	
+	if(test == 'true'){
+        params += '&djxh='+djxh + '&nsrsbh=' + nsrsbh + '&test=' + test;
+    }
+	
+	if (params && skssqq && skssqz && skssqq == skssqz) {  // 按次申报，不检验
+		console.info("按次申报, 不进行校验. skssqq = " + skssqz + ", skssqz = " + skssqz);
+		params = '';
+	}	
+	 var sbiniturl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
+	yqsbVaildByUrl(sbiniturl);
+}
+
+function yqsbVaildByUrl(sbiniturl){
+	$.ajax({
+		url:sbiniturl,
+		type:"GET",
+		data:{},
+		dataType:"json",
+		contentType:"application/json",
+		success:function(data){
+	 		var sfkyqsbbz=data.sfkyqsbbz;
+	 		var wfurlList=data.wfurlList;
+	 		var msg=data.msg;
+	 		var yqtsmsg=data.yqtsmsg;
+	 		if(sfkyqsbbz=='Y'){
+	 			abledBtnPrepareForm();
+	 			if(yqtsmsg && yqtsmsg!=''){
+	 				if(msg && msg!=''){
+	 					var tab = parent.layer.confirm(setStyle(yqtsmsg), {
+                         title: '提示',
+                         closeBtn: false,
+                         btn: ['继续申报']
+                     }, function (index) {
+                         parent.layer.close(tab);
+                         parent.layer.confirm(setStyle(msg), {
+                             title: '提示',
+                             closeBtn: false,
+                             btn: ['确定']
+                         });
+                     });
+	 				}else{
+	                    parent.layer.confirm(setStyle(yqtsmsg), {
+	                        title: '提示',
+	                        closeBtn: false,
+	                        btn: ['继续申报']
+	                    });
+	 				}
+	 			}else{
+	 				if(msg && msg!=''){
+	 				  parent.layer.confirm(setStyle(msg), {
+	                      title: '提示',
+	                      closeBtn: false,
+	                      btn: ['确定']
+	                  });
+	 				}
+	 			}
+	 		}else if(msg && msg!=''){
+	 			parent.layer.confirm(setStyle(msg),{
+					title:'提示',
+					btn : ['确定','取消'],
+					cancel:function(index){
+						disabledBtnPrepareForm();
+						parent.layer.close(index);
+					}
+				},function(index){
+					changeUrlToWFUrl(wfurlList);
+					disabledBtnPrepareForm();
+					parent.layer.close(index);
+				},function(index){
+	 				disabledBtnPrepareForm();
+	 				parent.layer.close(index);
+				});
+	 		}
+		},
+		error:function(){
+			parent.layer.alert('链接超时或网络异常', {icon: 5});
+			disabledBtnPrepareForm();
+		}
+	});
 }

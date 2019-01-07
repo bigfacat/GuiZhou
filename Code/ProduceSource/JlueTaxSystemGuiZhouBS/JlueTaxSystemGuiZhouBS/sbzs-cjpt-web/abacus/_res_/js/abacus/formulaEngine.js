@@ -113,10 +113,10 @@ function FormulaEngine(){
          */
         FormulaEngine.prototype.loadFormulas = function(formulas){
             var _start_ = new Date().getTime();
-            console.log("INFO:"+ _start_+" 公式加载开始时间 ");
+
             // Check parameter
             if (formulas) {
-                if (!formulas instanceof Array) {
+                if (!(formulas instanceof Array)) {
                     throw "Parameter formulas is not a array!";
                 }
                 if (formulas.length <= 0) {
@@ -140,11 +140,8 @@ function FormulaEngine(){
             }
             // Check time.
             var _end_ = new Date().getTime();
-            console.log("INFO:"+ _end_+" 公式加载结束时间 ");
-            var _ms_ = _end_ - _start_;
-            console.log("INFO:"+ _ms_ + "ms 公式加载耗时 ");
-            console.log("FormulaEngine: Formulas [" + this.lstAllFormulas.length
-                + "] loaded, spend " + _ms_ + "ms.");
+            console.log("INFO:"+ _start_+"-"+_end_+"-"+(_end_ - _start_)
+                +"ms 公式加载: [" + this.lstAllFormulas.length + "] 条 ");
         };
         /**
          * PUBLIC: Initialize after formulas loaded. <BR>
@@ -598,12 +595,14 @@ function FormulaEngine(){
                     break;
                 case '32':
                 	// formulaExecType：1=实时监控，初始化报文中返回otherData；0=事中监控，初始化报文中不返回otherData；2或其他=非实时非事中监控，初始化报文中不返回otherData C.Q 20170327
-                	if(formulaExecType === '1') {
-                		objFormula.type = '12';
-                		this.lstVerifyFormulas.push(objFormula);
-                	} else if(formulaExecType === '0') {
-                		this.lstVerifyFormulas.push(objFormula);
-                	}
+					if (typeof formulaExecType !== "undefined") {
+						if(formulaExecType === '1') {
+							objFormula.type = '12';
+							this.lstVerifyFormulas.push(objFormula);
+						} else if(formulaExecType === '0') {
+							this.lstVerifyFormulas.push(objFormula);
+						}
+					}
                     break;
                 default:
                     console.log("FormulaEngine: Formula type not supported[" + objFormula.type + "]: "
@@ -673,9 +672,7 @@ function FormulaEngine(){
          * extends:此方法中增加了1、初始化执行逻辑；2、增加附表逻辑；3、减少附表逻辑
          */
         FormulaEngine.prototype.applyInitialFormulas = function(){
-        	//var _ms_ = new Date().getTime();
         	var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" 公式执行开始时间");
         	var _this = this;
             // First: execute initial calculate formula. 先执行初始化计算公式.
             // warning 加载保存数据、外部导入数据时，屏蔽执行初始化计算公式
@@ -879,13 +876,9 @@ function FormulaEngine(){
             this.procVerifyFormulas = [];
             
             var _end_ = new Date().getTime();
-            console.log("INFO:"+_end_+" 公式执行结束时间");
-            var _ms_ = _end_ - _start_;
-            console.log("INFO:"+_ms_+"ms 公式执行耗时");
             // hwping 增加公式执行结束标识
             flagExcuted = true;
-            //_ms_ = new Date().getTime() - _ms_;
-            console.log("FormulaEngine: applyInitialFormulas, spend " + _ms_ + "ms.");
+            console.log("INFO:"+_start_+ "-" +_end_ + "-" +(_end_ - _start_)+ "ms 公式执行(applyInitialFormulas)");
         };
         /**
          * 执行外部初始化公式，适应于金财管家提交发票汇总数据到电局系统进行申报
@@ -893,7 +886,7 @@ function FormulaEngine(){
          */
         FormulaEngine.prototype.executeWbcshFormula = function(){
             var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" 开始执行外部初始化公式");
+
             var _this = this;
             var $wbcsh = $("#wbcsh").val();
             if(typeof $wbcsh !== 'undefined' && $wbcsh !== null
@@ -959,7 +952,7 @@ function FormulaEngine(){
             }
 
             var _end_ = new Date().getTime();
-            console.log("INFO:\"+_end_+\" 结束执行外部初始化公式,耗时:" +(_end_ - _start_));
+            console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 执行外部初始化公式");
         };
 
         /**
@@ -1100,7 +1093,7 @@ function FormulaEngine(){
                 if(dynamicParams == null || typeof dynamicParams === "undefined"){
                 	var l = jpath.match(/\[\d+\]/g);
                 	if(l != null){
-                		if(l.length == 2){
+                		if(l.length === 2){
                 			var pIdx = l[0].replace(']','').replace('[','');
             				var cIdx = l[1].replace(']','').replace('[','');
             				dynamicParams = [pIdx,cIdx];
@@ -1114,9 +1107,7 @@ function FormulaEngine(){
                 	var regBasket = this.regBasket;
                     regBasket.lastIndex = 0;
                     var tmpResult = regBasket.exec(jpath);
-                    var dynamicParams;
                     if (tmpResult) {
-                        // TODO: Currently only support one dynamic parameter.
                         dynamicParams = [ tmpResult[1] ];
                     }
                 }
@@ -1483,7 +1474,7 @@ function FormulaEngine(){
             var lstFormulaAndParams = this.getInvolvedFormulas(nodepath, dynamicParams);
             //return this.calculationPlanning(lstFormulaAndParams, dynamicParams, flagInitial);
             return this.calculationPlanning8DAGsorting(lstFormulaAndParams, dynamicParams,flagInitial,iHandleJSON);
-            }
+        };
         /**
          * 内部方法：依据初始给出的公式列表，查找出所有关联公式，并按照前后依赖关系进行计算。
          * @param lstFormulas 待处理公式队列：[FormulaObj, FormulaObj, ...]
@@ -1672,8 +1663,14 @@ function FormulaEngine(){
                 var strNodepath = objFormula.strAssResolved;
                 if (!strNodepath) {
                     if ("1" === objFormula.type.substr(1)) {
-                        console.log("WARNING: [" + objFormula.type + "] '" + objFormula.id
-                            + "' Assignment not founded: " + objFormula.strFormula);
+                        // 只有在Chrome模式下才打印warning信息
+                        // 后端预编译模式下java的js引擎没有引入jquery导致报错，故此处则根据try catch忽略错误
+                        try{
+                            if (!$.browser.msie && !$.browser.mozilla) {
+                                console.log("WARNING: [" + objFormula.type + "] '" + objFormula.id
+                                    + "' Assignment not founded: " + objFormula.strFormula);
+                            }
+                        }catch (e) {}
                     }
                     continue;
                 }
@@ -1691,15 +1688,18 @@ function FormulaEngine(){
                             areaItem = area[objRef.id] = { "obj" : objRef, "depends" : {},
                                 "params" : lstRefFormulaAndParams[i][1] };
                             queue.push([ objRef, lstRefFormulaAndParams[i][1] ]);
-                        } else if (!lstRefFormulaAndParams[i][1]) { // 如果被引用公式需要做全下标计算（即下标参数为空）
-                            // 新关联引用出来的公式，存在非动态行公式需要全覆盖计算的情况，典型情况是：
-                            // =>  动态行的分配比例  = 动态行的金额  / 合计金额
-                            // 上述情况会因为合金金额发生变动而执行全覆盖计算，那么此时动态行的行标是有害的，需要被剔除。
-                            //合计求比例是动态行的每行都需要重新求比例，此时通过这句代码可以去掉动态行下标
-                            areaItem.params = null;
-                            //分配税额[汇总纳税企业增值税分配表]=比例*总机构应税服务分配税额 当比例重新计算时，分配税额也要每行执行
-                            //将分配税额的公式塞到queue中，下次循环会去掉动态行下标
-                            queue.push([ objRef, lstRefFormulaAndParams[i][1] ]);
+                        } else if (!lstRefFormulaAndParams[i][1] ) { // 如果被引用公式需要做全下标计算（即下标参数为空）
+                            if(areaItem.params != null){
+                                // 新关联引用出来的公式，存在非动态行公式需要全覆盖计算的情况，典型情况是：
+                                // =>  动态行的分配比例  = 动态行的金额  / 合计金额
+                                // 上述情况会因为合金金额发生变动而执行全覆盖计算，那么此时动态行的行标是有害的，需要被剔除。
+                                //合计求比例是动态行的每行都需要重新求比例，此时通过这句代码可以去掉动态行下标
+                                areaItem.params = null;
+
+                                //ybnsrzzs-分配税额[汇总纳税企业增值税分配表]=比例*总机构应税服务分配税额 当比例重新计算时，分配税额也要每行执行
+                                //将分配税额的公式塞到queue中，且不带动态行下标，下次循环会去掉动态行下标
+                                queue.push([ objRef, null ]);
+                            }
                         }
                         // 2.1.2 在该关联公式上标记对当前变量的依赖；
                         areaItem.depends[strNodepath] = true;
@@ -1832,7 +1832,9 @@ function FormulaEngine(){
                         if("2" === (objFormula.type).substr(0,1)) break;
                         try {
                             if (objFormula.flagDynamicParam) { // 该公式存在动态下标参数，需要特殊处理
-                                if (objFormulaPlan.params) {
+                                if(objFormula.initVerify === 'once'){
+                            		this.execute(strAssResolved, strExpResolved,'0');
+                            	}else if (objFormulaPlan.params) {
                                     // 已经提供了动态参数，可直接执行
                             		this.execute(strAssResolved, strExpResolved,
                                         objFormulaPlan.params);
@@ -2077,11 +2079,23 @@ function FormulaEngine(){
                 strEval = strAssResolved + "=" + strEval;
             }
             strEval = strEval.replace(/[$]/g, this.basename);
-            console.log("Executing: " + strEval);
+            try{
+                if (!$.browser.msie && !$.browser.mozilla){
+                    console.log("Executing: " + strEval);
+                }
+            }catch (e) {}
+
             if(strEval === ''){
             	return true;
             }
-            return eval(strEval);
+            var result;
+            try{
+                result = eval(strEval);
+            }catch (e) {
+                console.log("公式执行报错：" + strEval );
+                throw "公式执行报错:" + e;
+            }
+            return result;
         };
         // 判断当前业务编码是否在配置中心配置了按dthQlzxBz来执行
         FormulaEngine.prototype.getDthQlzxBz = function(){
@@ -2299,33 +2313,29 @@ function FormulaEngine(){
          * 内部方法：基于JSON对象模型来进行公式编译（预处理）。
          */
         FormulaEngine.prototype.compileAll = function(){
+            var _this = this;
             var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" 公式编译开始时间");
-            if (this.lstAllFormulas.length < 1) {
+            if (_this.lstAllFormulas.length < 1) {
                 throw "Formula list is empty!";
             }
-            if (typeof this.basename === "undefined" || this.basename == null) {
+            if (typeof _this.basename === "undefined" || _this.basename == null) {
                 throw "Did not setting JSON-Data basename."
             }
+            var objFormula;
             if(navigator.appName === "Microsoft Internet Explorer"
         		&& (navigator.appVersion .split(";")[1].replace(/[ ]/g,"")==="MSIE8.0"
         			||  navigator.appVersion .split(";")[1].replace(/[ ]/g,"")==="MSIE7.0")
-        		&& this.lstAllFormulas.length > 200) { 
+        		&& _this.lstAllFormulas.length > 200) {
             	 // Resolve all shorted-jpath to full-jpath.
-                this.tmpLtAllFormulas = $.extend(true, [], this.lstAllFormulas); 
-                this.splitFormulas(this.tmpLtAllFormulas, this);
+                _this.tmpLtAllFormulas = $.extend(true, [], _this.lstAllFormulas);
+                _this.splitFormulas(_this.tmpLtAllFormulas, _this);
                 //等待上面执行完再执行
                 this.createIdxAndTgt();
-                var _end_ = new Date().getTime();
-                console.log("INFO:"+_end_+" 公式编译结束时间");
-                var _ms_ = _end_ - _start_;
-                console.log("INFO:"+_ms_+"ms 公式编译耗时");
-            } else { 
-            	
+            } else {
             	//var _ms_ = new Date().getTime();
-            	for (var i = 0, len = this.lstAllFormulas.length; i < len; i++) {
+            	for (var i = 0, len = _this.lstAllFormulas.length; i < len; i++) {
             		//TODO 减表的时候找减表对应的公式，是否可以在这里直接分析处理
-            		var objFormula = this.lstAllFormulas[i];
+            		objFormula = _this.lstAllFormulas[i];
             		
             		// Resolve all shorted-jpath to full-jpath.
                     // 将所有公式中的所有缩略路解析为全路径.
@@ -2333,46 +2343,46 @@ function FormulaEngine(){
             		// 若已预编译
             		if (objFormula.flagPreCompiled) {
                     	// 后端编译后的公式进行二次简单编译(判断)
-            			this.fmlSimpleCompiled(objFormula);
+                        _this.fmlSimpleCompiled(objFormula);
                     	
                     }  else  {
                     	
-                    	if ( this.resolveFormula(objFormula)) { 
+                    	if ( _this.resolveFormula(objFormula)) {
                     		
                             // Recognize variable of assignment's part.
                             if (objFormula.strAssResolved) {
-                            	this.recognizeAssignmentVariable(objFormula)
+                                _this.recognizeAssignmentVariable(objFormula)
                             }
                             // Recognize all variable in formula.
-                            this.recognizeExpressionVariable(objFormula);
+                            _this.recognizeExpressionVariable(objFormula);
                             // 
                             objFormula.flagCompiled = (!objFormula.lastError) ;
                         } else {
-                        	this.failedFormulas.push(objFormula);
+                            _this.failedFormulas.push(objFormula);
                         }
                     }
             		
             		// Index all variable.
                     // 建立索引：公式引擎所有的公式中的变量
             		// Duplicate assignment detection
-                    if ("1" === this.rightSubstr(objFormula.type, 1) && objFormula.strAssResolved) {
-                        if (this.idxAssign2Formulas[objFormula.strAssResolved]) {
+                    if ("1" === _this.rightSubstr(objFormula.type, 1) && objFormula.strAssResolved) {
+                        if (_this.idxAssign2Formulas[objFormula.strAssResolved]) {
                             console.log("WARNING! Duplicate assignment detected of ["
                                 + objFormula.strAssResolved + "]:\n--Exist: "
-                                + this.idxAssign2Formulas[objFormula.strAssResolved].strFormula
+                                + _this.idxAssign2Formulas[objFormula.strAssResolved].strFormula
                                 + "\n--Newer: " + objFormula.strFormula);
                         } else {
-                            this.idxAssign2Formulas[objFormula.strAssResolved] = objFormula;
+                            _this.idxAssign2Formulas[objFormula.strAssResolved] = objFormula;
                         }
                     }
                     // Build up the cascade reference
                     if (objFormula.flagCompiled) {
                         for (var t = 0; t < objFormula.lstVariables.length; t++) {
                             var strVar = objFormula.lstVariables[t];
-                            if (!this.idxVariable2Formula[strVar]) {
-                                this.idxVariable2Formula[strVar] = [];
+                            if (!_this.idxVariable2Formula[strVar]) {
+                                _this.idxVariable2Formula[strVar] = [];
                             }
-                            this.idxVariable2Formula[strVar].push(objFormula);
+                            _this.idxVariable2Formula[strVar].push(objFormula);
                         }
                     }
             		
@@ -2380,32 +2390,45 @@ function FormulaEngine(){
             	
                 // Decompose targets of control-formula.
                 // 解析控制公式中的目标项.
-                for (var i = 0, len=this.lstControlFormulas.length; i < len; i++) {
-                    var objFormula = this.lstControlFormulas[i];
+                for (var i = 0, len=_this.lstControlFormulas.length; i < len; i++) {
+                    objFormula = _this.lstControlFormulas[i];
                     if (objFormula.flagCompiled) {
-                    	this.decomposeFormulaTargets(objFormula);
+                        _this.decomposeFormulaTargets(objFormula);
                     }
                 }
                 
                 // 解析检验公式中的目标项.
-                for (var i = 0, len=this.lstVerifyFormulas.length; i < len; i++) {
-                    var objFormula = this.lstVerifyFormulas[i];
+                for (var i = 0, len=_this.lstVerifyFormulas.length; i < len; i++) {
+                    objFormula = _this.lstVerifyFormulas[i];
                     if (objFormula.flagCompiled) {
-                    	this.decomposeFormulaTargets(objFormula);
+                        _this.decomposeFormulaTargets(objFormula);
                     }
                 }
-                
-                this.compleflag = true;
+
+                _this.compleflag = true;
                 // Index all control-variable's target
-                // 建立索引：控制公式的变量
-                var _end_ = new Date().getTime();
-                console.log("INFO:"+_end_+" 公式编译结束时间");
-                var _ms_ = _end_ - _start_;
-                console.log("INFO:"+_ms_+"ms 公式编译耗时");
-                console.log("FormulaEngine: Formulas [" + this.lstAllFormulas.length + "] compiled, ["
-                    + this.failedFormulas.length + "] failed, spend " + _ms_ + "ms.");
-            } 
+            }
+
+            _this.printCompiledTime(_start_);
            
+        };
+
+        /**
+         * PRIVATE: 打印公式编译时间，主要针对IE使用setTimeout时兼容打印
+         */
+        FormulaEngine.prototype.printCompiledTime = function(_start_){
+            var _this = this;
+
+            if (_this.compleflag) {
+                var _end_ = new Date().getTime();
+                console.log("INFO:" + _start_ + "-" + _end_ + "-" + (_end_ - _start_) + "ms 公式编译:[" + _this.lstAllFormulas.length + "] compiled, ["
+                    + _this.failedFormulas.length + "] failed.");
+            }else{
+                setTimeout(function () {
+                    _this.printCompiledTime(_start_);
+                });
+            }
+
         };
         
         /**
@@ -2697,8 +2720,14 @@ function FormulaEngine(){
                         }
                     }
                 } else {
-                    console.log("WARNING: Control formula's target is empty: "
-                        + objFormula.strFormula);
+                    // 只有在Chrome模式下才打印warning信息
+                    try{
+                        if (!$.browser.msie && !$.browser.mozilla){
+                            console.log("WARNING: Control formula's target is empty: "
+                                + objFormula.strFormula);
+                        }
+                    }catch (e) {}
+
                 }
             }
         };
@@ -2882,22 +2911,27 @@ function FormulaEngine(){
          * 对公式中所包含的各jpath进行解析，主要是将其从短路径形式解析为全路径形式。
          */
         FormulaEngine.prototype.resolveFormula = function(objFormula){
+            var _start_ = new Date().getTime();
+            // 公式编译结束时间
+            var _end_;
+            var _this = this;
             var tmp;
             // Resolve expression part, right of equal-mark
             try {
-                tmp = this.resolveExpression(objFormula.strExpression);
+                tmp = _this.resolveExpression(objFormula.strExpression);
                 objFormula.strExpResolved = tmp.resolved;
                 objFormula.flagAggregation = tmp.flagAggregation;
                 objFormula.flagDynamicParam = tmp.flagDynamicParam;
             } catch (ex) {
                 objFormula.lastError = ex;
-                console.log(ex.toString());
+                _end_ = new Date().getTime();
+                console.log("INFO:"+ _start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 编译失败耗时: " + ex);
                 return false;
             }
             // Resolve assignment part, left of equal-mark
             try {
                 if (objFormula.strAssignment) {
-                    tmp = this.resolveExpression(objFormula.strAssignment);
+                    tmp = _this.resolveExpression(objFormula.strAssignment);
                     objFormula.strAssResolved = tmp.resolved;
                 }
             } catch (ex) {
@@ -2906,9 +2940,9 @@ function FormulaEngine(){
                 var node = "";
                 if (strAss.indexOf("[#") > 0) {
                     // 2、计算动态参数变量的总数，以便进行遍历计算
-	                var objBase = eval(this.basename);
+	                var objBase = eval(_this.basename);
 	                strAss = strAss.replace(/\[#\]/g, "[*]");
-	                var node = strAss.substring(strAss.lastIndexOf(".")+1);
+	                node = strAss.substring(strAss.lastIndexOf(".")+1);
 	                strAss = strAss.substring(0,strAss.lastIndexOf("."));
 	                strAss = jsonPath(objBase, strAss, { resultType : "PATH" });
 	                if(strAss){
@@ -2923,23 +2957,30 @@ function FormulaEngine(){
                 	strAss = [objFormula.strAssignment];
                 	node = "";
                 }
+
                 for (var k = 0; k < strAss.length; k++) {
                 	var prePath = strAss[k];
                 	var stuffPath = node?("."+node):"";
-	                var fullPath = this.jpathNodeCreate(prePath+stuffPath);
+	                var fullPath = _this.jpathNodeCreate(prePath+stuffPath);
 	                if (fullPath) {
 	                    objFormula.strAssResolved = fullPath;
                         //对中间节点增加索引
-                        this.jp.addToKVByFullPath(fullPath);
+                        _this.jp.addToKVByFullPath(fullPath);
+
                     } else {
 	                    // Create node failed.
 	                    console.log("Failed while trying create assignment's json-node  [" + strAss
 	                        + "]: " + ex);
 	                    objFormula.lastError = ex;
+                        _end_ = new Date().getTime();
+                        console.log("INFO:"+ _start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 中间节点编译失败耗时:[" + strAss+ "]: " + ex);
 	                    return false;
 	                }
                 }
+                _end_ = new Date().getTime();
+                console.log("INFO:"+ _start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 中间节点编译成功耗时:[" + strAss+ "]: " + ex);
             }
+
             return true;
         };
         /**
@@ -3215,9 +3256,9 @@ function FormulaEngine(){
 				if ($.inArray('01', types) >= 0 || $.inArray('11', types) >= 0) {
 					// First: execute calculate formula. 先执行计算公式.01，11，10
 					if (related) {
-						this.calculationPlanningOfList(lstCalculateFormulas, undefined, true);
+						this.calculationPlanningOfList(this.lstCalculateFormulas, undefined, true);
 					} else {
-						this.calculation4Alone(lstCalculateFormulas, undefined, true);
+						this.calculation4Alone(this.lstCalculateFormulas, undefined, true);
 					}
 				}
 				if ($.inArray('02', types) >= 0 || $.inArray('12', types) >= 0) {

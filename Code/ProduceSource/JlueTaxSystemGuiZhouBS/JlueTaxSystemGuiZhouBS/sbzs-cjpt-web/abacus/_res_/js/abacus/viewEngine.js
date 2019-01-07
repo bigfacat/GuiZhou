@@ -27,7 +27,7 @@ function ViewEngine(){
 	 * (0|([1-9]\d{0,2}(,?\d{3})*)) 整数位：整数位以0（后面直接跟小数位）开头；或者以1-9的数字开头后面跟0到2位数字 (,?\d{3})* ,（千分位）后跟三位数字
 	 * (\.\d+)? 小数位：\.\d+ 小数点后至少出现一位数字 ? 小数位可以没有
 	 * 以下测试数据（正整数、负整数、带小数点的数，带千分位分隔符的数），均测试通过
-	 * 123 -12 1,123.1 -0.123 1234,000.0 12,024,123.11 0.00 
+	 * 123 -12 1,123.1 -0.123 1234,000.0 12,024,123.11 0.00
 	 */
 	ViewEngine.prototype.REG_DIGIT = /^(-)?(0|([1-9]\d{0,2}(,?\d{3})*))(\.\d+)?$/;
     ViewEngine.prototype.VIEW_APP_NAME = "viewApp";
@@ -42,324 +42,321 @@ function ViewEngine(){
             //引入外部指令
         	var _start_ = new Date().getTime();
         	console.log("INFO:" + _start_ + " 指定代码编译执行开始时间");
-        		ngDirectives(document, viewApp);
-                //定义Control
-                viewApp.run(function($rootScope, $http, $location){});
-                viewApp.controller('viewCtrl', function($rootScope, $scope, $http, $location,
-                    asyncService){
-                    //debugger;
-                	var data = parent.formData;
-                    $scope.formData = data;
-                    $scope.CT = parent.formCT;
-                    ViewEngine.SCOPE = $scope;
-                    //扣缴企业所得税，合同备案信息
-                    $scope.getHtbaxxList = function(){
-                    	data = getHtbaxx(data,this.CT);
-                    }
-                    $scope.bcDthsj = function(sdata,ngModel,type){
-                    	data = margeDthIntoFormData(data,sdata,ngModel,$scope,type);
-                    }
-                    $scope.cztdsysUtil = function(mathFlag,newData){
-                    	return utilMath(data,mathFlag,newData);
-                    }
-                    $scope.cztdsysMath = function(mathFlag,newData){
-                    	return doMath(mathFlag,newData,data,$scope);
-                    }
-                    $scope.scjysdgrsdsMath = function(mathFlag,newData){
-                    	return subMath(mathFlag,newData,data,$scope);
-                    }
-                    //angular事件调用外部JS方法
-                    $scope.externalMethods = function(mathFlag,newData){
-                    	return extMethods(mathFlag,newData,data,$scope);
-                    }
-                    $scope.tz5xmbh = function(){
-                    	return editTdysmxxxXg(data,$scope);
-                    }
-                    $scope.formData = data;
-                    tempFormData = data;
-                    
-                    /*
-                     * 获取父动态行
-                     * */
-                    $scope.getParentDynamicScope = function(scope){
-                    	var p$scope = scope.$parent;
-                    	var flag = true
-                    	while(p$scope != null && flag){
-                    		if(this.isDynamicScope(p$scope)){
-                    			flag = false;
-                    			break;
-                    		}
-                        	if(!flag){
-                        		break;
-                        	}else{
-                        		p$scope = typeof p$scope.$parent =="undefined"?null:p$scope.$parent;
-                        	}
-                    	}
-                    	return p$scope;
-                    	
-                    };
-                    /*
-                     * 获取第一个子动态行
-                     * */
-                    $scope.getChildDynamicScope = function(scope){
-                    	var rs = null;
-                    	var c$scope = scope.$$childHead;
-                    	//清除内容
-                    	do{
-                        	if(c$scope != null ){
-                        		if(this.isDynamicScope(c$scope)){
-                            		rs = c$scope;
-                            		if(rs != null){
-                            			return rs;	
-                            		}
-                            	}else{
-                            		rs = this.getChildDynamicScope(c$scope);
-                            	}
-                        		
-                        		if(rs != null){
-                        			return rs;	
-                        		}
-                        		
-                        		c$scope = c$scope.$$nextSibling;
-                        		if(c$scope != null && this.isDynamicScope(c$scope)){
-                            		rs = c$scope;
-                            		if(rs != null){
-                            			return rs;	
-                            		}
-                            	}
-                        	}
-                    	}while(c$scope != null);
-                    	
-                        return rs;	
-                    };
-                    
-                    /*
-                     * 判断是否为动态行
-                     * 动态行=ng-repeat中jpath,会存在当前域中 scope,并以[_arr_]保存
-                     *
-                     * */
-                    $scope.isDynamicScope = function(scope){
-                    	var flag = false;
-                    	if(scope["_arr_"] != null && typeof scope["_arr_"] != "undefined"){
-                    		for(var y in scope._arr_){
-                    			if(scope.hasOwnProperty(scope._arr_[y])){
-                    				flag = true;
-                    				break;
-                    			}
-                    		}
-                		}
-                    	return flag;
-                    };
-                    
-                    /*
-                     * 删除父动态行和增加父动态行时重新刷新子动态行的数据模型
-                     * */
-                    $scope.clearKeyWord = function(scope, _keyword){
-                    	//清除内容
-                    	var brother$Scope = scope;
-                    	do{
-                        	if(brother$Scope != null ){
-                        		this.clearScopeKeyWord(brother$Scope, _keyword);
-                        		brother$Scope = brother$Scope.$$nextSibling;
-                        	}
-                    	}while(brother$Scope != null);
-                    };
-                    
-                    /*
-                     * 删除父动态行和增加父动态行时重新刷新子动态行的数据模型
-                     * */
-                    $scope.clearScopeKeyWord = function(scope, _keyword){
-                    	//清除内容
-                    	if(scope["_arr_"] != null && typeof scope["_arr_"] != "undefined"){
-                    		var inTmpArr,_jprefix;
-                    		for(var y in scope._arr_){//遍历子scope的arr数组
-                    			inTmpArr = scope._arr_[y].replace('_arr_','');
-                    			if(scope.hasOwnProperty(inTmpArr)){//判断父scope是否有此属性
-                        			if(scope.hasOwnProperty("_jprefix_" + inTmpArr)){
-                        				_jprefix = eval("scope._jprefix_"+inTmpArr);
-                    	    			//此处要深度复制
-                    	    			scope[inTmpArr] = jsonPath(scope.formData, _jprefix)[0];
-                        			}
-                    	    			
-                    			}
-                    		}
-                    	}
-                    	
-                    	var child$Scope = scope.$$childHead;
-                    	if(child$Scope != null ){
-                    		this.clearKeyWord(child$Scope, _keyword);
-                    	}
-                    };
-                    
-                    //定义ng-blur方法
-                    $scope.fsBlur = function(ngevent){    
-                    	var $this = $(ngevent.target);
-                        if($this.attr('type') == "radio") {return;}
-                    	var _jpath = $this.attr("jpath");
-                        // 2、执行关联公式计算
-                    	var $parentDynamicScope = this.getParentDynamicScope(this);
-                    	
-                        //var cIdx = this.$$childHead.$index;
-                        var dynamicIdx = null;
-                        if($parentDynamicScope!=null){
-                        	var pIdx = $parentDynamicScope.$index;
-                        	dynamicIdx = [pIdx, this.$index];
-                        	_jpath=_jpath.replace(/\[\d+\]/,"[99999_mh_]").replace(/\[\d+\]/,"[0]").replace("_mh_","")
-                    	}else if(typeof this.$index != "undefined"){
-                    		dynamicIdx = [this.$index];
-                    	}
-                    	
-                        parent.formulaEngine.apply(_jpath, $this.val(), dynamicIdx);
-                        // 若有子级关联节点，则校验子级关联节点 Added By C.Q 20170704
-                        var affectNode =  $this.attr("affectNode");
-    					if(affectNode) {
-    						viewEngine.applyAffNode(affectNode, _jpath); // 递归校验所有子级关联节点
-    					}
-                        // 3、刷新angular视图
-                        viewEngine.formApply($('#viewCtrlId'));
-                        // 4、刷新校验结果和控制结果
-                        //modify by lizhengtao 20160616 发现光校验$scope 下的$element还不够，
-                        //比如下面单元格填写值涉及到上面单元格改变，此时需要连上面单元格一起校验
-                        viewEngine.tipsForVerify(document.body);//el
+            ngDirectives(document, viewApp);
+            //定义Control
+            viewApp.run(function($rootScope, $http, $location){});
+            viewApp.controller('viewCtrl', function($rootScope, $scope, $http, $location,
+                asyncService){
+                //debugger;
+                var data = parent.formData;
+                $scope.formData = data;
+                $scope.CT = parent.formCT;
+                ViewEngine.SCOPE = $scope;
+                //扣缴企业所得税，合同备案信息
+                $scope.getHtbaxxList = function(){
+                    data = getHtbaxx(data,this.CT);
+                };
+                $scope.bcDthsj = function(sdata,ngModel,type){
+                    data = margeDthIntoFormData(data,sdata,ngModel,$scope,type);
+                };
+                $scope.cztdsysUtil = function(mathFlag,newData){
+                    return utilMath(data,mathFlag,newData);
+                };
+                $scope.cztdsysMath = function(mathFlag,newData){
+                    return doMath(mathFlag,newData,data,$scope);
+                };
+                $scope.scjysdgrsdsMath = function(mathFlag,newData){
+                    return subMath(mathFlag,newData,data,$scope);
+                };
+                //angular事件调用外部JS方法
+                $scope.externalMethods = function(mathFlag,newData){
+                    return extMethods(mathFlag,newData,data,$scope);
+                };
+                $scope.tz5xmbh = function(){
+                    return editTdysmxxxXg(data,$scope);
+                };
+                $scope.formData = data;
+                tempFormData = data;
 
-                        
+                /*
+                 * 获取父动态行
+                 * */
+                $scope.getParentDynamicScope = function(scope){
+                    var p$scope = scope.$parent;
+                    var flag = true;
+                    while(p$scope != null && flag){
+                        if(this.isDynamicScope(p$scope)){
+                            flag = false;
+                            break;
+                        }
+                        if(!flag){
+                            break;
+                        }else{
+                            p$scope = typeof p$scope.$parent ==="undefined"?null:p$scope.$parent;
+                        }
                     }
-                    /**
-                     * 分页参数
-                     */
-                    $scope.paginationConf = {
-                            currentPage: 1,
-                            totalItems: 800,
-                            itemsPerPage: 20,
-                            pagesLength: 11,
-                            perPageOptions: [10, 20, 30, 40, 50],
-                            opt : "",
-                            step : 0,
-                            onChange: function(){
-                            }
-                        };
-                    /*
-                     * $scope.count = 0; $scope.$watch("opts", function ($document) { $scope.count++; }, true);
-                     */
-                });
-                viewApp.factory('asyncService', [ '$http', function($http){
-                    /*
-                     * var doRequest = function(url) { return $http({ method: 'POST',//'JSONP' url: url }); }; return {
-                     * opts: function(url) { return doRequest(url);} };
-                     */
-                    /**
-                     * @param config    TYPE: object 
-                     *   {
-					 *      "method":method,
-					 *	    "url":url,
-					 *	    "params":params,
-					 *	    "data":data,
-					 *	    "cache":cache,
-					 *	    "timeout":timeout
-					 *	}
-                     * 		必选		•method  {String} 请求方式e.g. "GET"."POST"
- 					 *		必选		•url {String} 请求的URL地址
- 					 *		可为空   •params {key,value} 请求参数，将在URL上被拼接成？key=value
- 					 *		可为空	•data {key,value} 数据，将被放入请求内发送至服务器
- 					 *		可为空	•cache {boolean} 若为true，在http GET请求时采用默认的$http cache，否则使用$cacheFactory的实例
- 					 *		可为空	•timeout {number} 设置超时时间
-                     * @param successHandler 
-                     *  function(data,status,headers,config){}
-                     * @param errorHandler
-                     * function(data,status,headers,config){}
-                     * 
-                     */
-                    var doRequest = function(config,successHandler,errorHandler){
-                    	return $http(config).success(successHandler).error(errorHandler);
-                    };
-                    
-                    return { verify : function(el){
-                        return viewEngine.tipsForVerify(el);
-                    },getDtdmb:function(params){
-                        var config = {
-                        		"method":"get",
-                        		"url":"getDtdmb.do",
-                        		"params":params,
-                        		"timeout":60
-                        };
-                        var successHandler = function(data,status,headers,config){
-                        	var dmbmc = config.params["name"];
-                        	var dmb_info = ViewEngine.SCOPE["_info_"+dmbmc];
-                        	var formData = ViewEngine.SCOPE.formData;
-                        	if(dmb_info != null && dmb_info != undefined){
-                        		var _model = dmb_info.model;
-                        		var _dm = dmb_info.dm;
-                        		var _data = data;
-                        		if(undefined != _dm && "" != _dm) {
-                                    var _jsons = {};
-                                    $.each(_data, function(k,v) {
-                                        _jsons[v[_dm]] = v;
-                                    });
-                                    _data = _jsons;
-                                    //margeData(formData,data,_model);
-                        		}
-                        		parent.formEngine.cacheCodeTable(dmbmc, _data);
-                        		viewEngine.formApply($('#viewCtrlId'), dmbmc, _data);
-                        	}else{
-                        		var dmbmc = config.params["name"];
-                        		var _node = config.params["node"];
-                        		if(undefined == _node || "" == _node) {
-                                    //parent.formCT[_name] = response;
-                                    _data = response;
-                                } else {
-                                    //parent.formCT[_name] = response[_node];
-                                    _data = response[_node];
+                    return p$scope;
+
+                };
+                /*
+                 * 获取第一个子动态行
+                 * */
+                $scope.getChildDynamicScope = function(scope){
+                    var rs = null;
+                    var c$scope = scope.$$childHead;
+                    //清除内容
+                    do{
+                        if(c$scope != null ){
+                            if(this.isDynamicScope(c$scope)){
+                                rs = c$scope;
+                                if(rs != null){
+                                    return rs;
                                 }
-                        		parent.formEngine.cacheCodeTable(dmbmc, _data);
-                        		viewEngine.formApply($('#viewCtrlId'), dmbmc, _data);
-                        		
-                        	}
-                        };
-                        var errorHandler = function(data,status,headers,config){
-                        	dhtmlx.message("动态代码表"+_url+"获取失败，请检查...", "error", 2000);
-                        };
-                        doRequest(config,successHandler,errorHandler);
+                            }else{
+                                rs = this.getChildDynamicScope(c$scope);
+                            }
+
+                            if(rs != null){
+                                return rs;
+                            }
+
+                            c$scope = c$scope.$$nextSibling;
+                            if(c$scope != null && this.isDynamicScope(c$scope)){
+                                rs = c$scope;
+                                if(rs != null){
+                                    return rs;
+                                }
+                            }
+                        }
+                    }while(c$scope != null);
+
+                    return rs;
+                };
+
+                /*
+                 * 判断是否为动态行
+                 * 动态行=ng-repeat中jpath,会存在当前域中 scope,并以[_arr_]保存
+                 *
+                 * */
+                $scope.isDynamicScope = function(scope){
+                    var flag = false;
+                    if(scope["_arr_"] != null && typeof scope["_arr_"] !== "undefined"){
+                        for(var y in scope._arr_){
+                            if(scope.hasOwnProperty(scope._arr_[y])){
+                                flag = true;
+                                break;
+                            }
+                        }
                     }
-                    
+                    return flag;
+                };
+
+                /*
+                 * 删除父动态行和增加父动态行时重新刷新子动态行的数据模型
+                 * */
+                $scope.clearKeyWord = function(scope, _keyword){
+                    //清除内容
+                    var brother$Scope = scope;
+                    do{
+                        if(brother$Scope != null ){
+                            this.clearScopeKeyWord(brother$Scope, _keyword);
+                            brother$Scope = brother$Scope.$$nextSibling;
+                        }
+                    }while(brother$Scope != null);
+                };
+
+                /*
+                 * 删除父动态行和增加父动态行时重新刷新子动态行的数据模型
+                 * */
+                $scope.clearScopeKeyWord = function(scope, _keyword){
+                    //清除内容
+                    if(scope["_arr_"] != null && typeof scope["_arr_"] !== "undefined"){
+                        var inTmpArr,_jprefix;
+                        for(var y in scope._arr_){//遍历子scope的arr数组
+                            inTmpArr = scope._arr_[y].replace('_arr_','');
+                            if(scope.hasOwnProperty(inTmpArr)){//判断父scope是否有此属性
+                                if(scope.hasOwnProperty("_jprefix_" + inTmpArr)){
+                                    _jprefix = eval("scope._jprefix_"+inTmpArr);
+                                    //此处要深度复制
+                                    scope[inTmpArr] = jsonPath(scope.formData, _jprefix)[0];
+                                }
+
+                            }
+                        }
+                    }
+
+                    var child$Scope = scope.$$childHead;
+                    if(child$Scope != null ){
+                        this.clearKeyWord(child$Scope, _keyword);
+                    }
+                };
+
+                //定义ng-blur方法
+                $scope.fsBlur = function(ngevent){
+                    var $this = $(ngevent.target);
+                    if($this.attr('type') === "radio") {return;}
+                    var _jpath = $this.attr("jpath");
+                    // 2、执行关联公式计算
+                    var $parentDynamicScope = this.getParentDynamicScope(this);
+
+                    //var cIdx = this.$$childHead.$index;
+                    var dynamicIdx = null;
+                    if($parentDynamicScope!=null){
+                        var pIdx = $parentDynamicScope.$index;
+                        dynamicIdx = [pIdx, this.$index];
+                        _jpath=_jpath.replace(/\[\d+\]/,"[99999_mh_]").replace(/\[\d+\]/,"[0]").replace("_mh_","")
+                    }else if(typeof this.$index !== "undefined"){
+                        dynamicIdx = [this.$index];
+                    }
+
+                    parent.formulaEngine.apply(_jpath, $this.val(), dynamicIdx);
+                    // 若有子级关联节点，则校验子级关联节点 Added By C.Q 20170704
+                    var affectNode =  $this.attr("affectNode");
+                    if(affectNode) {
+                        viewEngine.applyAffNode(affectNode, _jpath); // 递归校验所有子级关联节点
+                    }
+                    // 3、刷新angular视图
+                    viewEngine.formApply($('#viewCtrlId'));
+                    // 4、刷新校验结果和控制结果
+                    //modify by lizhengtao 20160616 发现光校验$scope 下的$element还不够，
+                    //比如下面单元格填写值涉及到上面单元格改变，此时需要连上面单元格一起校验
+                    viewEngine.tipsForVerify(document.body);//el
+
+
+                };
+                /**
+                 * 分页参数
+                 */
+                $scope.paginationConf = {
+                        currentPage: 1,
+                        totalItems: 800,
+                        itemsPerPage: 20,
+                        pagesLength: 11,
+                        perPageOptions: [10, 20, 30, 40, 50],
+                        opt : "",
+                        step : 0,
+                        onChange: function(){
+                        }
                     };
-                } ]);
-                $("input").each(function(){
-                	var _this = this;
-                	var attrNgModel = $(_this).attr("ng-model");
-                    if(attrNgModel) {
-                        //注册事件this
-                    	var attrValue = $(_this).attr("ng-blur");
-                    	if(attrValue){
-                    		attrValue = "fsBlur($event);"+attrValue;
-                    		$(_this).attr("ng-blur",attrValue);
-                    	}else{
-                    		$(_this).attr("ng-blur","fsBlur($event)");
-                    	}
-                    }
-                });
-                
-                // 执行模块装载
-                this.manuaANgInit(angular, strViewApp);
-                //执行自定义js文件
-                if('undefined' != typeof subViewCustomScripts){
-                	if ('undefined' != typeof $ && 'undefined' != typeof viewApp){
-                		for (var i = 0; i < subViewCustomScripts.length; i++) {
-                			 //new _VIEW_START_UP_().subLoadScript4Sheet(subViewCustomScripts[i]);
-                			 loader.add(subViewCustomScripts[i],true);
-                       	}
-                		loader.load();
-                	}
+            });
+            viewApp.factory('asyncService', [ '$http', function($http){
+                /*
+                 * var doRequest = function(url) { return $http({ method: 'POST',//'JSONP' url: url }); }; return {
+                 * opts: function(url) { return doRequest(url);} };
+                 */
+                /**
+                 * @param config    TYPE: object
+                 *   {
+                 *      "method":method,
+                 *	    "url":url,
+                 *	    "params":params,
+                 *	    "data":data,
+                 *	    "cache":cache,
+                 *	    "timeout":timeout
+                 *	}
+                 * 		必选		•method  {String} 请求方式e.g. "GET"."POST"
+                 *		必选		•url {String} 请求的URL地址
+                 *		可为空   •params {key,value} 请求参数，将在URL上被拼接成？key=value
+                 *		可为空	•data {key,value} 数据，将被放入请求内发送至服务器
+                 *		可为空	•cache {boolean} 若为true，在http GET请求时采用默认的$http cache，否则使用$cacheFactory的实例
+                 *		可为空	•timeout {number} 设置超时时间
+                 * @param successHandler
+                 *  function(data,status,headers,config){}
+                 * @param errorHandler
+                 * function(data,status,headers,config){}
+                 *
+                 */
+                var doRequest = function(config,successHandler,errorHandler){
+                    return $http(config).success(successHandler).error(errorHandler);
+                };
+
+                return { verify : function(el){
+                    return viewEngine.tipsForVerify(el);
+                },getDtdmb:function(params){
+                    var config = {
+                            "method":"get",
+                            "url":"getDtdmb.do",
+                            "params":params,
+                            "timeout":60
+                    };
+                    var successHandler = function(data,status,headers,config){
+                        var dmbmc = config.params["name"];
+                        var dmb_info = ViewEngine.SCOPE["_info_"+dmbmc];
+                        var formData = ViewEngine.SCOPE.formData;
+                        if(dmb_info != null && dmb_info != undefined){
+                            var _model = dmb_info.model;
+                            var _dm = dmb_info.dm;
+                            var _data = data;
+                            if(undefined != _dm && "" != _dm) {
+                                var _jsons = {};
+                                $.each(_data, function(k,v) {
+                                    _jsons[v[_dm]] = v;
+                                });
+                                _data = _jsons;
+                                //margeData(formData,data,_model);
+                            }
+                            parent.formEngine.cacheCodeTable(dmbmc, _data);
+                            viewEngine.formApply($('#viewCtrlId'), dmbmc, _data);
+                        }else{
+                            var dmbmc = config.params["name"];
+                            var _node = config.params["node"];
+                            if(undefined == _node || "" == _node) {
+                                //parent.formCT[_name] = response;
+                                _data = response;
+                            } else {
+                                //parent.formCT[_name] = response[_node];
+                                _data = response[_node];
+                            }
+                            parent.formEngine.cacheCodeTable(dmbmc, _data);
+                            viewEngine.formApply($('#viewCtrlId'), dmbmc, _data);
+
+                        }
+                    };
+                    var errorHandler = function(data,status,headers,config){
+                        dhtmlx.message("动态代码表"+_url+"获取失败，请检查...", "error", 2000);
+                    };
+                    doRequest(config,successHandler,errorHandler);
                 }
-                setTimeout("parent.formEngine.hideMaskFrmSheet()", 50);
-                // 在IE8下，table的宽度在页面加载时 计算多少列 并固定宽度,
-                // 但table中涉及到ng-if/ng-show等操作单元格操作时,把列隐藏或者删除,这会导致所有列的宽度减少,导致table右侧出现黑边.
-                // 所以在table.css中,将table隐藏,等ng指令渲染完毕再绘制table.
-                // $(".NewTableMain table").show();
-        	}
+
+                };
+            } ]);
+            $("input").each(function(){
+                var _this = this;
+                var attrNgModel = $(_this).attr("ng-model");
+                if(attrNgModel) {
+                    //注册事件this
+                    var attrValue = $(_this).attr("ng-blur");
+                    if(attrValue){
+                        attrValue = "fsBlur($event);"+attrValue;
+                        $(_this).attr("ng-blur",attrValue);
+                    }else{
+                        $(_this).attr("ng-blur","fsBlur($event)");
+                    }
+                }
+            });
+
+            // 执行模块装载
+            this.manuaANgInit(angular, strViewApp);
+            //执行自定义js文件
+            if('undefined' !== typeof subViewCustomScripts){
+                if ('undefined' !== typeof $ && 'undefined' != typeof viewApp){
+                    for (var i = 0; i < subViewCustomScripts.length; i++) {
+                         //new _VIEW_START_UP_().subLoadScript4Sheet(subViewCustomScripts[i]);
+                         loader.add(subViewCustomScripts[i],true);
+                    }
+                    loader.load();
+                }
+            }
+            setTimeout("parent.formEngine.hideMaskFrmSheet()", 50);
+            // 在IE8下，table的宽度在页面加载时 计算多少列 并固定宽度,
+            // 但table中涉及到ng-if/ng-show等操作单元格操作时,把列隐藏或者删除,这会导致所有列的宽度减少,导致table右侧出现黑边.
+            // 所以在table.css中,将table隐藏,等ng指令渲染完毕再绘制table.
+            // $(".NewTableMain table").show();
+        };
     
         ViewEngine.prototype.initialize = function(strViewApp){
         	// $(".NewTableMain table").hide();
-            if ("undefined" == typeof angular || "undefined" == typeof ngDirectives) {
+            if ("undefined" === typeof angular || "undefined" === typeof ngDirectives) {
                 console.log("Waiting angular and directive...");
                 setTimeout("viewEngine.initialize('" + strViewApp + "')", 50);
             } else {
@@ -379,13 +376,13 @@ function ViewEngine(){
                     this.prepareEnvironment(viewApp, strViewApp);
                 }
             }
-        }
+        };
         /**
          * 手工加载angular 页面加载完成后,再加载模块 以确保angular加载时数据模型以及dom已经完整存在
          */
         ViewEngine.prototype.manuaANgInit = function(angular, strViewApp){
             angular.bootstrap(document.body, [strViewApp]);
-        }
+        };
 
         /**
          * 修改:重构 封装jpath处理
@@ -404,60 +401,9 @@ function ViewEngine(){
          */
         ViewEngine.prototype.bindEventsForElements = function(scope, el){
         	var _start_ = new Date().getTime();
-            console.log("INFO:"+ _start_+" 绑定事件、初始化jpath开始时间");
 
             var _ngRepeatInit = $(el).attr('ng-repeat-init');
             var realIndex=_ngRepeatInit ? scope.$originIndex() :"";//如果是ng-repeat,则获取真实数组下标
-
-            /*
-             *  赋值jpath路径,此处考虑到代码稳定性，重构暂不放开
-             */
-            // function setJpath(scope,$element){
-            //     var _nm = $element.attr("ng-model"); //比如：dJHbsjcxxcjbList[0].nsrmc
-            //     var _nmFirstNode="";//对象
-            //     var _nmLowerHalfPath="";//属性
-            //     var _jprefix = "";//jpath的前缀
-            //     var _jpath="";//jpath 的全路径
-            //     /**
-            //      * 取其对象，并赋予_nmFirstNode
-            //      * 比如：dJHbsjcxxcjbList[0].nsrmc -> dJHbsjcxxcjbList
-            //      * 或者 dJHbsjcxxcjbList.nsrmc -> dJHbsjcxxcjbList
-            //      *
-            //      * ?= 表示正向匹配，从左到右
-            //      * 返回数组是三个，第一个是匹配值，第二个取子集(.*?)，第三个取第二个子集
-            //      */
-            //     var resultReg=new RegExp(/(?=(.*?)(\[.*\])?\.)/g).exec(_nm);
-            //     if(resultReg !=null){
-            //         _nmFirstNode = resultReg[1];
-            //     }
-            //     /**
-            //      * 取其属性
-            //      * 比如： dJHbsjcxxcjbList[0].nsrmc -> [0].nsrmc
-            //      */
-            //     _nmLowerHalfPath =_nm.replace(_nmFirstNode,"");
-            //
-            //     /**
-            //      * 拼成jpath.
-            //      * 如果是动态行，则从ngRepeatInit属性取,并把下标改成数组 在数据模型的真实下标。
-            //      */
-            //     if (_ngRepeatInit) {
-            //         _jprefix = scope['_jprefix_' + _ngRepeatInit];//获取动态行前缀
-            //         _jpath=_jprefix + "["+realIndex+"]" + _nmLowerHalfPath; //前缀 + 动态行数组真实下标（通过scope中方法获取） +后缀 兼容旧版本的写法
-            //
-            //         //过滤删除行
-            //         var zfbzjpath='scope.formData.'+_jprefix;
-            //         var sjzfbzs=eval(zfbzjpath)[realIndex].isDeleteTr;
-            //         if(sjzfbzs==='Y'){
-            //             $element.attr("disabled",true);
-            //         }
-            //     }else{
-            //         _jprefix = scope['_jprefix_' + _nmFirstNode];//获取非动态行前缀
-            //         _jpath = _jprefix + _nmLowerHalfPath;//前缀+后缀
-            //     }
-            //     //赋值jpath
-            //     $element.attr("jpath",_jpath);
-            // }
-
 
             /**
              * 注册事件
@@ -474,7 +420,7 @@ function ViewEngine(){
                 function(i){
                     if ($(this).attr("ng-model")) {
                         var _obj = null;
-                        if(typeof $(this).attr("target-select-query") != 'undefined'){
+                        if(typeof $(this).attr("target-select-query") !== 'undefined'){
                             _obj = $(this).siblings("div").children("ul");
                         }
                         var _nm = $(this).attr("ng-model");
@@ -507,7 +453,7 @@ function ViewEngine(){
 
                         //注册事件
                         $(this).on({ "change" : function(event){
-                            if($(this).attr('type') == "radio") {return;}
+                            if($(this).attr('type') === "radio") {return;}
                             var _jpath = $(this).attr("jpath");
                             try{
 	                            // 值改变后清除该单元格的财税管家风险扫描提示 A by C.Q 20170213
@@ -523,7 +469,7 @@ function ViewEngine(){
                                 this._msgbox_manual_ = dhtmlx.message("\u3000\u3000您已手动修改过本格数据，本格自动计算已停用。如您需要恢复本格的自动计算，请清空（删除）本格数据。", "" +
                                 		"info", 10000);
                             }
-                            if($('#isShowTbsmId',parent.document).val() == 'Y'){
+                            if($('#isShowTbsmId',parent.document).val() === 'Y'){
                             	parent.formDebuging.onfocus2Tbsm(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示填表说明
                             }
                         	parent.formDebuging.onfocus2Fxtx(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示风险扫描提醒
@@ -535,20 +481,20 @@ function ViewEngine(){
                                 this._msgbox_manual_ = undefined;
                             }
                         }, "dblclick" : function(event){
-                            if (true == parent.flagFormDebuging) {
-                                if ("undefined" != typeof parent.formDebuging) {
+                            if (true === parent.flagFormDebuging) {
+                                if ("undefined" !== typeof parent.formDebuging) {
                                     parent.formDebuging.dblclickInputUI(this, event);
                                 }
                             }
                         }, "click" : function(event){
-                            if (true == parent.flagFormDebuging) {
-                                if ("undefined" != typeof parent.formDebuging) {
+                            if (true === parent.flagFormDebuging) {
+                                if ("undefined" !== typeof parent.formDebuging) {
                                     if (event.ctrlKey) {
                                         parent.formDebuging.ctrlClickInputUI(this, event);
                                     }
                                 }
                             }
-                            if($(this).attr('type') == "radio") {
+                            if($(this).attr('type') === "radio") {
                                 var _jpath = $(this).attr("jpath");
                                 // 1、尝试disable该单元格的结果公式
                                 // 2、执行关联公式计算
@@ -560,7 +506,7 @@ function ViewEngine(){
                                 //modify by lizhengtao 20160616 发现光校验$scope 下的$element还不够，
                                 //比如下面单元格填写值涉及到上面单元格改变，此时需要连上面单元格一起校验
                                 viewEngine.tipsForVerify(document.body);//el
-                            }else if($(this).attr('type') == "text"){
+                            }else if($(this).attr('type') === "text"){
                             	var newValue=this.value;
                             	if($(this).attr("ng-datatype")){
                             		//当数据类型为百分比时，替换掉字符串里的%
@@ -572,16 +518,17 @@ function ViewEngine(){
                             		$(this).focus();
                             	}
                             	//当数据类型为百分比时，只比较数值
-                            	if(newValue == 0.00 && !($(this).attr("readonly")) && $(this).attr("ng-datatype")&&$(this).attr("ng-datatype").indexOf("percent")>-1){
-                            		$(this).val("");
+                            	if((newValue === 0.00 || newValue === '0.00')  && !($(this).attr("readonly")) && $(this).attr("ng-datatype")&&$(this).attr("ng-datatype").indexOf("percent")>-1){
+                            		$(this).val("%");
+                            		this.setSelectionRange(0, 0);
                             		$(this).focus();
                             	}
                             	//当数据类型为number且带格式时，只比较数值
-                            	if(newValue == 0.00 && !($(this).attr("readonly")) && $(this).attr("ng-datatype")&&$(this).attr("ng-datatype").indexOf("number{")>-1){
+                            	if(newValue === 0.00 && !($(this).attr("readonly")) && $(this).attr("ng-datatype")&&$(this).attr("ng-datatype").indexOf("number{")>-1){
                             		$(this).val("");
                             		$(this).focus();
                             	}
-                            }else if($(this).attr('type') == "checkbox") {
+                            }else if($(this).attr('type') === "checkbox") {
                             	var _jpath = $(this).attr("jpath");
                                 // 1、尝试disable该单元格的结果公式
                                 // 2、执行关联公式计算
@@ -659,9 +606,9 @@ function ViewEngine(){
                          * 若校验提示节点定位到select，则需要在$(el).find("select").each(的位置增加。
                          */
                         var _obj = null;
-                        if(typeof $(this).attr("target-select-query") != 'undefined'){
+                        if(typeof $(this).attr("target-select-query") !== 'undefined'){
                             _obj = $(this).siblings("div").children("ul");
-                        }else if(typeof $(this).attr("ng-select-page") != 'undefined'){
+                        }else if(typeof $(this).attr("ng-select-page") !== 'undefined'){
                             _obj = $(this).prev();
 						}
                         //obj如果存在
@@ -679,7 +626,7 @@ function ViewEngine(){
                                         this._msgbox_manual_ = dhtmlx.message("\u3000\u3000您已手动修改过本格数据，本格自动计算已停用。如您需要恢复本格的自动计算，请清空（删除）本格数据。", "" +
                                         		"info", 10000);
                                     }
-                                    if($('#isShowTbsmId',parent.document).val() == 'Y'){
+                                    if($('#isShowTbsmId',parent.document).val() === 'Y'){
                                     	parent.formDebuging.onfocus2Tbsm(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示填表说明
                                     }
                                 	parent.formDebuging.onfocus2Fxtx(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示风险扫描提醒
@@ -794,26 +741,26 @@ function ViewEngine(){
                             viewEngine.tipsForVerify(document.body);
 
                         }, "focus" : function(event){
-                        	if (true == parent.flagFormDebuging) { //select下拉框获取焦点显示jpath、urlkey和ywbm
-                                if ("undefined" != typeof parent.formDebuging) {
+                        	if (true === parent.flagFormDebuging) { //select下拉框获取焦点显示jpath、urlkey和ywbm
+                                if ("undefined" !== typeof parent.formDebuging) {
                                     parent.formDebuging.dblclickInputUI(this, event);
                                 }
                             }
-                        	if($('#isShowTbsmId',parent.document).val() == 'Y'){
+                        	if($('#isShowTbsmId',parent.document).val() === 'Y'){
                             	parent.formDebuging.onfocus2Tbsm(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示填表说明
                             }
                         	parent.formDebuging.onfocus2Fxtx(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示风险扫描提醒
                         	parent.formDebuging.autoShowTbsm(this, event);  // 当单元格有提示时自动打开填表说明
 
                         }, "dblclick" : function(event){
-                            if (true == parent.flagFormDebuging) {
-                                if ("undefined" != typeof parent.formDebuging) {
+                            if (true === parent.flagFormDebuging) {
+                                if ("undefined" !== typeof parent.formDebuging) {
                                     parent.formDebuging.dblclickInputUI(this, event);
                                 }
                             }
                         }, "click" : function(event){
-                            if (true == parent.flagFormDebuging) {
-                                if ("undefined" != typeof parent.formDebuging) {
+                            if (true === parent.flagFormDebuging) {
+                                if ("undefined" !== typeof parent.formDebuging) {
                                     if (event.ctrlKey) {
                                         parent.formDebuging.ctrlClickInputUI(this, event);
                                     }
@@ -873,8 +820,8 @@ function ViewEngine(){
                       });
                         
 	                    var _obj = null;
-                        if(typeof $(this).attr("ng-select-query") != 'undefined'){
-                            if($(this).siblings("div") != 'undefined'){
+                        if(typeof $(this).attr("ng-select-query") !== 'undefined'){
+                            if($(this).siblings("div") !== 'undefined'){
                                 _obj = $(this).siblings("div");
 	                    	}
 	                    }
@@ -895,7 +842,7 @@ function ViewEngine(){
                                     if (this.title) {
                                     	var msgDiv = $(_obj).parent()[0];
                                     	if($(".dhtmlx_message_area").length > 0 && $(".dhtmlx_message_area").children().length > 0) {
-                                    		if($(".dhtmlx_message_area .hidden").length == 0 || ($(".dhtmlx_message_area .hidden").length > 0 && $(".dhtmlx_message_area").children().length > $(".dhtmlx_message_area .hidden").length))
+                                    		if($(".dhtmlx_message_area .hidden").length === 0 || ($(".dhtmlx_message_area .hidden").length > 0 && $(".dhtmlx_message_area").children().length > $(".dhtmlx_message_area .hidden").length))
         	                                	return;
                                     	} 
                                         if (this._msgbox_title_) {
@@ -1003,7 +950,7 @@ function ViewEngine(){
                                     this._msgbox_manual_ = dhtmlx.message("\u3000\u3000您已手动修改过本格数据，本格自动计算已停用。如您需要恢复本格的自动计算，请清空（删除）本格数据。", "" +
                                     		"info", 10000);
                                 }
-                                if($('#isShowTbsmId',parent.document).val() == 'Y'){
+                                if($('#isShowTbsmId',parent.document).val() === 'Y'){
                                 	parent.formDebuging.onfocus2Tbsm(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示填表说明
                                 }
                             	parent.formDebuging.onfocus2Fxtx(this, event);  // Added by C.Q 20170122 单元格获取焦点后显示风险扫描提醒
@@ -1015,20 +962,20 @@ function ViewEngine(){
                                     this._msgbox_manual_ = undefined;
                                 }
                             }, "dblclick" : function(event){
-                                if (true == parent.flagFormDebuging) {
-                                    if ("undefined" != typeof parent.formDebuging) {
+                                if (true === parent.flagFormDebuging) {
+                                    if ("undefined" !== typeof parent.formDebuging) {
                                         parent.formDebuging.dblclickInputUI(this, event);
                                     }
                                 }
                             }, "click" : function(event){
-                                if (true == parent.flagFormDebuging) {
-                                    if ("undefined" != typeof parent.formDebuging) {
+                                if (true === parent.flagFormDebuging) {
+                                    if ("undefined" !== typeof parent.formDebuging) {
                                         if (event.ctrlKey) {
                                             parent.formDebuging.ctrlClickInputUI(this, event);
                                         }
                                     }
                                 }
-                                if($(this).attr('type') == "radio") {
+                                if($(this).attr('type') === "radio") {
                                     var _jpath = $(this).attr("jpath");
                                     // 1、尝试disable该单元格的结果公式
                                     // 2、执行关联公式计算
@@ -1040,8 +987,8 @@ function ViewEngine(){
                                     //比如下面单元格填写值涉及到上面单元格改变，此时需要连上面单元格一起校验
                                     viewEngine.tipsForVerify(document.body);//el
                                     // 
-                                }else if($(this).attr('type') == "text"){
-                                	if( this.value == 0 && !($(this).attr("readonly")) ){
+                                }else if($(this).attr('type') === "text"){
+                                	if( this.value === 0 && !($(this).attr("readonly")) ){
                                 		$(this).val("");
                                 		$(this).focus();
                                 	}
@@ -1100,9 +1047,7 @@ function ViewEngine(){
                         }
                     });
             var _end_ = new Date().getTime();
-            console.log("INFO:"+_end_+" 绑定事件、初始化jpath结束时间");
-            var _ms_ = _end_ - _start_;
-            console.log("INFO:"+_ms_+"ms 绑定事件、初始化jpath耗时");
+            console.log("INFO:"+ _start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 事件绑定");
         };
         /**
          * 由js改变select值不会触发change事件，所以在标签中增加属性affectNode="子级关联节点"，当前节点值改变时，对所有子级关联节点也做校验
@@ -1139,9 +1084,6 @@ function ViewEngine(){
          * @param el
          */
         ViewEngine.prototype.tipsForVerify2 = function(el){
-        	console.log("tipsForVerify2 start!");
-        	var _start_ = new Date().getTime();
-        	console.log("INFO:"+_start_+" 渲染开始时间");
         	//定义局部变量，方法类调用时直接使用局部变量，不用到全局变量里面去找，提高性能
 			var viewEngine = this;
         	var scope = angular.element($('#viewCtrlId')).scope();
@@ -1151,7 +1093,7 @@ function ViewEngine(){
         			},50);
         		return;
             }
-        	var _ms_ = new Date().getTime();
+        	var _start_ = new Date().getTime();
             var idxVariable2NoPassLocal = parent.formulaEngine.idxVariable2NoPass;
             var idxVariable2Control = parent.formulaEngine.idxVariable2Control;
             // 合并本地和第三方风险扫描提示 A by C.Q 20170209 
@@ -1182,8 +1124,11 @@ function ViewEngine(){
   					 * 若校验提示节点定位到select，则需要在$(el).find("select").each(的位置增加。
   					 * 此处target为input，input为不可见元素，实际背景色变色应该在ul上。
                 	 */
-                    if(typeof $(this).attr("target-select-query") != 'undefined'){
+                    if(typeof $(this).attr("target-select-query") !== 'undefined'){
                     	_obj = $(this).siblings("div").children("ul");
+                    }
+                    if(typeof _obj.attr("ng-select-page") !== 'undefined'){
+                        _obj = _obj.prev();
                     }
                     var _nm = $(this).attr("ng-model");
                     var _jpath = $(this).attr("jpath");
@@ -1191,7 +1136,7 @@ function ViewEngine(){
                     if(_jpath && _jpath.indexOf('[')>-1 && _jpath.indexOf(']')>_jpath.indexOf('[')) {
                     	var l = _jpath.match(/\[\d+\]/g);
 	                    if(l != null){
-	                		if(l.length == 2){
+	                		if(l.length === 2){
 	                			var pIdx = l[0].replace(']','').replace('[','');
 	            				var cIdx = l[1].replace(']','').replace('[','');
 	                			_subscript = [pIdx,cIdx];
@@ -1220,7 +1165,7 @@ function ViewEngine(){
                 		_obj.removeClass(LevelInfos[key]); // 移除样式
                 		_obj.parent().removeClass(LevelInfos[key]);
                 	}
-                    if (undefined == var2NoPasslocal) {
+                    if (undefined === var2NoPasslocal) {
                         _obj.removeAttr('title');
                         _obj.removeAttr('tiptype');
                         _obj.parent().removeClass("relative");
@@ -1242,7 +1187,7 @@ function ViewEngine(){
                         $.each(var2NoPass, function(id, FormulaObject) {
                         	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
                         	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                    		if (position == '1') {
+                    		if (position === '1') {
                     			// 显示至右上角
                     			_tips += FormulaObject.tips + '<br/>';
  	                            _tips_title += FormulaObject.tips + '\n';
@@ -1277,7 +1222,7 @@ function ViewEngine(){
                         
                         // 校验不通过时，为多选框checkbox或单选框radio的父节点添加背景颜色
                         var inputType = _obj.attr("type");  
-                        if(inputType=="checkbox"||inputType=="radio"){
+                        if(inputType==="checkbox"||inputType==="radio"){
                         	_obj.parent().addClass(classColor ? classColor : LevelInfos['default']);
                         }
                         
@@ -1291,14 +1236,14 @@ function ViewEngine(){
     			        		var sheetName = $(this).html();
     			        		var url = $(this).attr('href');
     	        				for(var p in _fxsmGlbd) { // 遍历json数组时，这么写p为索引，0,1
-    	        					if(sheetName != null && sheetName != '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
+    	        					if(sheetName != null && sheetName !== '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
     	        						glbd += "<a target=\"frmSheet\" href=\""+url+"?fjp="+_fxsmGlbd[p].jpath+"\" onclick=\"javascript:fbSelected("+i+");\" >"+_fxsmGlbd[p].fbid + " " + (_fxsmGlbd[p].fbmc ? _fxsmGlbd[p].fbmc : '')+"</a>";
     	        	    			}
     	                		}
     		        		});
                     	}
                     	_obj.attr('glbd', glbd); // 关联表单
-                    	_obj.attr('fxlx', _fxsmFxlx == '1' ? '节税提醒' : '风险名称'); 
+                    	_obj.attr('fxlx', _fxsmFxlx === '1' ? '节税提醒' : '风险名称');
                     	// 财税管家进来第一次需要显示
                     	parent.fxsmInitData.autoShowFxjk(_obj);
                     }
@@ -1314,10 +1259,6 @@ function ViewEngine(){
                     var _obj = $(this);
                     var _nm = $(this).attr("ng-model");
                     var _jpath = $(this).attr("jpath");
-//                    var _subscript = null;
-//                    if(_jpath.indexOf('[')>-1 && _jpath.indexOf(']')>_jpath.indexOf('[')){
-//                    	_subscript = _jpath.substring(_jpath.indexOf('[')+1,_jpath.indexOf(']'));
-//                    }
                     // Adding tips according to not passed verify. 
                     var var2NoPasslocal = idxVariable2NoPass[_jpath];
                     var _tips = '';
@@ -1326,7 +1267,7 @@ function ViewEngine(){
                 	for(var key in LevelInfos) { 
                 		_obj.removeClass(LevelInfos[key]); // 移除样式
                 	}
-                    if (undefined == var2NoPasslocal) {
+                    if (undefined === var2NoPasslocal) {
                         _obj.removeAttr('title');
                         _obj.removeAttr('tiptype');
                         _obj.parent().removeClass("relative");
@@ -1348,7 +1289,7 @@ function ViewEngine(){
                         $.each(var2NoPass, function(id, FormulaObject){
                         	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
                         	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                    		if (position == '1') {
+                    		if (position === '1') {
                     			// 显示至右上角
                     			_tips += FormulaObject.tips + '<br/>';
  	                            _tips_title += FormulaObject.tips + '\n';
@@ -1384,7 +1325,7 @@ function ViewEngine(){
     			        		var sheetName = $(this).html();
     			        		var url = $(this).attr('href');
     	        				for(var p in _fxsmGlbd) { // 遍历json数组时，这么写p为索引，0,1
-    	        					if(sheetName != null && sheetName != '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
+    	        					if(sheetName != null && sheetName !== '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
     	        						glbd += "<a target=\"frmSheet\" href=\""+url+"?fjp="+_fxsmGlbd[p].jpath+"\" onclick=\"javascript:fbSelected("+i+");\" >"+_fxsmGlbd[p].fbid + " " + (_fxsmGlbd[p].fbmc ? _fxsmGlbd[p].fbmc : '')+"</a>";
     	        	    			}
     	                		}
@@ -1392,7 +1333,7 @@ function ViewEngine(){
                     	}
                     	
                     	_obj.attr('glbd', glbd); // 关联表单
-                    	_obj.attr('fxlx', _fxsmFxlx == '1' ? '节税提醒' : '风险名称'); 
+                    	_obj.attr('fxlx', _fxsmFxlx === '1' ? '节税提醒' : '风险名称');
                     	// 财税管家进来第一次需要显示
                     	parent.fxsmInitData.autoShowFxjk(_obj);
                     }
@@ -1409,10 +1350,10 @@ function ViewEngine(){
 					//判断是否 select2 的选框
                     var _this=_obj;
                     var isSelectQuery=false;
-                    if(typeof _obj.attr("ng-select-query") != 'undefined'){
+                    if(typeof _obj.attr("ng-select-query") !== 'undefined'){
                         isSelectQuery=true;
                     }
-                    if(isSelectQuery && _obj.siblings("div") != 'undefined'){
+                    if(isSelectQuery && _obj.siblings("div") !== 'undefined'){
                         _obj = _obj.siblings("div");
                     }
                     var _nm = $(this).attr("ng-model");
@@ -1442,7 +1383,7 @@ function ViewEngine(){
                 		_obj.removeClass(LevelInfos[key]); // 移除样式
 						isSelectQuery && _this.removeClass(LevelInfos[key]);//如果是select2,也有对元素select2进行清理
                 	}
-                    if (undefined == var2NoPasslocal) {
+                    if (undefined === var2NoPasslocal) {
                     	if(_obj.attr('ng-multiple')){
                 			_obj.next().removeAttr('title');
                 		}
@@ -1469,7 +1410,7 @@ function ViewEngine(){
                         $.each(var2NoPass, function(id, FormulaObject){
                         	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
                         	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                    		if (position == '1') {
+                    		if (position === '1') {
                     			// 显示至右上角
                     			_tips += FormulaObject.tips + '<br/>';
  	                            _tips_title += FormulaObject.tips + '\n';
@@ -1524,7 +1465,7 @@ function ViewEngine(){
     			        		var sheetName = $(this).html();
     			        		var url = $(this).attr('href');
     	        				for(var p in _fxsmGlbd) { // 遍历json数组时，这么写p为索引，0,1
-    	        					if(sheetName != null && sheetName != '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
+    	        					if(sheetName != null && sheetName !== '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
     	        						glbd += "<a target=\"frmSheet\" href=\""+url+"?fjp="+_fxsmGlbd[p].jpath+"\" onclick=\"javascript:fbSelected("+i+");\" >"+_fxsmGlbd[p].fbid + " " + (_fxsmGlbd[p].fbmc ? _fxsmGlbd[p].fbmc : '')+"</a>";
     	        	    			}
     	                		}
@@ -1532,7 +1473,7 @@ function ViewEngine(){
                     	} 
                     	
                     	_obj.attr('glbd', glbd); // 关联表单
-                    	_obj.attr('fxlx', _fxsmFxlx == '1' ? '节税提醒' : '风险名称'); 
+                    	_obj.attr('fxlx', _fxsmFxlx === '1' ? '节税提醒' : '风险名称');
                     	// 财税管家进来第一次需要显示
                     	parent.fxsmInitData.autoShowFxjk(_obj);
                     }
@@ -1545,20 +1486,15 @@ function ViewEngine(){
             });
             // 设置附表背景色 Added By C.Q 20170306 
             viewEngine.showFbBgcolor(idxVariable2NoPass);
-            //_ms_ = new Date().getTime() - _ms_;
             var _end_ = new Date().getTime();
-            console.log("INFO:"+_end_+" 渲染结束时间");
-            var _ms_ = _end_ - _start_;
-            console.log("INFO:"+_ms_+"ms 渲染耗时");
-            console.log("tipsForVerify2 in " + _ms_ + "ms ");
-        }
+            console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms tipsForVerify2");
+        };
         /**
          * 检查校验不通过单元格，并提示
          * @param el
          */
         ViewEngine.prototype.tipsForVerify = function(el, qhfbbz){
-        	console.log("tipsForVerify start!");
-        	
+
         	//避免添加行时页面还没有渲染完成就去执行校验不通过的公式，导致找不到界面元素，从而添加背景色失败
         	var scope = angular.element($('#viewCtrlId')).scope();
         	if(scope.$$phase){
@@ -1567,7 +1503,7 @@ function ViewEngine(){
         			},50);
         		return;
             }
-        	var _ms_ = new Date().getTime();
+        	var _start_ = new Date().getTime();
             var idxVariable2NoPassLocal = parent.formulaEngine.idxVariable2NoPass;
             var idxCurrentVariable2NoPassLocal = parent.formulaEngine.idxCurrentVariable2NoPass;
             
@@ -1613,10 +1549,10 @@ function ViewEngine(){
       					 * 此处target为input，input为不可见元素，实际背景色变色应该在ul上。
                     	 */
                     	//分页下拉
-                    	if(typeof _obj.attr("ng-select-page") != 'undefined'){
+                    	if(typeof _obj.attr("ng-select-page") !== 'undefined'){
                         	_obj = _obj.prev();
                         }
-                        if(typeof _obj.attr("target-select-query") != 'undefined'){
+                        if(typeof _obj.attr("target-select-query") !== 'undefined'){
                         	_obj = _obj.siblings("div").children("ul");
                         }
                         var _nm = _obj.attr("ng-model");
@@ -1624,7 +1560,7 @@ function ViewEngine(){
                         if(_jpath && _jpath.indexOf('[')>-1 && _jpath.indexOf(']')>_jpath.indexOf('[')) {
                         	var l = _jpath.match(/\[\d+\]/g);
     	                    if(l != null){
-    	                		if(l.length == 2){
+    	                		if(l.length === 2){
     	                			var pIdx = l[0].replace(']','').replace('[','');
     	            				var cIdx = l[1].replace(']','').replace('[','');
     	                			_subscript = [pIdx,cIdx];
@@ -1654,7 +1590,7 @@ function ViewEngine(){
                     		_obj.parent().removeClass(LevelInfos[key]);
                     	}
                     	//上次校验不通过，本次校验通过时，去除样式
-                        if (undefined == var2NoPasslocal) {
+                        if (undefined === var2NoPasslocal) {
                             _obj.removeAttr('title');
                             _obj.removeAttr('tiptype');
                             _obj.parent().removeClass("relative");
@@ -1676,7 +1612,7 @@ function ViewEngine(){
                             $.each(var2NoPass, function(id, FormulaObject) {
                             	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
                             	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                        		if (position == '1') {
+                        		if (position === '1') {
                         			// 显示至右上角
                         			_tips += FormulaObject.tips + '<br/>';
      	                            _tips_title += FormulaObject.tips + '\n';
@@ -1711,7 +1647,7 @@ function ViewEngine(){
                             
                             // 校验不通过时，为多选框checkbox或单选框radio的父节点添加背景颜色
                             var inputType = _obj.attr("type");  
-                            if(inputType=="checkbox"||inputType=="radio"){
+                            if(inputType==="checkbox"||inputType==="radio"){
                             	_obj.parent().addClass(classColor ? classColor : LevelInfos['default']);
                             }
                             
@@ -1725,14 +1661,14 @@ function ViewEngine(){
         			        		var sheetName = $(this).html();
         			        		var url = $(this).attr('href');
         	        				for(var p in _fxsmGlbd) { // 遍历json数组时，这么写p为索引，0,1
-        	        					if(sheetName != null && sheetName != '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
+        	        					if(sheetName != null && sheetName !== '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
         	        						glbd += "<a target=\"frmSheet\" href=\""+url+"?fjp="+_fxsmGlbd[p].jpath+"\" onclick=\"javascript:fbSelected("+i+");\" >"+_fxsmGlbd[p].fbid + " " + (_fxsmGlbd[p].fbmc ? _fxsmGlbd[p].fbmc : '')+"</a>";
         	        	    			}
         	                		}
         		        		});
                         	}
                         	_obj.attr('glbd', glbd); // 关联表单
-                        	_obj.attr('fxlx', _fxsmFxlx == '1' ? '节税提醒' : '风险名称'); 
+                        	_obj.attr('fxlx', _fxsmFxlx === '1' ? '节税提醒' : '风险名称');
                         	// 财税管家进来第一次需要显示
                         	parent.fxsmInitData.autoShowFxjk(_obj);
                         }
@@ -1744,10 +1680,6 @@ function ViewEngine(){
             		_obj = $('textarea[jpath=\''+_jpath+'\']');
                     if (_obj.attr("ng-model")) {
                         var _nm = _obj.attr("ng-model");
-//                        var _subscript = null;
-//                        if(_jpath.indexOf('[')>-1 && _jpath.indexOf(']')>_jpath.indexOf('[')){
-//                        	_subscript = _jpath.substring(_jpath.indexOf('[')+1,_jpath.indexOf(']'));
-//                        }
                         // Adding tips according to not passed verify. 
                         var var2NoPasslocal = idxVariable2NoPass[_jpath];
                         var _tips = '';
@@ -1756,7 +1688,7 @@ function ViewEngine(){
                     	for(var key in LevelInfos) { 
                     		_obj.removeClass(LevelInfos[key]); // 移除样式
                     	}
-                        if (undefined == var2NoPasslocal) {
+                        if (undefined === var2NoPasslocal) {
                             _obj.removeAttr('title');
                             _obj.removeAttr('tiptype');
                             _obj.parent().removeClass("relative");
@@ -1778,7 +1710,7 @@ function ViewEngine(){
                             $.each(var2NoPass, function(id, FormulaObject){
                             	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
                             	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                        		if (position == '1') {
+                        		if (position === '1') {
                         			// 显示至右上角
                         			_tips += FormulaObject.tips + '<br/>';
      	                            _tips_title += FormulaObject.tips + '\n';
@@ -1814,7 +1746,7 @@ function ViewEngine(){
         			        		var sheetName = $(this).html();
         			        		var url = $(this).attr('href');
         	        				for(var p in _fxsmGlbd) { // 遍历json数组时，这么写p为索引，0,1
-        	        					if(sheetName != null && sheetName != '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
+        	        					if(sheetName != null && sheetName !== '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
         	        						glbd += "<a target=\"frmSheet\" href=\""+url+"?fjp="+_fxsmGlbd[p].jpath+"\" onclick=\"javascript:fbSelected("+i+");\" >"+_fxsmGlbd[p].fbid + " " + (_fxsmGlbd[p].fbmc ? _fxsmGlbd[p].fbmc : '')+"</a>";
         	        	    			}
         	                		}
@@ -1822,7 +1754,7 @@ function ViewEngine(){
                         	}
                         	
                         	_obj.attr('glbd', glbd); // 关联表单
-                        	_obj.attr('fxlx', _fxsmFxlx == '1' ? '节税提醒' : '风险名称'); 
+                        	_obj.attr('fxlx', _fxsmFxlx === '1' ? '节税提醒' : '风险名称');
                         	// 财税管家进来第一次需要显示
                         	parent.fxsmInitData.autoShowFxjk(_obj);
                         }
@@ -1834,10 +1766,10 @@ function ViewEngine(){
             		var _this=_obj;
             		var isSelectQuery=false;
                     if (_obj.attr("ng-model")) {
-                        if(typeof _obj.attr("ng-select-query") != 'undefined'){
+                        if(typeof _obj.attr("ng-select-query") !== 'undefined'){
                             isSelectQuery=true;
                         }
-                        if(isSelectQuery && _obj.siblings("div") != 'undefined'){
+                        if(isSelectQuery && _obj.siblings("div") !== 'undefined'){
                             _obj = _obj.siblings("div");
                         }
                         var _nm = _obj.attr("ng-model");
@@ -1866,7 +1798,7 @@ function ViewEngine(){
                     		_obj.removeClass(LevelInfos[key]); // 移除样式
                             isSelectQuery && _this.removeClass(LevelInfos[key]);//如果是select2,也有对元素select2进行清理
                     	}
-                        if (undefined == var2NoPasslocal) {
+                        if (undefined === var2NoPasslocal) {
                             _obj.removeAttr('title');
                             if(_obj.attr('ng-multiple')){
                     			_obj.next().removeAttr('title');
@@ -1892,7 +1824,7 @@ function ViewEngine(){
                             $.each(var2NoPass, function(id, FormulaObject){
                             	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
                             	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                        		if (position == '1') {
+                        		if (position === '1') {
                         			// 显示至右上角
                         			_tips += FormulaObject.tips + '<br/>';
      	                            _tips_title += FormulaObject.tips + '\n';
@@ -1945,7 +1877,7 @@ function ViewEngine(){
         			        		var sheetName = $(this).html();
         			        		var url = $(this).attr('href');
         	        				for(var p in _fxsmGlbd) { // 遍历json数组时，这么写p为索引，0,1
-        	        					if(sheetName != null && sheetName != '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
+        	        					if(sheetName != null && sheetName !== '' && sheetName.indexOf(_fxsmGlbd[p].fbid) >= 0) {
         	        						glbd += "<a target=\"frmSheet\" href=\""+url+"?fjp="+_fxsmGlbd[p].jpath+"\" onclick=\"javascript:fbSelected("+i+");\" >"+_fxsmGlbd[p].fbid + " " + (_fxsmGlbd[p].fbmc ? _fxsmGlbd[p].fbmc : '')+"</a>";
         	        	    			}
         	                		}
@@ -1953,7 +1885,7 @@ function ViewEngine(){
                         	} 
                         	
                         	_obj.attr('glbd', glbd); // 关联表单
-                        	_obj.attr('fxlx', _fxsmFxlx == '1' ? '节税提醒' : '风险名称'); 
+                        	_obj.attr('fxlx', _fxsmFxlx == '1' ? '节税提醒' : '风险名称');
                         	// 财税管家进来第一次需要显示
                         	parent.fxsmInitData.autoShowFxjk(_obj);
                         }
@@ -1987,9 +1919,9 @@ function ViewEngine(){
             parent.formulaEngine.idxCurrentVariable2Control = {};
             // 设置附表背景色 Added By C.Q 20170306 
             viewEngine.showFbBgcolor(idxVariable2NoPass);
-            _ms_ = new Date().getTime() - _ms_;
-            console.log("tipsForVerify in " + _ms_ + "ms ");
-        }
+            var _end_ = new Date().getTime();
+            console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms tipsForVerify");
+        };
         // glbd数组去重
         ViewEngine.prototype.disGlbds = function(arr){
         	if(!arr) {
@@ -2146,6 +2078,15 @@ function ViewEngine(){
         }
         ViewEngine.prototype.updateUIControl = function(domElem, controls){
             var jqElem = $(domElem);
+
+            /**
+             * ng-select-page 指令控制的应该是生成的selectpage对应的dom
+             */
+            if(jqElem.attr("ng-select-page")){
+                jqElem = jqElem.prev();
+                domElem = jqElem.get(0);
+            }
+
             for ( var ctl in controls) {
                 var flag = controls[ctl];
                 if (ctl === "readonly") {
@@ -2174,6 +2115,14 @@ function ViewEngine(){
                     if (flag) {
                         if (typeof domElem["$OLD_RW$"] == "undefined") {
                             domElem["$OLD_RW$"] = jqElem.attr("disabled") || false;
+                        }
+                        if (typeof domElem["$OLD_CSS$background-color"] === "undefined") {
+                            /**
+                              *  设置dom元素样式为disabled时,会自动加上background-color:#f1edee(灰色)，
+                              *  因此在设置disabled之前需要将dom元素本身的background-color样式保存在OLD_CSS中
+                              *  以便在取消disabled时候能还原到dom元素最初的background-color
+                             */
+                            domElem["$OLD_CSS$background-color"] = jqElem.css("background-color") || false;
                         }
                         jqElem.attr("disabled", "disabled");
                     } else {
@@ -2922,6 +2871,7 @@ function ViewEngine(){
             /*
                获取代码ng-repeat-init的元素，获取该scope,获取真实数组下标。
                修改该元素中jpath属性
+               此处考虑一个问题，就是table的遍历对象为空。此时是找不到table的
              */
             viewEngine.updateJpath($dataPanel);
 
@@ -2941,6 +2891,13 @@ function ViewEngine(){
  * @param $dataPanel 数据区ng-repeat的父dom
  */
 ViewEngine.prototype.updateJpath = function ($dataPanel) {
+    /*
+     * 找不到表单table,则不更新下标
+     */
+    if(!$dataPanel){
+        //throw "找不到表单table";
+        return;
+    }
     /*
        获取代码ng-repeat-init的元素，获取该scope,获取真实数组下标。
        修改该元素中jpath属性

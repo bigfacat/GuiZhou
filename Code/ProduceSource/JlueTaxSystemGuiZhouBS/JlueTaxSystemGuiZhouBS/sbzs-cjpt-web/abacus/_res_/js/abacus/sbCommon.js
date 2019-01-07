@@ -25,6 +25,23 @@ function delBranch(){
 }
 
 /**
+ * 删除报文中的节点,删除数组中某节点的值为空的下标数据
+* @param   
+* @returns 
+*/
+function delBranch2(data, key){
+	
+	if(data != null && data.length >= 1){
+		for( var i = data.length - 1; i >= 0; i--){
+			var grib = data[i];
+			if(grib[key] == null || grib[key] == ""){
+				data.splice(i, 1);
+			}
+		}
+	}
+}
+
+/**
  * 小规模差额征收起征点计算
  */
 function xgmCezsqzd(bqfse,bqkce,ysfwxsqbhssr,bqfse5,bqkce5,ysfwxsqbhssr5,yzzzsbhsxse,xsczbdcbhsxse,msxse,ckmsxse){
@@ -2077,57 +2094,50 @@ function gdXsbdcyw(lc1, lc4, lc9, lc13) {
 	if (((nsqxDm == '06' && total > 30000)||(nsqxDm == '08' && total > 90000)) && lc4 > 0) {
 		var defaultValue = formData.qcs.initData.zzsxgmsbInitData.gdDqbdcbhsxse;
 		var gdLock = formData.qcs.initData.zzsxgmsbInitData.gdLock;
-		var message = "<br>";
-		message += "<table style='font-size:1em;'>";
+		var message = "";
+		message += "<table style='font-size:14px;'>";
 		message += "	<tr>";
-		message += "		<td colspan='2' width='50%'>&nbsp;&nbsp;本期发生销售不动产业务？</td>";
-		message += "		<td width='25%' valign='middle'>";
+		message += "		<td colspan='2' width='60%'>本期发生销售不动产业务？</td>";
+		message += "		<td width='20%' valign='middle'>";
 		message += "			<input type='radio' name='sfbqxsbdc' onclick='javascript:document.getElementById(\"xsbdc\").style.visibility=\"visible\";' value='1' " + (gdLock&&gdLock=='1'?"checked='checked'":"") + "/>&nbsp;&nbsp;是&nbsp;&nbsp;";
 		message += "		</td>";
 		message += "		<td valign='middle'>";
 		message += "			<input type='radio' name='sfbqxsbdc' onclick='javascript:document.getElementById(\"xsbdc\").style.visibility=\"hidden\";' value='2' " + (!gdLock||gdLock!='1'?"checked='checked'":"") + "/>&nbsp;&nbsp;否";
 		message += "		</td>";
 		message += "	</tr>";
-		message += "	<tr id='xsbdc' " + (!gdLock||gdLock!='1'?"style='visibility:hidden;''":"") + " >";
-		message += "		<td colspan='2'>&nbsp;&nbsp;当期不动产不含税销售额：</td>";
+		message += "	<tr id='xsbdc' " + (!gdLock||gdLock!='1'?"style='visibility: hidden;'":"") + " >";
+		message += "		<td colspan='2'>当期不动产不含税销售额：</td>";
 		message += "		<td colspan='2'>";
 		message += "			<input type='text' placeholder='请输入销售额' id='myInput' value='" + (defaultValue||defaultValue==0?defaultValue:'') + "' style='border:1px solid #fff;border-bottom-color:#b5b5b5;width:100%;'/>";
 		message += "		</td>";
 		message += "	</tr>";
 		message += "</table>";
-		Message.confirmInfo({
-			icoCls: '',
-			msgCls: '', 
-			height: 160,
-			width: 450,
-			btn:[['确定', 'ok']],
-			message: message,
-			closeBtn: false,
+
+        window.parent.layer.confirm(message,{
+			type: 1,
+			area: ['450px','210px'],
+			btn: ['确定'],
 			title: '提示',
-			handler: function(tp){
-				var radioValue = $(':radio[name="sfbqxsbdc"]:checked').val();
-				var result = false;
+			closeBtn:0,
+			yes: function (index, layero) {
+				var radioValue = $(layero).find(':radio[name="sfbqxsbdc"]:checked').val();
 				if (radioValue === "1") {
-					var value = $('#myInput').val();//
+					var value = $(layero).find('#myInput').val();
                     if(value === ""|| value=== undefined || !/(^[-]{0,1}\d+$)|(^[-]{0,1}\d+\.\d+$)/g.test(value)){
-						$('#myInput').val('');
-						$('#myInput').attr('placeholder', '请输入正确的不含税销售额');
-						
-						// var index = window.parent.layer.alert("您输入的值无效或未输入！");
-						// window.parent.layer.title('错误提示', index);							
+                        $(layero).find('#myInput').val('');
+                        $(layero).find('#myInput').attr('placeholder', '请输入正确的不含税销售额');
 					} else {
                         var val = ROUND(Number(value), 2);
                         formData.qcs.initData.zzsxgmsbInitData.gdDqbdcbhsxse = val;
                         formulaEngine.apply("qcs.initData.zzsxgmsbInitData.gdDqbdcbhsxse", val);
-						Message.close();
+                        window.parent.layer.closeAll();
                         // 调整
                         result = 1;
 					}
-					
 				} else {
                     formData.qcs.initData.zzsxgmsbInitData.gdDqbdcbhsxse = 0;
                     formulaEngine.apply("qcs.initData.zzsxgmsbInitData.gdDqbdcbhsxse", 0);
-					Message.close();
+                    window.parent.layer.closeAll();
                     // 调整
                     result = -1;
 				}
@@ -2139,8 +2149,7 @@ function gdXsbdcyw(lc1, lc4, lc9, lc13) {
                 var body = $("#frmSheet")[0].contentWindow.document.body;
                 viewEngine.formApply($viewAppElement);
                 viewEngine.tipsForVerify(body);
-			}, 
-			autoClose: false
+			}
 		});
 	} else {
 		formData.qcs.initData.zzsxgmsbInitData.gdLock = 0;
@@ -2156,3 +2165,87 @@ function gdXsbdcyw(lc1, lc4, lc9, lc13) {
 	}
 	
 }
+
+/**
+ * 业务中台使用
+ * 广东小规模个性化：GDSDZSWJ-8100
+ * 是否发生过销售不动产业务
+ */
+function gdXsbdcywYwzt(lc1, lc4, lc9, lc13) {
+	var total = lc1 + lc4 + lc9 + lc13;
+	var nsqxDm = formData.fq_.nsqxDm;
+	if (((nsqxDm == '06' && total > 30000)||(nsqxDm == '08' && total > 90000)) && lc4 > 0) {
+		var defaultValue = formData.ss_.gdDqbdcbhsxse;
+		var gdLock = formData.ss_.gdLock;
+		var message = "";
+		message += "<table style='font-size:14px;'>";
+		message += "	<tr>";
+		message += "		<td colspan='2' width='60%'>&nbsp;&nbsp;本期发生销售不动产业务？</td>";
+		message += "		<td width='20%' valign='middle'>";
+		message += "			<input type='radio' name='sfbqxsbdc' onclick='javascript:document.getElementById(\"xsbdc\").style.visibility=\"visible\";' value='1' " + (gdLock&&gdLock=='1'?"checked='checked'":"") + "/>&nbsp;&nbsp;是&nbsp;&nbsp;";
+		message += "		</td>";
+		message += "		<td valign='middle'>";
+		message += "			<input type='radio' name='sfbqxsbdc' onclick='javascript:document.getElementById(\"xsbdc\").style.visibility=\"hidden\";' value='2' " + (!gdLock||gdLock!='1'?"checked='checked'":"") + "/>&nbsp;&nbsp;否";
+		message += "		</td>";
+		message += "	</tr>";
+		message += "	<tr id='xsbdc' " + (!gdLock||gdLock!='1'?"style='visibility:hidden;''":"") + " >";
+		message += "		<td colspan='2'>当期不动产不含税销售额：</td>";
+		message += "		<td colspan='2'>";
+		message += "			<input type='text' placeholder='请输入销售额' id='myInput' value='" + (defaultValue||defaultValue==0?defaultValue:'') + "' style='border:1px solid #fff;border-bottom-color:#b5b5b5;width:100%;'/>";
+		message += "		</td>";
+		message += "	</tr>";
+		message += "</table>";
+
+        window.parent.layer.confirm(message,{
+            type: 1,
+            area: ['450px','210px'],
+            btn: ['确定'],
+            title: '提示',
+            closeBtn:0,
+            yes: function (index, layero) {
+                var radioValue = $(layero).find(':radio[name="sfbqxsbdc"]:checked').val();
+                if (radioValue === "1") {
+                    var value = $(layero).find('#myInput').val();
+                    if(value === ""|| value=== undefined || !/(^[-]{0,1}\d+$)|(^[-]{0,1}\d+\.\d+$)/g.test(value)){
+                        $(layero).find('#myInput').val('');
+                        $(layero).find('#myInput').attr('placeholder', '请输入正确的不含税销售额');
+                    } else {
+                        var val = ROUND(Number(value), 2);
+                        formData.ss_.gdDqbdcbhsxse = val;
+                        formulaEngine.apply("ss_.gdDqbdcbhsxse", val);
+                        window.parent.layer.closeAll();
+                        // 调整
+                        result = 1;
+                    }
+                } else {
+                    formData.ss_.gdDqbdcbhsxse = 0;
+                    formulaEngine.apply("ss_.gdDqbdcbhsxse", 0);
+                    window.parent.layer.closeAll();
+                    // 调整
+                    result = -1;
+                }
+
+                formData.ss_.gdLock = result;
+                formulaEngine.apply("ss_.gdLock", result);
+                var $viewAppElement = $("#frmSheet").contents().find("#viewCtrlId");
+                var viewEngine = $("#frmSheet")[0].contentWindow.viewEngine;
+                var body = $("#frmSheet")[0].contentWindow.document.body;
+                viewEngine.formApply($viewAppElement);
+                viewEngine.tipsForVerify(body);
+            }
+        });
+	} else {
+		formData.ss_.gdLock = 0;
+		setTimeout(function() {
+			formulaEngine.apply("ss_.gdLock", 0);
+			var $viewAppElement = $("#frmSheet").contents().find("#viewCtrlId");
+			var viewEngine = $("#frmSheet")[0].contentWindow.viewEngine;
+			var body = $("#frmSheet")[0].contentWindow.document.body;
+			viewEngine.formApply($viewAppElement);
+			viewEngine.tipsForVerify(body);
+		}, 500);
+		
+	}
+	
+}
+

@@ -12,6 +12,7 @@ var formulaEngineJb; //减少附表前对应的初始化报文
 var formulaCalculates;
 var formEngine;
 var fxsmInitData;
+var tbsmUrl;
 // 低版本IE兼容性处理：控制台日志记录器。
 if (!window.console) {
     console = { log : function(){} };
@@ -39,11 +40,11 @@ function FormEngine(){
      * select2样式需放table前面，解决csgj选择框选择后文字过长显示问题CSGJ-1093 CSGJ-1071
      */
     FormEngine.prototype.viewCss = [ 
-        "/resources4/tax-module/selectPage/selectpage.css",
-	    "/resources4/tax-module/select2/select2.css",
+        "/abacus/resources4/tax-module/selectPage/selectpage.css",
+	    "/abacus/resources4/tax-module/select2/select2.css",
 	    "/abacus/_res_/css/message/message_solid.css",
-	    "/resources4/tax-module/taxReturns/table.css",
-        "/resources4/layui/css/layui.css",
+	    "/abacus/resources4/tax-module/taxReturns/table.css",
+        "/abacus/resources4/layui/css/layui.css",
 	    "/resources/css/zTreeStyle/zTreeStyle.css"];
     
     /**
@@ -133,14 +134,11 @@ function FormEngine(){
             }
 
             var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_ +" xFormula、xInitData请求开始时间");
             $.when($.getJSON(this.URL_GET_FORM_DATA, jsonParams),
                 getRulesMethod).then(function(datas, rules) {
                 formData = datas[0];
                 var _end_ = new Date().getTime();
-                console.log("INFO:" +_end_ +" xFormula、xInitData请求结束时间");
-                var _ms_ = _end_ - _start_;
-                console.log("INFO:" +_ms_+"ms xFormula、xInitData请求耗时");
+                console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms xFormula、xInitData");
                 // 获取时间
                 serverTime = formData.serverTime;
                 // 2018-07-03 将formData=formData.body会使ysqxxid丢失，保存到此变量
@@ -361,7 +359,7 @@ function FormEngine(){
                 if(true === flagFormDebuging) {
                     dhtmlx.message("表单引擎初始化完毕 , " + _ms_ + "ms", "info", 2000);
                 }
-                window.parent.layer.closeAll();
+                window.parent.layer.closeAll("loading");
             });
         };
 
@@ -436,7 +434,7 @@ function FormEngine(){
                             if (true === flagFormDebuging) {
                                 dhtmlx.message("表单引擎初始化完毕 , " + _ms_ + "ms", "info", 2000);
                             }
-                            window.parent.layer.closeAll();
+                            window.parent.layer.closeAll("loading");
                         },
                         error: function(result) {
                             if (typeof commonError500Callback === "function") {
@@ -527,7 +525,6 @@ function FormEngine(){
          */
         FormEngine.prototype.loadCss4Sheet = function(urlViewCss){
         	var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" 加载"+urlViewCss+"开始时间");
             var frame = document.getElementById("frmSheet");
             var domDocument = frame.contentWindow.document;
             var oCss = document.createElement("link");
@@ -536,9 +533,7 @@ function FormEngine(){
             oCss.href = pathRoot + urlViewCss;
             this.appendToHead(domDocument, oCss);
             var _end_ = new Date().getTime();
-            console.log("INFO:"+_end_+" 加载"+urlViewCss+"结束时间");
-            var _ms_ = _end_ - _start_;
-            console.log("INFO:"+_ms_+"ms 加载"+urlViewCss+"耗时");
+            console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 加载:"+urlViewCss);
         };
         /**
          * 装载表单所需要的脚本文件.
@@ -546,7 +541,7 @@ function FormEngine(){
          */
         FormEngine.prototype.loadScript4Sheet = function(urlViewScript){
         	var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" 加载"+urlViewScript+"开始时间");
+
         	var oScript = document.createElement("script");
             oScript.type = "text/javascript";
             oScript.src = pathRoot + urlViewScript;
@@ -557,15 +552,12 @@ function FormEngine(){
                 this.appendToHead(domDocument, oScript);
             }
             var _end_ = new Date().getTime();
-            console.log("INFO:"+_end_+" 加载"+urlViewScript+"结束时间");
-            var _ms_ = _end_ - _start_;
-            console.log("INFO:"+_ms_+"ms 加载"+urlViewScript+"耗时");
+            console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 加载:"+urlViewScript);
         };
         
         
         FormEngine.prototype.loadScript4head = function(urlViewScript){
         	var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" 加载"+urlViewScript+"开始时间");
         	var oScript = document.createElement("script");
             oScript.type = "text/javascript";
             oScript.src = pathRoot + urlViewScript;
@@ -575,9 +567,7 @@ function FormEngine(){
             	oHead.appendChild(oScript);
             }
             var _end_ = new Date().getTime();
-            console.log("INFO:"+_end_+" 加载"+urlViewScript+"结束时间");
-            var _ms_ = _end_ - _start_;
-            console.log("INFO:"+_ms_+"ms 加载"+urlViewScript+"耗时");
+            console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 加载:"+urlViewScript);
         };
         /**
          * 装载表单列表信息.
@@ -585,7 +575,7 @@ function FormEngine(){
         FormEngine.prototype.loadSheetList = function(urlFormList, jsonParams){
             var _this = this;
             var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" xSheets请求开始时间");
+
             var formEngine = this;
             jsonParams['_random'] = Math.random();
             var async = _this.Load4YwztBz();
@@ -595,6 +585,9 @@ function FormEngine(){
         		async: async,
         		data : jsonParams,
                 success : function(data, status, xhr){
+                    var _end_ = new Date().getTime();
+                    console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms xSheets");
+
                     if (status === "success") {
             			if(data.length===1){
             				var $menu = $(".MenuNormal .SheetMenu");
@@ -607,10 +600,8 @@ function FormEngine(){
             			}
                         _this.lstSheets = data;
                         _this.showSheetList();
-                        var _end_ = new Date().getTime();
-                        console.log("INFO:"+_end_+" xSheets请求结束时间");
-                        var _ms_ = _end_ - _start_;
-                        console.log("INFO:"+_ms_+"ms xSheets请求耗时");
+
+
                         if(true === flagFormDebuging) {
                             dhtmlx.message("主附表清单加载完毕, " + _ms_ + "ms", "info", 2000);
                         }
@@ -656,8 +647,8 @@ function FormEngine(){
                              		formEngine.getTbsmData(formEngine.lstSheets[0].url);
                         		 }
                         	} else {
-    							if(typeof automaticloadingShhet === "function"){
-    								automaticloadingShhet(formEngine.lstSheets);
+    							if(typeof automaticloadingSheet === "function"){
+    								automaticloadingSheet(formEngine.lstSheets);
     							}else{
     								jqFrmSheet.attr("src", formEngine.lstSheets[0].url);
     							}
@@ -771,27 +762,32 @@ function FormEngine(){
          */
         FormEngine.prototype.getTbsmData = function(url){
         	// 先清空填表说明内容
-        	formDebuging.TBSM_JSON = {};
-        	formDebuging.setShowTbsmValues('','','');
-        	// 由_bizReq_path_和当前页面文件名组成urlkey作为保存至mongodb的模块唯一键
-        	// 例：当前请求连接为http://localhost:8080/sbzs-cjpt-web/biz/sbzs/xgmzzs/form/xgmzzs_BDA0610535.html，取到sbzs/xgmzzs/form/xgmzzs_BDA0610535.html作为urlkey存入数据库
-        	var urlkey = formEngine.getUrlkey(url); // 保存至数据库作为此模块唯一key
-        	var _start_ = new Date().getTime();
-            console.log("INFO:"+_start_+" 填表说明请求开始时间");
-        	var urlExtractTbsm = formDebuging.URL_EXTRACT_TBSM + "?gdslxDm=" + jsonParams["gdslxDm"] + "&urlkey="+urlkey;
-        	$.ajax({
-        		type : "POST",
-        		url : urlExtractTbsm,
-        		dataType : "json",
-                success : function(data) {
-                    formDebuging.TBSM_JSON = eval('('+data+')');
-        			
-                    var _end_ = new Date().getTime();
-	                console.log("INFO:"+_end_+" 填表说明请求结束时间");
-	                var _ms_ = _end_ - _start_;
-	                console.log("INFO:"+_ms_+"ms 填表说明请求耗时");
-        		}
-        	});
+        	if (typeof formDebuging === "undefined") {
+        		tbsmUrl = url;
+        		setTimeout(function() {
+        			formEngine.getTbsmData(tbsmUrl);
+        		}, 100);
+        	} else {
+	        	formDebuging.TBSM_JSON = {};
+	        	formDebuging.setShowTbsmValues('','','');
+	        	// 由_bizReq_path_和当前页面文件名组成urlkey作为保存至mongodb的模块唯一键
+	        	// 例：当前请求连接为http://localhost:8080/sbzs-cjpt-web/biz/sbzs/xgmzzs/form/xgmzzs_BDA0610535.html，取到sbzs/xgmzzs/form/xgmzzs_BDA0610535.html作为urlkey存入数据库
+	        	var urlkey = formEngine.getUrlkey(url); // 保存至数据库作为此模块唯一key
+	        	var _start_ = new Date().getTime();
+
+	        	var urlExtractTbsm = formDebuging.URL_EXTRACT_TBSM + "?gdslxDm=" + jsonParams["gdslxDm"] + "&urlkey="+urlkey;
+	        	$.ajax({
+	        		type : "POST",
+	        		url : urlExtractTbsm,
+	        		dataType : "json",
+	                success : function(data) {
+	                    formDebuging.TBSM_JSON = eval('('+data+')');
+	        			
+	                    var _end_ = new Date().getTime();
+	                    console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 填表说明请求");
+	        		}
+	        	});
+        	}
         };
         /**
          * 根据当前请求url + lstSheets的url来获取urlkey，作为当前页面唯一标识符 A by C.Q
@@ -806,7 +802,7 @@ function FormEngine(){
         FormEngine.prototype.showSheetList = function(){
             var sheets = this.lstSheets;
             var divSheetlist = $("#divSheetlist");
-			var uiStepSheetlist = $("#uiStepSheetlist");
+			var divStepSheet = $(".table-step-item");
             if (divSheetlist.length) {
                 var html = "";
                 var sheet;
@@ -825,7 +821,7 @@ function FormEngine(){
                 divSheetlist.html(html);
                 divSheetlist.find("li:not(.active)").first().addClass("current_selected_BD");
             }
-            if (uiStepSheetlist.length) {
+            if (divStepSheet.length) {
 				showStepSheetlist(sheets);
 			}
         };
@@ -852,6 +848,10 @@ function FormEngine(){
             	$mask.css({"float":"left","width":scrollWidth,"height":scrollHeight,"position":"absolute"})
             	//锁定整个右侧工作区
             	$mask.mask(" ");
+                layer.alert("您已经将申报表导出报盘进行申报，此申报表不可再次填写编辑！");
+                $mask.click(function () {
+                    layer.alert("您已经将申报表导出报盘进行申报，此申报表不可再次填写编辑！");
+                });
             }
             window.parent.layer.closeAll('loading');
             $(domDocument).find("#maskFrmSheet").hide();
@@ -1151,6 +1151,52 @@ function FormEngine(){
 
 
 $(function(){
+	/**
+	 * 进入填表页弹框提示操作规程
+	 */
+	var czgcFlag = $("#czgcFlag").val(); // 全局设置
+	var czgcStart = document.cookie.indexOf("czgcCookie=")===-1?-1:document.cookie.indexOf("czgcCookie=")+11;
+	var czgcEnd = document.cookie.indexOf(";", czgcStart)===-1?document.cookie.length:document.cookie.indexOf(";", czgcStart);
+	var czgcCookie = document.cookie.substring(czgcStart, czgcEnd);
+	var sxslFlag = true;
+	if (contextPath.indexOf("sxsl")>-1) {
+		sxslFlag = false;
+	}
+	if (czgcFlag==="Y" && czgcCookie!=="N" && sxslFlag) {
+		var zyywnWebContextPath = $("#zyywnWebContextPath").val();
+		if(zyywnWebContextPath === null || typeof zyywnWebContextPath === 'undefined'){
+			zyywnWebContextPath = "/zyywn-cjpt-web";
+		}
+		var czgcUrl = zyywnWebContextPath+"/czgc/queryWSDataList.do?ywbm="+$("#ywbm").val().toUpperCase();
+		window.parent.layer.open({
+			type : 1,
+			title : "操作规程",
+			id : "czgcIframe",
+			zIndex : 10000,
+			skin : 'layui-layer-demo', // 样式类名
+			anim : 2,
+			shadeClose : true, // 开启遮罩关闭
+			area : ['1000px', '600px'],
+			content : '<iframe src='+czgcUrl+' style="width:100%; height:95%;"></iframe>',
+			success : function(layero, index) {
+				var $iframe = layero.find("#czgcIframe");
+				$iframe.css("padding", "0px 0px 0px 0px");
+				layero.css("height", (layero.height()-60)+"px");
+				var $div = layero.find(".layui-layer-btn");
+				$div.append('<span style="position:absolute; left:780px; bottom: 28px;"><input type="checkbox" id="nextShowFlag"/>下次不显示</span>');
+			},
+			btn : ['确认'],
+			yes : function(index, layero) {
+				var $checkbox = layero.find("#nextShowFlag");
+				if ($checkbox.attr("checked")==="checked") {
+					// 往Cookies里塞czgcCookies = false;
+					document.cookie = "czgcCookie="+escape("N");
+				}
+				window.parent.layer.close(index);
+			}
+		});
+	}
+	
     formEngine = new FormEngine();
 
     //1、检查Adobe Reader
@@ -1213,13 +1259,13 @@ $(function(){
                         $("td.areaHeadBtn", window.parent.document).show();
                         $(jsonParams).attr("mdse", v);
                         formEngine.initialize();
-                        window.parent.layer.closeAll();
+                        window.parent.layer.close(index);
                     }
                 } else {
                     window.parent.layer.load(2, {shade: 0.3});
                     $("td.areaHeadBtn", window.parent.document).show();
                     formEngine.initialize();
-                    window.parent.layer.closeAll();
+                    window.parent.layer.close(index);
                 }
             }
         });

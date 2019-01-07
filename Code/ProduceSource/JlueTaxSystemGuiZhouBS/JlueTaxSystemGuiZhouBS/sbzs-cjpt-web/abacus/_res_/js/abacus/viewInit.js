@@ -10,8 +10,10 @@ function _VIEW_START_UP_(){
      */
     _VIEW_START_UP_.prototype.viewLibScripts = [ // Common-Library scripts
 	    "/abacus/_res_/js/abacus/loader.js",
-	    "/abacus/_res_/js/lib/jquery.min.js", // LIB: JQuery                                      
-	    "/abacus/_res_/js/abacus/frameworkConstant.js" // constant
+        "/abacus/_res_/js/lib/jquery.min.js", // LIB: JQuery
+	    "/abacus/_res_/js/abacus/frameworkConstant.js", // constant
+        "/abacus/resources4/layui/layui.js",//引入layui
+        "/abacus/resources4/layui/transfer.js"
     ];
     _VIEW_START_UP_.prototype.viewCustomScripts = [ // Custom's scripts, including view engine.
         "/resources/js/jquery.base64.js",
@@ -20,12 +22,11 @@ function _VIEW_START_UP_(){
         "/resources/js/lib/message.js",//LIB:message https://github.com/DHTMLX/message
         "/resources/js/lib/angular.js", // LIB: Google Angular
         "/resources/js/lib/jquery.ztree.core.min.js" ,
-        "/resources4/tax-module/select2/select2.js", //LIB: select2。
-        "/resources4/tax-module/selectPage/selectPage.js",
+        "/resources/js/lib/jquery.ztree.excheck.js" ,
+        "/abacus/resources4/tax-module/select2/select2.js", //LIB: select2。
+        "/abacus/resources4/tax-module/selectPage/selectPage.js",
         "/resources/js/ecm-taglib/laypage-v1.3/laypage/laypage.js",  //laypage 分页控件
-        "/resources4/tax-js/common.js",//引入tax-js下的common.js
-        "/resources4/layui/layui.js",//引入layui
-        "/resources4/layui/transfer.js",//执行layui,加载layui组件
+        "/abacus/resources4/tax-js/common.js",//引入tax-js下的common.js
         "/resources/js/fixed-table.js",// 固定表头,
         "/abacus/_res_/js/abacus/viewDirective.js", // Framework: custom's directives
         "/abacus/_res_/js/abacus/viewEngine.js" // Framework: viewEngine
@@ -35,11 +36,12 @@ function _VIEW_START_UP_(){
             if (0 === this.flagLoad) {
                 this.loadFirst();
                 // TODO 此处为什么要延时加载js
-                window.setTimeout('_viewStartUp_.init()', 30);
+                window.setTimeout('_viewStartUp_.init()', 50);
             } else if (1 === this.flagLoad) {
-                if ('undefined' !== typeof $ && 'undefined' !== typeof loader) {
-                	
-                	//1、加载html页面定义的插件js，因为有些指令要依赖这些插件
+                if ('undefined' !== typeof $ && 'undefined' !== typeof loader
+                    && 'undefined' !== typeof layer) {
+
+                    //1、加载html页面定义的插件js，因为有些指令要依赖这些插件
                 	if('undefined' !== typeof subViewLibScripts){
                     	for (var i = 0; i < subViewLibScripts.length; i++) {        			
                     		//this.loadScript4Sheet(subViewLibScripts[i]);
@@ -53,8 +55,11 @@ function _VIEW_START_UP_(){
                     
                 	loader.load();
                     this.flagLoad++;
+
+                    //3、加载公办理浮框相关js和css
+                    this.loadTableStep4Sheet();
                 } else {
-                    window.setTimeout('_viewStartUp_.init()', 30);
+                    window.setTimeout('_viewStartUp_.init()', 50);
                 }
             } else {
                 console.log("WARN: Invalid load status.");
@@ -126,6 +131,27 @@ function _VIEW_START_UP_(){
             oScript.src = this.pathRoot + urlViewScript;
             this.appendToHead(oScript);
         };
+
+        /**
+         * 装载办理浮框相关js和css（table-step.css和table-step.js）.
+         */
+        _VIEW_START_UP_.prototype.loadTableStep4Sheet = function(){
+            if(this.pathRoot.indexOf("/sxsq") > -1){
+                var domDocument = document;
+                //加载table-step.css
+                var oCss = document.createElement("link");
+                oCss.type = "text/css";
+                oCss.rel = "stylesheet";
+                oCss.href = this.pathRoot + "/abacus/resources4/tax-module/table_step/table-step.css";
+                this.appendToHead(oCss);
+                //加载table-step.js
+                var oScript = document.createElement("script");
+                oScript.type = "text/javascript";
+                oScript.src = this.pathRoot + "/abacus/resources4/tax-module/table_step/table-step.js";
+                this.appendToHead(oScript);
+            }
+        };
+
         /**
          * Internet Explorer 7 Compatible
          */

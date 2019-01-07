@@ -183,5 +183,11 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             return View();
         }
 
+        public string exttbsm()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("exttbsm.json"));
+            return str;
+        }
+
     }
 }

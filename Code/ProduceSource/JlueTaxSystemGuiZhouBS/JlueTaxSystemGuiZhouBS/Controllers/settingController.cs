@@ -177,5 +177,26 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             return str;
         }
 
+        public void cwbbydy()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("cwbbydy.aspx"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
+        public void ybnsrzzsxbsz()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("ybnsrzzsxbsz.aspx"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
+        public void ybnsrzzsqcs()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("ybnsrzzsqcs.aspx"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
     }
 }

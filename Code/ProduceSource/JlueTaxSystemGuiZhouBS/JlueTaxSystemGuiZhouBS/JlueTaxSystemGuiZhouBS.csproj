@@ -122,20 +122,24 @@
     <Compile Include="Code\GTXResult.cs" />
     <Compile Include="Code\MyViewEngine.cs" />
     <Compile Include="Controllers\attachmentSbController.cs" />
+    <Compile Include="Controllers\cwbbController.cs" />
     <Compile Include="Controllers\cwbb_qy_kjzz_ybqyController.cs" />
     <Compile Include="Controllers\cygnControllerController.cs" />
+    <Compile Include="Controllers\fileController.cs" />
     <Compile Include="Controllers\fjssbController.cs" />
-    <Compile Include="Controllers\formulaController.cs" />
     <Compile Include="Controllers\jyxxController.cs" />
     <Compile Include="Controllers\mlogControllerController.cs" />
     <Compile Include="Controllers\myCenterControllerController.cs" />
     <Compile Include="Controllers\nssbController.cs" />
     <Compile Include="Controllers\portalSerController.cs" />
+    <Compile Include="Controllers\czgcController.cs" />
+    <Compile Include="Controllers\qysds_a_18yjdController.cs" />
     <Compile Include="Controllers\saveController.cs" />
     <Compile Include="Controllers\sbqc_aqsbController.cs" />
     <Compile Include="Controllers\sbqc_qtsbController.cs" />
     <Compile Include="Controllers\sbxxController.cs" />
     <Compile Include="Controllers\sbzfController.cs" />
+    <Compile Include="Controllers\sbzsController.cs" />
     <Compile Include="Controllers\settingController.cs" />
     <Compile Include="Controllers\sffxController.cs" />
     <Compile Include="Controllers\sycdControllerController.cs" />
@@ -143,6 +147,7 @@
     <Compile Include="Controllers\viewsControlControllerController.cs" />
     <Compile Include="Controllers\ybnsrzzsController.cs" />
     <Compile Include="Controllers\yhssbController.cs" />
+    <Compile Include="Controllers\yqsbqcController.cs" />
     <Compile Include="Controllers\zlpzController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

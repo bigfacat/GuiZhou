@@ -445,47 +445,47 @@ function checkPDFPlugin() {
                 url = "http://download.etaxcn.com/omni/package/AcroRdrDC1500720033_zh_CN.exe?_ominact=110000&pname=adobereader";
             }
             if (adobe.plugin == null) {
-                layer.confirm('未检测到adobe插件！若已安装，请检查该插件是否被浏览器禁用；否则请重新下载安装如下版本：adboe acrobat reader dc， adobe reader 9及以上，adobe reader xi，adobe reader x，或直接点击下载进行安装。', {
+            	window.parent.layer.confirm('未检测到adobe插件！若已安装，请检查该插件是否被浏览器禁用；否则请重新下载安装如下版本：adboe acrobat reader dc， adobe reader 9及以上，adobe reader xi，adobe reader x，或直接点击下载进行安装。', {
                     title: '错误',
                     icon: 5,
                     btn: ['直接下载', '官网下载'],// 按钮
                     yes: function (index, layero) {
                         //按钮【按钮一】的回调
                         window.location.href = url;
-                        layer.msg('正在下载，请等待……', {
+                        window.parent.layer.msg('正在下载，请等待……', {
                             icon: 6,
                             time: 3000 //2秒关闭（如果不配置，默认是3秒）
                         });
-                        layer.close(index);
+                        window.parent.layer.close(index);
                     },
                     btn2: function (index, layero) {
                         //按钮【按钮二】的回调
                         window.open('https://get.adobe.com/reader/');
                     },
                     cancel: function (index) {
-                        layer.close(index);
+                    	window.parent.layer.close(index);
                     }
                 });
             } else {
-                layer.confirm('您的adobe插件为：' + adobe.plugin + adobe.version + '，请重新安装以下版本：adboe acrobat reader dc， adobe reader 9及以上，adobe reader xi，adobe reader x，或直接点击下载进行安装。', {
+            	window.parent.layer.confirm('您的adobe插件为：' + adobe.plugin + adobe.version + '，请重新安装以下版本：adboe acrobat reader dc， adobe reader 9及以上，adobe reader xi，adobe reader x，或直接点击下载进行安装。', {
                     title: '错误',
                     icon: 5,
                     btn: ['直接下载', '官网下载'], // 按钮
                     yes: function (index, layero) {
                         //按钮【按钮一】的回调
                         window.location.href = url;
-                        layer.msg('正在下载，请等待……', {
+                        window.parent.layer.msg('正在下载，请等待……', {
                             icon: 6,
                             time: 3000 //2秒关闭（如果不配置，默认是3秒）
                         });
-                        layer.close(index);
+                        window.parent.layer.close(index);
                     },
                     btn2: function (index, layero) {
                         //按钮【按钮二】的回调
                         window.open('https://get.adobe.com/reader/');
                     },
                     cancel: function (index) {
-                        layer.close(index);
+                    	window.parent.layer.close(index);
                     }
                 });
             }

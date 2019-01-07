@@ -42,7 +42,7 @@
             }
             if (o.readyState) {
                 o.onreadystatechange = function () {
-                    if (o.readyState == 'loaded' || o.readyState == 'complete') {
+                    if (o.readyState === 'loaded' || o.readyState === 'complete') {
                         o.onreadystatechange = null;
                         for (var i = 0, l = f.length; i < l; i++) {
                             f[i](a);
@@ -64,7 +64,6 @@
     // f 回调函数
     _loadjs = function (o, p, f) {
     	var _start_ = new Date().getTime();
-    	console.log("INFO:"+_start_+" 动态加载" + o.src + "开始时间");
         var fs = [], js = document.createElement('script');
         js.type = 'text/javascript';
         if (typeof o.callback === 'function') {
@@ -80,9 +79,7 @@
         
         p.appendChild(js);
         var _end_ = new Date().getTime();
-        console.log("INFO:"+_end_+" 动态加载" + o.src + "结束时间");
-        var _ms_ = _end_ - _start_;
-        console.log("INFO:"+_ms_+"ms 动态加载" + o.src + "耗时");
+        console.log("INFO:"+_start_+ "-" +_end_ + "-" +(_end_ - _start_)+ "ms 动态加载:" + o.src);
     },
     
     // 加载同步的JS文件
@@ -110,7 +107,7 @@
      */
     syncjs.has = asyncjs.has = css.has = function (v) {
         for (var i = 0, l = this.length; i < l; i++) {
-            if (v == this[i].src) return true;
+            if (v === this[i].src) return true;
         }
         return false;
     };

@@ -14,6 +14,12 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 {
     public class fjssbController : Controller, IRequiresSessionState
     {
+        public string begin()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("begin.html"));
+            return str;
+        }
+
         public JArray xFormula()
         {
             JArray re_jo = new JArray();
@@ -169,6 +175,12 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             }
 
             return View();
+        }
+
+        public string exttbsm()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("exttbsm.json"));
+            return str;
         }
 
     }

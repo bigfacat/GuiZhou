@@ -30,530 +30,104 @@ function getServerTime2Sec() {
 	}
 }
 
-/**
- * 保存，暂存
- */
 var prepareMakeFlag = true;
 
+/**
+ * 暂存
+ */
 function tempSave() {
-	//$(top.document).find("body").mask("正在保存数据，请稍候...");
-	//暂存时增加校验的逻辑
-	
-	if(checkDIffDjxh()){//djxh不一致，不进行保存
-		return;
-	}
-	var regEvent = new RegEvent();
-	var tips = regEvent.verifyAllNoAlert();
-	var _guideParam=$("#_query_string_").val().replace(/\"/g,'').replace(/,/g,';').replace(/:/g,'-');//增加guideParam作为组合主键来确认是否生产一条新的依申请记录
-	
-	var d = {};
+    doSave(false);
+}
+
+/**
+ * 保存
+ */
+function save() {
+    doSave(true);
+}
+
+/**
+ * 具体执行保存方法
+ * @param saveFlag 保存标志（true 表示保存，false 暂存）
+ */
+function doSave(saveFlag) {
+    $(top.document).find("body").mask("正在保存数据，请稍候...");
+    //暂存时增加校验的逻辑
+    try{
+        var child = document.getElementById("frmSheet").contentWindow;
+        if(typeof(child.isTempSave) === 'function'){
+            if(!child.isTempSave()){
+                $(top.document).find("body").unmask();
+                return;
+            }
+        }
+    }catch(e){
+
+    }
+    if(checkDIffDjxh()){//djxh不一致，不进行保存
+        return;
+    }
+
+    var regEvent = new RegEvent();
+    var tips = regEvent.verifyAllNoAlert();
+
+    //设置提示语
+    var msg = "暂存";
+    if(saveFlag){
+        msg = "保存";
+    }
+
+    if('' != tips && saveFlag){
+        parent.layer.alert(tips, {title: msg + "失败！(表格校验没通过，请检查)", icon: 5});
+        $(top.document).find("body").unmask();
+        return;
+    }
+
+    var _guideParam=$("#_query_string_").val().replace(/\"/g,'').replace(/,/g,';').replace(/:/g,'-');//增加guideParam作为组合主键来确认是否生产一条新的依申请记录
+
+    var d = {};
     d['_query_string_'] = $("#_query_string_").val();
     d['gdslxDm'] = $("#gdslxDm").val();
     d['ysqxxid'] = $("#ysqxxid").val();
+    d['djxh'] = $("#djxh").val();
     d['nsrsbh'] = $("#nsrsbh").val();
     d['secondLoadTag'] = $("#secondLoadTag").val();
     d['_bizReq_path_'] = _bizReq_path_;
     d['_guideParam'] = _guideParam;
     d['formData'] = encodeURIComponent(JSON.stringify(formData));
-	$.ajax({
-		type : "POST",
-		url : "xTempSave?",
-		dataType : "json",
-		//contentType : "text/json",
-		data : d,
-		success : function(data) {
-			if ('Y' == data.returnFlag) {
-				if('' != tips){
-					parent.layer.alert(tips, {title: "暂存成功！(但表格校验没通过，请检查)", icon: 5});
-				}else{
-					var url1=$("frmMain").context.URL.toString();
-					if(url1.indexOf("cwbb")!=-1){
-						if(url1.indexOf("bzz=dzswj")!=-1){
-							parent.layer.alert("暂存成功,请点击下一步完成申报！", {
-								icon : 1
-							});
-						}else{
-							parent.layer.alert("暂存成功！", {
-								icon : 1
-							});
-						}
-					}else{
-						parent.layer.alert("暂存成功！", {
-							icon : 1
-						});
-					}
-				}
-				
-			} else {
-				parent.layer.alert('尊敬的纳税人：暂存失败，请稍后再试！', {
-					icon : 5
-				});
-			}
-			$(top.document).find("body").unmask();
-		},
-		error : function() {
-			$(top.document).find("body").unmask();
-			parent.layer.alert('尊敬的纳税人：暂存失败，请稍后再试！', {
-				icon : 5
-			});
-		}
-	});
+    $.ajax({
+        type : "POST",
+        url : "xTempSave?",
+        dataType : "json",
+        //contentType : "text/json",
+        data : d,
+        success : function(data) {
+            if ('Y' == data.returnFlag) {
+                if('' != tips && !saveFlag){
+                    parent.layer.alert(tips, {title: msg + "成功！(但表格校验没通过，请检查)", icon: 5});
+                }else {             
+					parent.layer.alert(msg + "成功！", {
+						icon: 1
+					});                   
+                }
+            } else {
+                parent.layer.alert('尊敬的纳税人：' + msg + '失败，请稍后再试！', {
+                    icon : 5
+                });
+            }
+            $(top.document).find("body").unmask();
+        },
+        error : function() {
+            $(top.document).find("body").unmask();
+            parent.layer.alert('尊敬的纳税人：' + msg + '失败，请稍后再试！', {
+                icon : 5
+            });
+        }
+    });
 }
 
 
 
-
-
-function prepareMakeYBNSRZZS(isSecondCall){
-	var frame = window;
-	
-
-	try {
-		//点击下一步，进行子窗口的特色检验
-		var child = document.getElementById("frmSheet").contentWindow;
-		try{
-			if(typeof(child.nextstepCheck) === 'function'){
-				if(!child.nextstepCheck()){ 
-					prepareMakeFlag = true;
-					return;
-				}
-			}
-		}catch(e){}
-	
-		var tip = true;
-		// isSecondCall为true时，忽略进入下一步
-		if(!(typeof(isSecondCall) !== 'undefined' && isSecondCall ===  true)) {
-			var regEvent = new RegEvent();
-			tip = regEvent.verifyAllComfirm(prepareMake);
-			if (!tip) {
-				// parent.layer.alert("表格存在填写错误的数据，请检查", {icon: 2});
-				$("body").unmask();
-				prepareMakeFlag = true;
-				return;
-			}
-
-		}
-		
-	} catch (ex) {
-		console.log("ERROR[" + ex + "]");
-		prepareMakeFlag = true;
-		return;
-	}
-	var url = window.location.href;
-	var swjgDm = formData.qcs.initData.nsrjbxx.swjgDm;
-	//SXGS12366-126需求
-	if(swjgDm!=null && swjgDm!=undefined && swjgDm.substring(0,3)=="161" && url!=null && url!=undefined && url.indexOf("ybsb=Y") > -1){
-		var proMessageForYbsb = "<div style=\"padding-left:20px;\">系统采集的仅为纳税人通过税控系统开具和接收的发票信息，对未开票收入等非发票信息和其他特殊事项数据，需要纳税人在申报表中进一步核实、完善。【确定】【取消】。点击确定则进行继续申报，点击取消则回到申报表数据填写界面。</div><br/>";
-	    parent.layer.confirm(proMessageForYbsb,{
-			icon : 3,
-			title:'提示',
-			btn : ['确认','取消'],
-			btn2:function(index){
-				parent.layer.close(index);
-			}
-		},function(index){
-			parent.layer.close(index);
-			prepareMakeFlag = true;
-			prepareMake(isSecondCall);
-		});
-	}else{
-		parent.layer.close(index);
-		prepareMakeFlag = true;
-		prepareMake(isSecondCall);
-	}
-}
-
-//一般纳税人增值税点击下一步一窗式比对方法
-function prepareMakeYCSBD(isSecondCall){
-	var frame = window;
-	
-
-	try {
-		//点击下一步，进行子窗口的特色检验
-		var child = document.getElementById("frmSheet").contentWindow;
-		try{
-			if(typeof(child.nextstepCheck) === 'function'){
-				if(!child.nextstepCheck()){ 
-					prepareMakeFlag = true;
-					return;
-				}
-			}
-		}catch(e){}
-	
-		var tip = true;
-		// isSecondCall为true时，忽略进入下一步
-		if(!(typeof(isSecondCall) !== 'undefined' && isSecondCall ===  true)) {
-			var regEvent = new RegEvent();
-			tip = regEvent.verifyAllComfirm(prepareMake);
-			if (!tip) {
-				// parent.layer.alert("表格存在填写错误的数据，请检查", {icon: 2});
-				$("body").unmask();
-				prepareMakeFlag = true;
-				return;
-			}
-
-		}
-		
-	} catch (ex) {
-		console.log("ERROR[" + ex + "]");
-		prepareMakeFlag = true;
-		return;
-	}
-	
-	$.ajax({
-		type : "GET",
-		url : "/sbzs-cjpt-web/nssb/ycsbd/getReture.do?djxh=" + $("#djxh").val()
-			+ "&gdslxDm=" + $("#gdslxDm").val(),
-		dataType : "json",
-		contentType : "application/json",
-		data : "json",
-		success : function(data) {
-			if(data == "false"){
-				prepareMake(isSecondCall);
-			}else if(data == "true"){
-				parent.layer.confirm(
-						'下一步进入一窗式比对，请确认！<br/>继续：进行一窗式比对。<br/>返回：回到填写页面。',
-						{
-							icon : 3,
-							title : '提示',
-							btn : [ '继续', '返回' ],
-							btn2 :function(index) {
-								parent.layer.close(index);
-							}
-						},function(index) {
-							parent.layer.close(index);
-							parent.layer.load(2,{shade: 0.3});
-							$.ajax({
-								type : "POST",
-								url : "/sbzs-cjpt-web/nssb/ycsbd/getMessage.do?djxh=" + $("#djxh").val()
-									+ "&gdslxDm=" + $("#gdslxDm").val()+ "&sssqQ=" + $("#sssqQ").val() 
-									+ "&sssqZ=" + $("#sssqZ").val() + "&swjgDm=" + $("#swjgDm").val(),
-								dataType : "json",
-								contentType : "application/json",
-								data : JSON.stringify(formData),
-								success : function(data) {
-									parent.layer.closeAll("loading");
-									data = JSON.parse(data);
-									var code = data.code;
-									var ycsbdqztgbz = data.ycsbdqztgbz;
-									if(code=='00'){
-										var proMessage = "<div style=\"padding-left:20px;\">一窗式比对通过，请确认是否提交申报？</div><br/>";
-										parent.layer.confirm(proMessage,{
-											icon : 3,
-											title:'提示',
-											btn : ['确认','终止'],
-											btn2:function(index){
-												parent.layer.close(index);
-											}
-										},function(index){
-											parent.layer.close(index);
-											prepareMakeFlag = true;
-											prepareMake(isSecondCall);
-										});
-									}else if(code == '01'){
-										var message = data.result;
-										var messageText = message;
-										if(message!=null && message != undefined && message != ""){
-											if(!typeof message == "object"){
-												message = JSON.parse(message);
-											}
-											messageText = "<style>"
-											+".ycsbdForm {padding:0 20px 0 20px}"
-											+".ycsbdForm table {background-color: #b5b5b5;border-spacing: 1px;}"
-											+".ycsbdForm table tr {border-style:hidden}"
-											+".ycsbdForm table tr th,.ycsbdForm table tr td {background-color: #f8fcfd;padding: 1px 5px 1px 5px;}"
-											+".ycsbdForm table tr td input {border:none;width:100px;height:100%}"
-											+"</style>";
-											messageText += "<div class=\"ycsbdForm\">";
-											if(ycsbdqztgbz == 'N'){
-												messageText += "<div> <b>温馨提示</b>：您的申报表一窗式比对不通过，请点击“终止”回到【填写申报表】页面，修改数据后再次提交。<br/><br/> </div>";
-											}else{
-												messageText += "<div> <b>温馨提示</b>：您的申报表一窗式比对不通过，是否继续申报？如果需要继续申报，请点击“继续”，如果需要调整申报表后再申报请点击“终止”。 </div>";
-											}
-											messageText += "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"1\">";
-											messageText += "<col width=\"60\"><col with=\"280\"><col with=\"120\"><col with=\"280\"><col with=\"120\">";
-											messageText +="<tr><th>序号</th><th>抄报内容</th><th>抄报金额</th><th>申报内容</th><th>申报金额</th></tr>";
-											for(var index in message){
-												var item = message[index];
-												var text = "";
-												if(item.ewbhxh){
-													text += "<td algin=\"center\">"+ item.ewbhxh +"</td>";
-												}else{
-													text += "<td></td>";
-												}
-												if(item.wbnr){
-													text += "<td>"+ item.wbnr +"</td>";
-												}else{
-													text += "<td></td>";
-												}
-												if(item.wbje){
-													text += "<td  aligin=\"right\"><input type=input readonly value=\""+ item.wbje +"\"/></td>";
-												}else{
-													text += "<td></td>";
-												}
-												if(item.sbnr){
-													text += "<td>"+ item.sbnr +"</td>";
-												}else{
-													text += "<td></td>";
-												}
-												if(item.sbje){
-													text += "<td aligin=\"right\"><input type=input readonly value=\""+ item.sbje +"\"/></td>";
-												}else{
-													text += "<td></td>";
-												}
-												if(text != ""){
-													messageText += "<tr>" + text + "</tr>";
-												}
-											}
-											
-											if(ycsbdqztgbz != 'N'){
-												messageText += "</table>"
-													+"<input type=\"checkbox\" id=\"sfjxsb\" value=\"1\"/><label id=\"qrjxsb\" for=\"sfjxsb\">\"我确认数据无误，继续申报，并于申报后至前台清卡。\"</label>"
-													+"<div>	&diams;选择“继续”按钮，纳税人需要在申报后，到办税服务大厅进行清卡解锁！</div>"
-													+"<div>	&diams;选择“终止”按钮，停留填写申报表页面！</div>"
-													+"</div>";
-											}else{
-												messageText += "</table><br/></div>";
-											}
-											
-										}
-										parent.layer.closeAll('loading');
-										if(ycsbdqztgbz == 'N'){
-											parent.layer.confirm(messageText,{
-												area: ['900px','500px'],
-												title:'提示',
-												btn : ['终止'],
-												btn2:function(index){
-													parent.layer.close(index);
-												}
-											});
-										}else{
-											parent.layer.confirm(messageText,{
-												area: ['900px','500px'],
-												title:'提示',
-												btn : ['继续','终止'],
-												btn2:function(index){
-													parent.layer.close(index);
-												}
-											},function(index){
-												if(parent.$("#sfjxsb").is(':checked') || parent.$("#sfjxsb").prop('checked') || parent.$("#sfjxsb").attr('checked') == 'checked'){
-													parent.layer.close(index);
-													prepareMake(isSecondCall);
-												}else{
-													parent.$("#qrjxsb").css("color","red");
-												}
-											});
-										}
-									}else{
-										var errMsg = data.errorMsg;
-										var errStack = data.errStack;
-										parent.layer.alert("调用一窗式比对发生异常，异常信息为："+errMsg);
-										console.info(errMsg);
-										console.info(errStack);
-									}
-								},error : function(XMLHttpRequest, textStatus, e){
-									parent.layer.close("loading");
-									//获取一窗式比对结果失败
-									//"timeout", "error", "notmodified" 和 "parsererror"
-									if(textStatus == 'timeout'){
-										parent.layer.alert("调用一窗式比对超时，请确认您的网络状况，稍候再试！");
-									}else if(textStatus == 'error'){
-										parent.layer.alert("调用一窗式比对发生错误！");
-									}else if(textStatus == 'parsererror'){
-										//程序异常
-										
-									}else if(textStatus == 'notmodified'){
-										//
-									}
-									
-									}
-								});
-						});
-			}else{
-				parent.layer.alert(data);
-			}
-		}
-		
-	});
-}
-
-//消费税点击下一步一窗式比对方法
-function prepareMakeXFSSBBD(isSecondCall){
-	var frame = window;
-	
-
-	try {
-		//点击下一步，进行子窗口的特色检验
-		var child = document.getElementById("frmSheet").contentWindow;
-		try{
-			if(typeof(child.nextstepCheck) === 'function'){
-				if(!child.nextstepCheck()){ 
-					prepareMakeFlag = true;
-					return;
-				}
-			}
-		}catch(e){}
-	
-		var tip = true;
-		// isSecondCall为true时，忽略进入下一步
-		if(!(typeof(isSecondCall) !== 'undefined' && isSecondCall ===  true)) {
-			var regEvent = new RegEvent();
-			tip = regEvent.verifyAllComfirm(prepareMake);
-			if (!tip) {
-				// parent.layer.alert("表格存在填写错误的数据，请检查", {icon: 2});
-				$("body").unmask();
-				prepareMakeFlag = true;
-				return;
-			}
-
-		}
-		
-	} catch (ex) {
-		console.log("ERROR[" + ex + "]");
-		prepareMakeFlag = true;
-		return;
-	}
-	
-	$.ajax({
-		type : "GET",
-		url : "/sbzs-cjpt-web/nssb/xfssbbd/getReture.do?djxh=" + $("#djxh").val()
-			+ "&gdslxDm=" + $("#gdslxDm").val(),
-		dataType : "json",
-		contentType : "application/json",
-		data : "json",
-		success : function(data) {
-			if(data == "N"){
-				prepareMake(isSecondCall);
-			}else if(data == "Y"){
-				parent.layer.close(index);
-				parent.layer.load(2,{shade: 0.3});
-				$.ajax({
-					type : "POST",
-					url : "/sbzs-cjpt-web/nssb/xfssbbd/getMessage.do?djxh=" + $("#djxh").val()
-						+ "&gdslxDm=" + $("#gdslxDm").val()+ "&sssqQ=" + $("#sssqQ").val() 
-						+ "&sssqZ=" + $("#sssqZ").val() + "&swjgDm=" + $("#swjgDm").val() 
-						+ "&nsrsbh=" + $("#nsrsbh").val(),
-					dataType : "json",
-					contentType : "application/json",
-					data : JSON.stringify(formData),
-					success : function(data) {
-						parent.layer.closeAll("loading");
-						data = JSON.parse(data);
-						var code = data.code;
-						if(code=='00'){
-							prepareMake(isSecondCall);
-						}else if(code == '01'){
-							var bdycyy = data.bdycyy;
-							var message = data.result;
-							var messageText = message;
-							if(message!=null && message != undefined && message != ""){
-								if(!typeof message == "object"){
-									message = JSON.parse(message);
-								}
-								messageText = "<style>"
-								+".ycsbdForm {padding:0 20px 0 20px}"
-								+".ycsbdForm table {background-color: #b5b5b5;border-spacing: 1px;}"
-								+".ycsbdForm table tr {border-style:hidden}"
-								+".ycsbdForm table tr th,.ycsbdForm table tr td {background-color: #f8fcfd;padding: 1px 5px 1px 5px;}"
-								+".ycsbdForm table tr td input {border:none;width:100px;height:100%}"
-								+"</style>";
-								var defaultWidth = 174;
-								messageText += "<div class=\"ycsbdForm\">";
-								messageText += "<div style=\"color:red\"> <b>温馨提示</b>：您的申报表比对结果不通过，请点击“返回”按钮回到【填写申报表】页面，修改数据后再次提交。<br/>";
-								if(bdycyy!="" && bdycyy!=null && bdycyy!=undefined){
-									messageText += "<b>异常提示</b>："+ bdycyy;
-									defaultWidth = 200;
-								}
-								messageText += "</div>";
-								messageText += "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"1\">";
-								messageText += "<col width=\"60px\"><col width=\"250px\"><col width=\"65px\"><col width=\"250px\"><col width=\"250px\">";
-								messageText +="<tr><th width=\"60px\">序号</th><th width=\"250px\">比对项目名称</th><th width=\"65px\">比对结果</th><th width=\"250px\">发票列名称</th><th width=\"250px\">申报列名称</th></tr>";
-								var showWidth = "";
-								for(var index in message){
-									var length = 0;
-									var tempLength = 0;
-									var item = message[index];
-									var text = "";
-									if(item.ewbhxh){
-										text += "<td align=\"center\">"+ item.ewbhxh +"</td>";
-									}else{
-										text += "<td></td>";
-									}
-									if(item.bdxmmc){
-										text += "<td align=\"left\">"+ item.bdxmmc +"</td>";
-										tempLength = Math.ceil((item.bdxmmc.length/15));
-										length = Math.max(tempLength,length);
-									}else{
-										text += "<td></td>";
-									}
-									if(item.bdtgbz){
-										text += "<td align=\"center\" style=\"color:red;\">"+ item.bdtgbz +"</td>";
-									}else{
-										text += "<td></td>";
-									}
-									if(item.fplmc){
-										text += "<td align=\"left\">"+ item.fplmc +"</td>";
-										tempLength = Math.ceil((item.fplmc.length/15));
-										length = Math.max(tempLength,length);
-									}else{
-										text += "<td></td>";
-									}
-									if(item.sblmc){
-										text += "<td align=\"left\">"+ item.sblmc +"</td>";
-										tempLength = Math.ceil((item.sblmc.length/15));
-										length = Math.max(tempLength,length);
-									}else{
-										text += "<td></td>";
-									}
-									defaultWidth = defaultWidth + length*26;
-									if(text != ""){
-										messageText += "<tr>" + text + "</tr>";
-									}
-								}
-								showWidth = defaultWidth>=500?500:defaultWidth;
-								showWidth = showWidth + "px";
-								messageText += "</table><br/></div>";
-							}
-							parent.layer.closeAll('loading');
-							parent.layer.confirm(messageText,{
-								area: ['900px',showWidth],
-								title:'申报比对异常提示（成品油消费税申报）',
-								btn : ['返回'],
-								btn2:function(index){
-									parent.layer.close(index);
-								}
-							});
-						}else{
-							var errMsg = data.errorMsg;
-							var errStack = data.errStack;
-							parent.layer.alert("调用比对发生异常，异常信息为："+errMsg);
-							console.info(errMsg);
-							console.info(errStack);
-						}
-					},error : function(XMLHttpRequest, textStatus, e){
-						parent.layer.close("loading");
-						//获取一窗式比对结果失败
-						//"timeout", "error", "notmodified" 和 "parsererror"
-						if(textStatus == 'timeout'){
-							parent.layer.alert("调用比对超时，请确认您的网络状况，稍候再试！");
-						}else if(textStatus == 'error'){
-							parent.layer.alert("调用比对发生错误！");
-						}else if(textStatus == 'parsererror'){
-							//程序异常
-							
-						}else if(textStatus == 'notmodified'){
-							//
-						}
-						
-						}
-					});
-			}else{
-				parent.layer.alert(data);
-			}
-		}
-		
-	});
-}
 
 function checkDIffDjxh() {
 	var isDiff = false;
@@ -594,49 +168,6 @@ function checkDIffDjxh() {
 	return isDiff;
 }
 
-/**
- * 委托代征点击下一步
- * @param isSecondCall
- */
-function prepareMakeWtdz(isSecondCall) {
-	try {
-		//点击下一步，进行子窗口的特色检验
-		var child = document.getElementById("frmSheet").contentWindow;
-		try{
-			if(typeof(child.nextstepCheck) === 'function'){
-				if(!child.nextstepCheck()){ 
-					prepareMakeFlag = true;
-					return;
-				}
-			}
-		}catch(e){}
-	
-		var tip = true;
-		// isSecondCall为true时，忽略进入下一步
-		if(!(typeof(isSecondCall) !== 'undefined' && isSecondCall ===  true)) {
-			var regEvent = new RegEvent();
-			tip = regEvent.verifyAllComfirm(prepareMake);
-			if (!tip) {
-				// parent.layer.alert("表格存在填写错误的数据，请检查", {icon: 2});
-				$("body").unmask();
-				prepareMakeFlag = true;
-				return;
-			}
-
-		}
-		
-	} catch (ex) {
-		console.log("ERROR[" + ex + "]");
-		prepareMakeFlag = true;
-		return;
-	}
-	
-	if(typeof wtdzGetDjxhsCallback === "function"){
-		wtdzGetDjxhsCallback();
-	} else {
-		prepareMake(true);
-	}
-}
 
 function pjdjValidate(zyspjdjObj, fb, jdmc){
 	var pjdjFlag = 2;//平均单价通过校验标志，0：不通过，1：通过，2：还未找到匹配的条目
@@ -843,54 +374,7 @@ function prepareMake(isSecondCall) {
 				prepareMakeFlag = true;
 				return;
 			}
-			if (tip) {
-				var sbywbm = $("#ywbm").val().toUpperCase();
-				// 委托代征申报 在点击申报的时候把明细表中的数据汇总的主表
-				if (sbywbm === "WTDZSB") {
-					var s = wtdzcCollect();
-					if (s == false) {
-						$("body").unmask();
-						prepareMakeFlag = true;
-						return;
-					}
-				}
-				
-				//企业所得税税种申报时，对未附报财务会计报表的企业进行提醒。
-               if(sbywbm === "QYSDS_A"){
-            	 //是否是千户企业标志
-            		var sfqhqy = formData.qcs.initData.qysds2015JmJdAsbInitData.sfqhqy;
-            	   	if (sfqhqy == "Y") {
-            	   		var sfjx=confirm("该纳税人未报送本属期的财务会计报表，请按期报送。逾期未报送的按《税收征收管理法》有关规定进行处理。继续申报请确定，否则请取消 ")
-						if(!sfjx){
-							$("body").unmask();
-							prepareMakeFlag = true;
-							return;
-						}
-            	   		
-					}
-               }
-               if(sbywbm === "TYSB"){
-              		var sftjbz = submitValid();
-              	   	if (sftjbz ==false) {
-              	   		layer.alert("请选择需要申报的项目！", {icon: 2});  						
-  						$("body").unmask();
-  						prepareMakeFlag = true;
-  						return;
-  					}
-                 }
-               ////GDSDZSWJ-6221：环保税B表，简易申报，关闭零申报操作
-               if (sbywbm === "HBS_B") {
-            		var wrdlshj = formData.ywbw.sbskxxGrid.wrdlshj;
-            		var sblx=formData.ywbw.hbssbForm.sblx;
-            		var swjgDm=(formData.qcs.initData.kzxx.nsrjbxx.swjgDm).substring(0,3);
-            		if (wrdlshj == 0&&sblx=="02"&&swjgDm=="244"){
-            			parent.layer.alert('尊敬的纳税人，您[污染当量数或计税依据]为【0.00】，为确保你填写的数据准确性，请重新核实申报表单数据填写。', {title:"提示",icon: 5});
-            			$("body").unmask();
-  						prepareMakeFlag = true;
-  						return;
-            		}
-				}
-			}
+
 			try{
 				//当设置为需要调用第三方接口校验是才执行此段代码
 				if("undefined" !== typeof otherParams &&
@@ -910,9 +394,7 @@ function prepareMake(isSecondCall) {
 			} else {
 				$("body").mask("正在处理，请稍候...");
 			}
-			if($("#ywbm").val().toUpperCase()=='QSSB'){
-				beforeSubmitFormQssb();
-			}
+
 			var saveData = JSON.stringify(formData);
 			formulaEngine.Calculate2SubmitFormulas();// 提交前处理json
 			var submitData = JSON.stringify(formData);
@@ -922,88 +404,92 @@ function prepareMake(isSecondCall) {
 			$("#saveData1").val(encodeURIComponent(saveData));
 			$("#submitData1").val(encodeURIComponent(submitData));
 
+            /**
+             * 申报提交时框架校验成功后调用业务特有校验（一般在ywbm.js中实现）
+             * 然后在业务特有校验中调用doBeforSubmitForm，在提交表单之前做一些事情。如弹出申报前的确认提示
+             * 最后由doBeforSubmitForm调用submitForm实现申报提交
+             */
+            doAfterVerify(doBeforSubmitForm,submitForm,isSecondCall);
 		} catch (ex) {
 			console.log("ERROR[" + ex + "]");
 			prepareMakeFlag = true;
 			return;
 		}
-		var ywbm = $("#ywbm").val().toUpperCase();
-		if(ywbm=="QYSDS_A" || ywbm=="YBNSRZZS" || ywbm.indexOf("CWBB_")==0){
-			var swjgDm= "";
-			var url = window.location.href;
-			if(ywbm.indexOf("CWBB_")==0){
-				swjgDm = formData.qcs.djNsrxx.zgswjdm;//财务报表的报文结构和其他申报表的结构不一样
-			}else{
-				swjgDm = formData.qcs.initData.nsrjbxx.swjgDm;
-			}
-			if(swjgDm.substring(0,3)=="137" && url.indexOf("bzz=csgj") > -1){
-			    var proMessage = "<div style=\"padding-left:20px;\">请确认是否提交申报？</div><br/>";
-			    parent.layer.confirm(proMessage,{
-					icon : 3,
-					title:'提示',
-					btn : ['确认','取消'],
-					btn2:function(index){
-						parent.layer.close(index);
-						$("body").unmask();
-						prepareMakeFlag = true;
-						return;
-					}
-				},function(index){
-					parent.layer.close(index);
-					
-					submitForm(isSecondCall);// 提交表单
-				});
-			}else{
-				if(ywbm=="QYSDS_A"){
-					var sfsyxxwlqy= formData.qysdsczzsyjdSbbdxxVO.qysdsyjdyjnssbbal.qysdsyjdyjnssbbalFrom.sfsyxxwlqy;
-            	   	var swjgDm = formData.qcs.initData.nsrjbxx.swjgDm;
-            	   var xwzg=formData.qcs.initData.qysds2015JmJdAsbInitData.xxwlzg;
-            	  var sjlreLj=  formData.qysdsczzsyjdSbbdxxVO.qysdsyjdyjnssbbal.qysdsyjdyjnssbbalFrom.sjlreLj;
-            	  var byjynssdeLj=  formData.qysdsczzsyjdSbbdxxVO.qysdsyjdyjnssbbal.qysdsyjdyjnssbbalFrom.byjynssdeLj;
-            	  var yjfs= formData.qcs.initData.qysds2015JmJdAsbInitData.yjfs;
-            	   	
-            	   	if(yjfs!="3"&&sjlreLj<=500000&&byjynssdeLj<=500000&&sfsyxxwlqy=="N"&&swjgDm.substring(1,3)=="63"&&(xwzg=="0"||xwzg=="3"||xwzg=="4"||xwzg=="6")){
-            	   	  var proMessage1 = "<div style=\"padding-left:20px;\">请确认今年预计是否达到享受小微企业税收标准？</div><br/>";
-            	   		
-            	   	parent.layer.confirm(proMessage1,{
-    					icon : 3,
-    					title:'提示',
-    					btn : ['确认','取消'],
-    					btn2:function(index){
-    						parent.layer.close(index);
-        					 submitForm(isSecondCall);// 提交表单
-    						
-    					}
-    				},function(index){
-    					formData.qysdsczzsyjdSbbdxxVO.qysdsyjdyjnssbbal.qysdsyjdyjnssbbalFrom.sfsyxxwlqy="Y"; 
-    					var _jpath="qysdsczzsyjdSbbdxxVO.qysdsyjdyjnssbbal.qysdsyjdyjnssbbalFrom.sfsyxxwlqy";
-						var jbzsLj=	"qysdsczzsyjdSbbdxxVO.jmsdsemxbbw.jmsdsemxbFbThree.jbzsLj"
-						 formulaEngine.apply(_jpath,jbzsLj);  
-						var $viewAppElement = $("#frmSheet").contents().find("#viewCtrlId");
-						var viewEngine = $("#frmSheet")[0].contentWindow.viewEngine;
-						var body = $("#frmSheet")[0].contentWindow.document.body;
-					  // 3、刷新校验结果和控制结果
-						viewEngine.formApply($viewAppElement);
-						viewEngine.tipsForVerify(body);
-						
-    					parent.layer.close(index);
-						$("body").unmask();
-						prepareMakeFlag = true;
-						return;
-    				});
-            	   	}else{ submitForm(isSecondCall);}// 提交表单
-					
-				}else{
-					submitForm(isSecondCall);// 提交表单
-				}
-							
-			}
-		}else{
-			submitForm(isSecondCall);// 提交表单
-		}
 	}
 }
 
+/**
+ * 申报提交时框架校验成功后的业务特有校验，空方法，预留给产品具体业务实现
+ * @param callBeforSubmitForm ：回调方法，调用表单提交前的业务特有提示
+ * @param callSubmitForm ：回调方法，调用表单提交
+ * @param params : 回调参数
+ */
+function doAfterVerify(callBeforSubmitForm,callSubmitForm, params) {
+    /**
+	 * 已经把prepareMake中所有带有ywbm判断的代码都迁移到了这里
+     * 由申报组吧具体的ywbm判断再迁移到具体的ywbm.js中
+	 * 迁移完成后doAfterVerify应该只有callBeforSubmitForm(callSubmitForm,params);这一句代码
+     */
+    var ywbm = $("#ywbm").val().toUpperCase();
+
+
+    if(ywbm ==='QSSB'){
+    	//将值赋值到页面前执行操作，去掉契税没用到的减免性质代码，否则报文太长，后台request.getParameter获取不到报文
+        beforeSubmitFormQssb();
+    	var saveData = JSON.stringify(formData);
+		formulaEngine.Calculate2SubmitFormulas();// 提交前处理json
+		var submitData = JSON.stringify(formData);
+		if (saveData == submitData) {
+			submitData = "";// 当saveData(zcbw)报文和submitData(dclbw)报文都有时只保存saveData报文
+		}
+		$("#saveData1").val(encodeURIComponent(saveData));
+		$("#submitData1").val(encodeURIComponent(submitData));
+    }
+
+    var indexCwbb = ywbm.indexOf("CWBB_");
+    if(indexCwbb===0){
+        var swjgDm= "";
+        var url = window.location.href;
+        if(indexCwbb===0){
+            swjgDm = formData.qcs.djNsrxx.zgswjdm;//财务报表的报文结构和其他申报表的结构不一样
+        }else{
+            swjgDm = getSwjgDm(formData);
+        }
+        if(swjgDm.substring(0,3)==="137" && url.indexOf("bzz=csgj") > -1){
+            var proMessage = "<div style=\"padding-left:20px;\">请确认是否提交申报？</div><br/>";
+            parent.layer.confirm(proMessage,{
+                icon : 3,
+                title:'提示',
+                btn : ['确认','取消'],
+                btn2:function(index){
+                    parent.layer.close(index);
+                    $("body").unmask();
+                    prepareMakeFlag = true;
+                    return;
+                }
+            },function(index){
+                parent.layer.close(index);
+                // 执行回调函数
+                callBeforSubmitForm(callSubmitForm,params);
+            });
+        }else{
+			callBeforSubmitForm(callSubmitForm,params);
+        }
+    }else{
+        // 执行回调函数
+        callBeforSubmitForm(callSubmitForm,params);
+	}
+}
+
+/**
+ * 申报提交前的业务特有提示，空方法，预留给区域具体业务实现
+ * @param callSubmitForm ：回调方法，调用表单提交
+ * @param params
+ */
+function doBeforSubmitForm(callSubmitForm, params) {
+	//回调submitForm
+    callSubmitForm(params);
+}
 
 function prepareMakeshow(isSecondCall) {
 	// TODO 置标志位 调用父页面的方法按钮 失效，
@@ -1206,11 +692,9 @@ function linkQcssz() {
 	var sbywbm = $("#ywbm").val().toUpperCase();
 	var ywbm = "";
 	if (sbywbm == "YBNSRZZS") {
-		ywbm = "ybnsrzzsqcs.aspx";
+		ywbm = "ybnsrzzsqcs";
 	}
-	if (sbywbm == "QYSDS_A") {
-		ywbm = "qysdsjmaqcssz";
-	}
+
 	var url = location.protocol + "//" + location.host + window.contextPath
 			+ "/biz/setting/" + ywbm + "?bzz=csgj&gdslxDm=" + $("#gdslxDm").val()
 			+ "&sssqQ=" + $("#sssqQ").val() 
@@ -1464,72 +948,80 @@ function autoTestBtn() {
  * 导出报盘 XML
  */
 function exportXML() {
-	//$("body").mask("校验数据中，请稍候...");
-	var tip = regEvent.verifyAll();
-	/*
-	 * if(!tip){ parent.layer.alert("表格存在填写错误的数据，请检查", {icon: 2}); $("body").unmask();
-	 * return ; }
-	 */
-	$("body").unmask();
-
-	var saveData = JSON.stringify(formData); // 保存的报文。用于表单还原
-	formulaEngine.Calculate2SubmitFormulas();// 提交前处理json
-	var submitData = JSON.stringify(formData); // 需要提交的报文，用来导出的报文
-
-	// 如果保存的报文与提交报文一致，则把保存报文置空，减少网络传输
-	if (saveData == submitData) {
-		saveData = "";
-	}
-	$("body").unmask();
-
-	parent.layer.alert("正在导出磁盘，需要再次导出，可进入此页面操作！", {
-		icon : 1
-	});
-	//$("body").mask("正在导出到磁盘，请稍候...");
-	if(submitData.charAt("1") === '"'){//当json文本类似于{"jmxxGrid":{"jmxxGridlb":......时
-		//将引号内部的单引号替换为双引号。
-		submitData = submitData.replace(/'/g,'\\"');
-	}else if (submitData.charAt("1") === "'"){//当json文本类似于{'jmxxGrid':{'jmxxGridlb':......时
-		//do nothing. 暂时未发现会出现此类情况。
-	}
-	// 由于ajxax返回不能是二进制流形式，通过form表单来请求。
-	var form = $("<form>"); // 定义一个form表单
-	form.attr("style", "display:none");
-	form.attr("target", "");
-	form.attr("method", "post");
-	form.attr("action", pathRoot + "/biz/" + _bizReq_path_
-			+ "/xExportXML?_query_string_=" + encodeURIComponent($("#_query_string_").val())
-			+ "&ysqxxid=" + $("#ysqxxid").val()
-			+ "&gdslxDm=" + $("#gdslxDm").val()
-			+ "&_bizReq_path_=" + _bizReq_path_
-			+ "&dzbdbmList=" + $("#dzbdbmList").val());
-	var formHtml = "<input  type='hidden' name='saveData' value='"
-			+ encodeURIComponent(saveData)
-			+ "'><input  type='hidden' name='submitData' value='"
-			+ encodeURIComponent(submitData) + "'>";
-
-	// 增加非单点登陆模式
-	var url = window.location.href;
-	if (url.indexOf("test=true") > -1) {
-		formHtml += "<input  type='hidden' name='test' value='true'>";
-	}
-
-	$("body").append(form);// 将表单放置在web中
-	form.append(formHtml);
-	form.submit();// 表单提交
-	form.remove();
-	$("body").unmask();
+    doExport();
+    isExporting = true;
+    //调用formEngine.js下的锁定右侧工作区的方法
+    formEngine.hideMaskFrmSheet();
+    if (window.location.search.indexOf("gzsb=Y") == -1 && window.location.search.indexOf("gzsb=zx") == -1) {
+        //点击导出报盘屏蔽其他按钮
+        $(".areaHeadBtn li a", window.parent.document).each(function () {
+            var _$this = $(this);
+            if (_$this.attr("id") != "btnExportXML") {
+                $(this).hide();
+            }
+        });
+    }
 	
-	if(window.location.search.indexOf("gzsb=Y")==-1 && window.location.search.indexOf("gzsb=zx")==-1){
-		//点击导出报盘屏蔽其他按钮
-		$(".areaHeadBtn li a", window.parent.document).each(function(){
-			var _$this = $(this);
-			if(_$this.attr("id") != "btnExportXML"){
-				$(this).hide();
-			}
-		});
-	}
-	
+}
+/**
+ * 导出报盘操作
+ */
+function doExport() {
+    //$("body").mask("校验数据中，请稍候...");
+    var tip = regEvent.verifyAll();
+    /*
+     * if(!tip){ parent.layer.alert("表格存在填写错误的数据，请检查", {icon: 2}); $("body").unmask();
+     * return ; }
+     */
+    $("body").unmask();
+
+    var saveData = JSON.stringify(formData); // 保存的报文。用于表单还原
+    formulaEngine.Calculate2SubmitFormulas();// 提交前处理json
+    var submitData = JSON.stringify(formData); // 需要提交的报文，用来导出的报文
+
+    // 如果保存的报文与提交报文一致，则把保存报文置空，减少网络传输
+    if (saveData == submitData) {
+        saveData = "";
+    }
+    $("body").unmask();
+
+    parent.layer.alert("正在导出磁盘，需要再次导出，可进入此页面操作！", {
+        icon: 1
+    });
+    //$("body").mask("正在导出到磁盘，请稍候...");
+    if (submitData.charAt("1") === '"') {//当json文本类似于{"jmxxGrid":{"jmxxGridlb":......时
+        //将引号内部的单引号替换为双引号。
+        submitData = submitData.replace(/'/g, '\\"');
+    } else if (submitData.charAt("1") === "'") {//当json文本类似于{'jmxxGrid':{'jmxxGridlb':......时
+        //do nothing. 暂时未发现会出现此类情况。
+    }
+    // 由于ajxax返回不能是二进制流形式，通过form表单来请求。
+    var form = $("<form>"); // 定义一个form表单
+    form.attr("style", "display:none");
+    form.attr("target", "");
+    form.attr("method", "post");
+    form.attr("action", pathRoot + "/biz/" + _bizReq_path_
+        + "/xExportXML?_query_string_=" + encodeURIComponent($("#_query_string_").val())
+        + "&ysqxxid=" + $("#ysqxxid").val()
+        + "&gdslxDm=" + $("#gdslxDm").val()
+        + "&_bizReq_path_=" + _bizReq_path_
+        + "&dzbdbmList=" + $("#dzbdbmList").val());
+    var formHtml = "<input  type='hidden' name='saveData' value='"
+        + encodeURIComponent(saveData)
+        + "'><input  type='hidden' name='submitData' value='"
+        + encodeURIComponent(submitData) + "'>";
+
+    // 增加非单点登陆模式
+    var url = window.location.href;
+    if (url.indexOf("test=true") > -1) {
+        formHtml += "<input  type='hidden' name='test' value='true'>";
+    }
+
+    $("body").append(form);// 将表单放置在web中
+    form.append(formHtml);
+    form.submit();// 表单提交
+    form.remove();
+    $("body").unmask();
 }
 /**
  * 只导出报盘 XML，不改变任何业务状态
@@ -1931,6 +1423,21 @@ function downloadCssfwryxxcjModel(){
     }
 }
 
+/**下载模板*/
+function downloadModelBy(fileName){
+	try{
+        var elemIF = document.createElement("iframe");
+        if(!fileName){
+        	fileName=ywbm+"-modle.xls";
+        }
+        elemIF.src = "../../sxsq/"+ywbm+"/form/"+fileName;
+        elemIF.style.display = "none";   
+        document.body.appendChild(elemIF);
+    }catch(e){
+    	
+    }
+}
+
 /**从事涉税服务人员信息采集批量导入按钮*/
 function importCsssryxx(){
 	var child = document.getElementById("frmSheet").contentWindow;
@@ -1958,7 +1465,7 @@ function importJson() {
 		$myModa3.css("display", "none");
 		jsonXml = rtnData?rtnData:"";
 		try{
-            layer.prompt({
+			parent.layer.prompt({
 				maxlength : 200000,
 				formType : 2,
 				value : jsonXml?jsonXml:'',
@@ -2335,6 +1842,18 @@ function prepareMakeCCS(isSecondCall) {
 				prepareMakeFlag = true;
 				return ;
 			}
+			var tip = true;
+			// isSecondCall为true时，忽略进入下一步
+			if(!(typeof(isSecondCall) !== 'undefined' && isSecondCall === true)) {
+				var regEvent = new RegEvent();
+				tip = regEvent.verifyAllComfirm(prepareMake);
+				if (!tip) {
+					// parent.layer.alert("表格存在填写错误的数据，请检查", {icon: 2});
+					$("body").unmask();
+					prepareMakeFlag = true;
+					return;
+				}
+			}
 			if(typeof(parent.makeTypeDefualt) != "undefined" && parent.makeTypeDefualt == 'HTML') {
 				$("body").mask("正在提交，请稍候...");
 			} else {
@@ -2369,7 +1888,7 @@ function linkXbsz() {
 	var sbywbm = $("#ywbm").val().toUpperCase();
 	var ywbm = "";
 	if (sbywbm == "YBNSRZZS") {
-		ywbm = "ybnsrzzsxbsz.aspx";
+		ywbm = "ybnsrzzsxbsz";
 	}
 	
 		/*var url = location.protocol + "//" + location.host + window.contextPath
@@ -2448,8 +1967,19 @@ function submitForm(isSecondCall){
 		signType = otherParams.signType;
 	}
 	if(signType === 'wzt' || signType === 'ocx' || signType === 'fjocx' || signType === 'bw' || signType === 'yunnan'){//容器框签名
-		//提交数据并且签名
-		submitFormData(signType, isSecondCall);
+		var ywylx,contextPath=$("#contextPath").val();
+		if(contextPath&&contextPath.indexOf('sxsq')>-1){
+			ywylx=contextPath.substring(1, contextPath.indexOf("-"));//业务类型
+		}
+		if(ywylx==='sxsq'&&$("#pageName").val()&&$("#pageName").val()==='show'){
+			// 提交表单
+			$("#myform").submit();
+			// TODO 调用父页面的函数，则清空按钮区域
+			parent.cleanMeunBtn();
+		}else{
+			//提交数据并且签名
+			submitFormData(signType, isSecondCall);
+		}
 	}else{//确认页签名
 		// 提交表单
 		$("#myform").submit();
@@ -2500,7 +2030,7 @@ function submitFormData(signType, isSecondCall){
 				//isSecondCall为1时表示直接进行申报，不需要进行弹框签名
 				if("undefined" !== typeof isSecondCall && isSecondCall === 1){
 					tempSave();//cx添加
-					
+
 					// 提交表单
 					$("#myform").submit();
 					// 调用父页面的函数，则清空按钮区域
@@ -2537,11 +2067,6 @@ function submitFormData(signType, isSecondCall){
 //TODO 提交申报(上一步已经保存了填报页数据，此时只需要申报提交即可)
 function submitPdf(qzbz){
 	var href = parent.window.location.href;
-
-	if (href.indexOf(".") > -1) {
-        href = href.substr(0, href.indexOf("."));
-    }
-
     if (href.indexOf("?") > -1) {
         href = href.substr(0, href.indexOf("?"));
     }
@@ -2688,98 +2213,6 @@ function prepareMakeGrsdszxsbA(isSecondCall) {
 		}
 	});
 }
-
-
-/**
- * 生产经营个人所得税C申报[下一步]按钮动作
- */
-function prepareMakeSCJYC(isSecondCall) {
-	var frame = window;
-	$("body").mask("正在处理，请稍候...");
-	var flag = false;    //核算机关代码校验是否通过标志
-	
-	var year = (formData.ywbw.scjysdtzzgrsdshzsbb.scjysdtzzgrsdshzsbbHead.skssqq).substring(0,4);
-	
-	
-	var dfpjfrmxLb = formData.ywbw.scjysdtzzgrsdshzsbb.scjysdtzzgrsdshzsbbBody.btzdwlb.dfpjfrmxLb;
-	var sfhjdLb = [];
-	var tsy = formData.qcs.initData.tsy;
-	var bz = formData.qcs.initData.bz;
-	if(bz != undefined){
-		if(bz != 'N'){
-			parent.layer.alert(tsy);
-			$("body").unmask();
-			prepareMakeFlag = true;
-			return;
-		}
-	}else{
-		if(dfpjfrmxLb.length==0){
-			parent.layer.alert("系统未查询到您有个人所得税生产经营所得纳税申报表（A表）或个人所得税生产经营所得纳税申报表（B表）的申报记录，无法申报当前报表！");
-			$("body").unmask();
-			prepareMakeFlag = true;
-			return ;
-		}else{
-			for(var i =0;i<dfpjfrmxLb.length;i++){
-				sfhjdLb.push(dfpjfrmxLb[i].sfhjd)
-			}
-			if(sfhjdLb.indexOf('1')==-1){
-				parent.layer.alert("请选择汇缴地!");
-				$("body").unmask();
-				prepareMakeFlag = true;
-				return ;
-			}else{
-				if(formData.ywbw.scjysdtzzgrsdshzsbb.scjysdtzzgrsdshzsbbBody.tzzxx.sdxmDm=='0300'){
-					if(formData.qcs.initData.tzdwGirdlb.tzdwGird.length > 0){
-						var tzdwGird = formData.qcs.initData.tzdwGirdlb.tzdwGird;
-						var slswjg = '';
-						for(var i=0;i<tzdwGird.length;i++){
-							if(tzdwGird[i].sdxmdm=='0300'){
-								slswjg = slswjg + tzdwGird[i].slswjg + ',';
-							}
-						}
-						slswjg = slswjg.substring(0,slswjg.length-1);
-						parent.layer.alert("您"+year+"年度所得项目为“企事业承包、承租所得”的《生产、经营所得个人所得纳税申报表（C表）》已申报，受理税务机关为["+slswjg+"]，不能重复申报！");
-						$("body").unmask();
-						prepareMakeFlag = true;
-						return ;
-					}
-				}else{
-					var tzdwGird = formData.qcs.initData.tzdwGirdlb.tzdwGird;
-					var pos = sfhjdLb.indexOf('1');
-					var nsrsbh = formData.ywbw.scjysdtzzgrsdshzsbb.scjysdtzzgrsdshzsbbBody.btzdwlb.dfpjfrmxLb[pos].btzdwnsrsbh;
-					for(var i =0;i<tzdwGird.length;i++){
-						if(tzdwGird[i].tzqydjxh==formData.ywbw.scjysdtzzgrsdshzsbb.scjysdtzzgrsdshzsbbBody.btzdwlb.dfpjfrmxLb[pos].tzdwDjxh){
-							if(tzdwGird[i].btzdwlx=='1'&&tzdwGird[i].sdxmdm=='0200'&&tzdwGird[i].sfhjd=='Y'){
-								parent.layer.alert("您"+year+"年度所得项目为“个体工商户生产经营所得”、所选汇缴地被投资单位纳税人识别号为"+nsrsbh+"《生产、经营所得个人所得纳税申报表（C表）》已申报，请选择其他汇缴地的被投资单位进行申报！");
-								$("body").unmask();
-								prepareMakeFlag = true;
-								return ;
-							}
-						}
-					}
-				}
-				if(formData.ywbw.scjysdtzzgrsdshzsbb.scjysdtzzgrsdshzsbbBody.tzzxx.btzdwlx == 0){
-					if(formData.qcs.initData.tzdwGirdlb.tzdwGird.length > 0){
-						var tzdwGird = formData.qcs.initData.tzdwGirdlb.tzdwGird;
-						var slswjg = '';
-						for(var i=0;i<tzdwGird.length;i++){
-							if(tzdwGird[i].btzdwlx=='0'&&tzdwGird[i].sdxmdm=='0200'){
-								slswjg = slswjg + tzdwGird[i].slswjg + ',';
-							}
-						}
-						slswjg = slswjg.substring(0,slswjg.length-1);
-						parent.layer.alert("您"+year+"年度所得项目为“个体工商户生产经营所得”的《生产、经营所得个人所得纳税申报表（C表）》已申报，受理税务机关为["+slswjg+"],不能重复申报！");
-						$("body").unmask();
-						prepareMakeFlag = true;
-						return ;
-					}
-				}
-			 }
-			}
-		}
-	prepareMake(isSecondCall);
-}
-
 
 /**个人所得税年12万以上申报下一步*/
 function grsdsN12WPrepareMake(isSecondCall){
@@ -3191,3 +2624,52 @@ function changeUrlArg(url, arg, val) {
 	var replaceText = arg + '=' + val;
 	return url.match(pattern) ? url.replace(eval('/(' + arg + '=)([^&]*)/gi'), replaceText) : (url.match('[\?]') ? url + '&' + replaceText : url + '?' + replaceText);
 }
+
+function getSwjgDm(formData){
+	var swjgDm = null;
+	if(formData.qcs == undefined && formData.fq_ != undefined){
+		swjgDm = formData.fq_.nsrjbxx.swjgDm;
+	}else{
+		swjgDm = formData.qcs.initData.nsrjbxx.swjgDm;
+	}
+	return swjgDm;
+}
+
+/**
+ * 填表页操作规程按钮
+ */
+function showCzgc() {
+	// layer弹窗提示url
+	var zyywnWebContextPath = $("#zyywnWebContextPath").val();
+	if(zyywnWebContextPath === null || typeof zyywnWebContextPath === 'undefined'){
+		zyywnWebContextPath = "/zyywn-cjpt-web";
+	}
+	layer.open({
+		type : 2,
+		title : '操作规程',
+		shadeClose : true,
+		shade : 0.8,
+		area : [ '800px', '70%' ],
+		content : zyywnWebContextPath + '/czgc/queryWSDataList.do?ywbm=' + ywbm.toUpperCase()
+	}); 
+}
+// menuBtnEvent.js在frmMain引入，所以此document指frmMain，监听frmMain的键盘事件
+$(document).on("keydown", function(event) {
+	if (event.keyCode === 112 || event.keyCode === 173) {
+		showCzgc();
+	}
+});
+// 监听父页面index.jsp，页眉按钮部分
+$("body", parent.document).on("keydown", function(event) {
+	if (event.keyCode === 112 || event.keyCode === 173) {
+		showCzgc();
+	}
+});
+// 监听frmSheet 右侧表单部分
+$("#frmSheet").on("load", function(event) {
+	$("body", this.contentDocument).on("keydown", function(event) {
+		if (event.keyCode === 112 || event.keyCode === 173) {
+			showCzgc();
+		}
+	});
+});

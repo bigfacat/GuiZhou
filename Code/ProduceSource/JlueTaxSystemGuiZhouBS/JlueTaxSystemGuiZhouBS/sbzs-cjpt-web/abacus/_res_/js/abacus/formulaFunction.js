@@ -60,7 +60,7 @@ DATE_GET_TIME_INTERVAL_DAYS(any, any)
 /**
  * Absolute value.<BR>
  * 取绝对值.
- * 
+ *
  * @param number
  *            Number: Number for absoluting. 数字：需要求绝对值的数值.
  * @returns Number: Value of absolute. 传入参的绝对值（非负数）
@@ -77,7 +77,7 @@ function ABS(number,defaultValue) {
 /**
  * Minimum value.<BR>
  * 求多个数值的最小值.
- * 
+ *
  * @param Multiple.
  *            Numbers, array of number or multiple array. 多个数值或数组.
  * @returns Number: Minimum value. 最小值
@@ -95,7 +95,7 @@ function MIN() {
 		var min = ps[0];
 		for (var i = 0; i < ps.length; i++) {
 			if (ps[i] instanceof Array) {
-				var tmp = MAX(ps[i]);
+				var tmp = MIN(ps[i]);
 				min = (min < tmp) ? (min) : (tmp);
 			} else {
 				min = (min < ps[i]) ? (min) : (ps[i]);
@@ -130,33 +130,79 @@ function MAX() {
 		return ps;
 	}
 }
+
 function SUM() {
-	var ps;
-	if (arguments.length <= 0) {
-		return null;
-	} else if (arguments.length == 1) {
-		ps = arguments[0];
-	} else {
-		ps = arguments;
-	}
-	if (ps.length) {
-		var ret = 0;
-		for (var i = 0; i < ps.length; i++) {
-			if (ps[i] instanceof Array) {
-				ret = ((ret*100) + ((SUM(ps[i]))*100))/100;
-			} else {
-				ret = ((ret*100) + ((ps[i])*100))/100;
-			}
-		}
-		return ret;
-	} else if (!isNaN(ps)) {
-		return ps;
-	}
+    var ps;
+    if (arguments.length <= 0) {
+        return null;
+    } else if (arguments.length === 1) {
+        ps = arguments[0];
+    } else {
+        ps = arguments;
+    }
+    if (ps.length) {
+        //定义返回值
+        var ret = 0;
+        //定义整数部分
+        var intNum = 0;
+        //定义小数部分的数组容器
+        var decimalPart = new Array();
+        //遍历数据，把整数部分求和结果放在intNum，小数部分放入数组decimalPart
+        for (var i = 0; i < ps.length; i++) {
+            var tmp = 0;
+            if (ps[i] instanceof Array) {
+                //ps[i]是数组则先求和
+                tmp = SUM(ps[i]);
+            } else {
+                tmp = ps[i];
+            }
+
+            if(typeof(tmp) !== "number"){
+				//转数字
+				tmp = Number(tmp);
+				if(isNaN(tmp)){
+					throw "调用SUM方法，传入非数字类型参数：[" + ps[i] + "]";
+					return;
+				}
+            }
+            //调用整数部分与小数部分分离的方法
+            intNum += DEPARTNUM(tmp).intNum;
+            if (DEPARTNUM(tmp).decimal) {
+                decimalPart.push(DEPARTNUM(tmp).decimal);
+            }
+        }
+        //调用小数部分求和的方法
+        ret = DECIMALSUM(decimalPart);
+        //整数部分与小数部分相加
+        ret = ret + intNum;
+        return ret;
+    } else if (!isNaN(ps)) {
+        return ps;
+    }
 }
+
 /**
  * Rounding the fractional part.<BR>
  * 将数字的小数部分进行四舍五入, 缺省保留两位精度.
- * 
+ * 修复ROUND(123,2)没有变成123.00这类问题
+ *
+ * @param number
+ *            Number: Number for rounding. 数字：需要做四舍五入的数值.
+ * @param precision
+ *            Number: Precision. 数字：精度，默认为2.
+ * @returns Number: Rounding result.
+ */
+function ROUND_FIX(number, precision) {
+    if (precision == undefined){
+        precision = 2;
+	}
+    return ROUND(number, precision).toFixed(precision);
+}
+
+/**
+ * Rounding the fractional part.<BR>
+ * 将数字的小数部分进行四舍五入, 缺省保留两位精度.
+ *
  * @param number
  *            Number: Number for rounding. 数字：需要做四舍五入的数值.
  * @param precision
@@ -178,7 +224,7 @@ function ROUND(number, precision) {
 		;
 	for (; precision < 0; t /= 10, precision++)
 		;
-		
+
 	return Math.round(mul(number, t) + 1e-9 ) / t;
 }
 
@@ -206,13 +252,13 @@ function mul() {
             d = result[1];
             c -= Number(result[2]);
 		}
-		
+
 		if(e.indexOf('E') > -1 || e.indexOf('e') > -1){
             var result = e.match(reg);
             e = result[1];
             c -= Number(result[2]);
 		}
-		
+
 		try {
 			c += d.split(".")[1].length;
 		} catch (f) {
@@ -240,7 +286,7 @@ function mul() {
 /**
  * Truncate the fractional part.<BR>
  * 将数字的小数部分截去, 返回整数.
- * 
+ *
  * @param number
  *            Number: Number for truncate. 数字：需要做截断的数值.
  * @returns Number: Truncated result.
@@ -254,56 +300,148 @@ function TRUNC(number, precision) {
 	return integer_part/t;
 	//throw "No implement yet!"
 }
+/*
+整数部分小数部分分离的方法
+ */
+function DEPARTNUM(num) {
+    //定义整数部分
+    var intNum = 0;
+    //定义小数部分
+    var decimal = 0;
+    //将得到的小数拆分成整数部分和小数部分，整数部分为intNum，小数部分为decimal
+    //由于浏览器会把0.000000001这类的小数自动换成科学计数法，也不带小数点，所以要加以判断
+    if (num.toString().indexOf(".") === -1 && num.toString().indexOf('E') === -1 && num.toString().indexOf('e') === -1) {
+        //只包含整数
+        intNum = num;
+        decimal = null;
+    } else if (num.toString().indexOf('E') > -1 || num.toString().indexOf('e') > -1) {
+        if (num > 1) {
+            //若传入为整数的科学记数法
+            intNum = num;
+            decimal = null;
+        } else {
+            //将小于1的小数放入小数部分
+            decimal = num;
+        }
+    } else {
+        //带小数的先取出整数
+        intNum = parseInt(num);
+        //判断是否执行小数拆分
+        if (num.toString().indexOf(".") > -1) {
+			//原始值减整数位即得到小数位
+            decimal = num - intNum;
+        }
+    }
+    return {"intNum":intNum,"decimal":decimal};
+}
+
+/*
+小数部分求和的方法
+ */
+function DECIMALSUM(decimalPart) {
+    var ret = 0;
+    //定义存放所有小数部分的小数位数的数组
+    var decimalBits = new Array();
+    //科学计数法正则
+    var reg = new RegExp("^(-?\\d+.?\\d*)[Ee]{1}(-?\\d+)$");
+    if (decimalPart.length) {
+        for (var k = 0; k < decimalPart.length; k++) {
+            if (decimalPart[k].toString().indexOf('E') > -1 || decimalPart[k].toString().indexOf('e') > -1) {
+                //取科学计数法的位数
+                var result = decimalPart[k].toString().match(reg);
+                //把科学计数法的位数放入数组
+                decimalBits.push(0 - Number(result[2]));
+            }
+            if (decimalPart[k].toString().indexOf(".") > -1) {
+                //把正常带小数点的小数位数放入数组
+                decimalBits.push(decimalPart[k].toString().split(".")[1].length);
+            }
+        }
+        //取最大的小数位数
+        var bits = decimalBits.sort().reverse()[0];
+        for (var j = 0; j < decimalPart.length; j++) {
+            //扩大小数至最大小数位数的倍数进行相加，避免小数相加有误差
+            ret = ((ret * Math.pow(10, bits)) + ((decimalPart[j]) * Math.pow(10, bits))) / Math.pow(10, bits);
+        }
+    }
+    return ret;
+}
+
 /** **************************************字符串类********************************************** */
 /**
  * matching:匹配区 conditions:条件区 sum:聚合区
- * 
+ *
  * <pre>
  * UMIF('$..dkqdGridlbVO[*].fpzlDm',[condition1,condition2...],'$..dkqdGridlbVO[*].yfje').条件聚合
  * </pre>
  */
 function SUMIF() {
-	var matching, con, ps;
-	if (arguments.length > 0 && arguments.length <= 2) {
-		return SUM(arguments[arguments.length - 1]);
-	} else if (arguments.length == 3) {
-		matching = arguments[0];
-		con = arguments[1];
-		ps = arguments[2];
-		if (!(matching instanceof Array) && !(ps instanceof Array)) {
-			matching = [ matching ];
-			ps = [ ps ];
-		}
-	} else {
-		return null;
-	}
+    var matching, con, ps;
+    if (arguments.length > 0 && arguments.length <= 2) {
+        return SUM(arguments[arguments.length - 1]);
+    } else if (arguments.length === 3) {
+        matching = arguments[0];
+        con = arguments[1];
+        ps = arguments[2];
+        if (!(matching instanceof Array) && !(ps instanceof Array)) {
+            matching = [matching];
+            ps = [ps];
+        }
+    } else {
+        return null;
+    }
 
-	if (matching.length) {
-		var ret = 0;
-		for (var i = 0; i < matching.length; i++) {
-			// if(con.length)
-			if (con.indexOf(matching[i]) != -1) {
-				if (matching[i] instanceof Array) {
-					ret += SUM(ps[i]);
-				} else {
-					ret += ps[i];
-				}
-			}
-		}
-		return ret;
-	} else if (!isNaN(ps)) {
-		return ps;
-	}
+    if (matching.length) {
+        //定义返回值
+        var ret = 0;
+        //定义整数部分
+        var intNum = 0;
+        //定义小数部分的数组容器
+        var decimalPart = new Array();
+        //遍历数据，把整数部分求和结果放在intNum，小数部分放入数组decimalPart
+        for (var i = 0; i < matching.length; i++) {
+            // if(con.length)
+            if (con.indexOf(matching[i]) !== -1) {
+                var tmp = 0;
+                if (matching[i] instanceof Array) {
+                    tmp = SUM(ps[i]);
+                } else {
+                    tmp = ps[i];
+                }
+
+                if(typeof(tmp) !== "number") {
+                    //转数字
+                    tmp = Number(tmp);
+                    if (isNaN(tmp)) {
+                        throw "调用SUMIF方法，传入非数字类型参数：[" + ps[i] + "]";
+                        return;
+                    }
+                }
+                //调用整数部分与小数部分分离的方法
+                intNum += DEPARTNUM(tmp).intNum;
+                if (DEPARTNUM(tmp).decimal) {
+                    decimalPart.push(DEPARTNUM(tmp).decimal);
+                }
+            }
+        }
+        //调用小数部分求和的方法
+        ret = DECIMALSUM(decimalPart);
+        //整数部分与小数部分相加
+        ret = ret + intNum;
+        return ret;
+    } else if (!isNaN(ps)) {
+        return ps;
+    }
 }
 /**
  * Return value from multiple selections according to selection-expression.<BR>
  * 比较表达式和搜索字，如果匹配，返回结果；如果不匹配，返回default值；如果未定义default值，则返回空值.
- * 
+ *
  * @param Multi-parameters:
  *            expression, search_1, result_1, search_2, result_2, ...,
  *            result_default <BR>
  *            不定参数：表达式, 索引1, 取值1, 索引2, 取值2, ..., 缺省结果
- * 
+ *
  * <pre>
  *   DECODE (expression, search_1, result_1)
  *   DECODE (expression, search_1, result_1, search_2, result_2)
@@ -312,7 +450,7 @@ function SUMIF() {
  *   DECODE (expression, search_1, result_1, search_2, result_2, default)
  *   DECODE (expression, search_1, result_1, search_2, result_2, ...., search_n, result_n, default)
  * </pre>
- * 
+ *
  * @returns Result if matched, otherwise return default or null. 返回匹配结果值,
  *          如无法匹配则返回default或null.
  */
@@ -325,7 +463,7 @@ function DECODE() {
 }
 /**
  * codeTable:代码表 path:索引 node:获取值
- * 
+ *
  * <pre>
  * T('ysxmCT',$..ygzsffxcsmxbGridlbVO[#].ysxmdmjmc,'zsl').在应税项代码表中，根据应税项目代码获取征收率
  * </pre>
@@ -336,7 +474,7 @@ function CT(codeTable, key, node) {
 
 /**
  * 获取传入参数的长度属性值，没有长度属性则报错
- * 
+ *
  */
 function len(stringVar) {
 	if(typeof stringVar==='number'){
@@ -350,7 +488,7 @@ function len(stringVar) {
 }
 /**
  * 获取字符串的长度
- * 
+ *
  */
 function strlen(stringVar) {
 	var strlen = 0;
@@ -466,7 +604,7 @@ function STRING_CHECK_IS_SPECIAL_CHARACTER(str) {
 
 /**
  * 判断是否是number{15.2}
- * 
+ *
  * @param str
  */
 function STING_CHECK_IS_NUMBERAND(str) {
@@ -636,7 +774,7 @@ Date.prototype.format = function(fmt) {
 }
 /**
  * 判断月份是否完成，是否需要加0,
- * 
+ *
  */
 function DATE_GET_FULL_MONTH(month) {
 	if (parseInt(month) < 10) {
@@ -646,7 +784,7 @@ function DATE_GET_FULL_MONTH(month) {
 }
 /**
  * @deprecated 获取当前日期 推荐使用 DATE_GET_CURRENT_DATE()
- * 
+ *
  */
 function getCurDate() {
 	var d = new Date();
@@ -725,14 +863,14 @@ function compateYearByTwoTime(time1,time2){
 	}else{
 		return 0;
 	}
-	
-	
-	
+
+
+
 }
 
 /**
  * 判断是否相差12个月
- * 
+ *
  * @param timeqq
  * @param timeqz
  * @returns
@@ -747,7 +885,7 @@ function isBeyond12Month(timeqq,timeqz) {
 	} else if(1 == yearDiff) {//判断相差是否超过1年
 		//计算日期相差天数
 		var dayDiff = DATE_GET_TIME_INTERVAL_DAYS(timeqq, timeqz);
-		
+
 		var monthqq = timeqq.split("-")[1];
 		var monthqz = timeqz.split("-")[1];
 		var leapYearBz = false;
@@ -1067,7 +1205,7 @@ function VALIDATE_POSTAL_CODE(code) {
 }
 /**
  * 消费税税费种认定校验
- * 
+ *
  * zspmDm 征收品目(多个用英文","号隔开) xfs_sfzrd('101020201,101020222')
  */
 function xfs_sfzrd() {
@@ -1299,17 +1437,17 @@ function jsYjmsje1() {
 
 /**
  * 校验一个数值的长度，整数位保留多少位，小数位保留多少位 num 征收品目代码 intDigits 整数位的位数 decDigits 小数位的位数
- * 
+ *
  */
-function decimalNum(num, intDigits, decDigits) {	
+function decimalNum(num, intDigits, decDigits) {
 	if (num == null || num == '') {
 		return true;
 	}
 	if(!(/^(-)?(0|[1-9]\d{0,30})(\.\d{1,30})?$/.test(num))){
 		return false;
 	}
-	
-	
+
+
 	if (intDigits == null || intDigits == '') {
 		return true;
 	}
@@ -1319,7 +1457,7 @@ function decimalNum(num, intDigits, decDigits) {
 	num = num.toString();
 	if (num.indexOf(".") > -1) {
 		var numArr = num.split(".");
-		if (numArr != null && numArr.length == 2) {			
+		if (numArr != null && numArr.length == 2) {
 			if (numArr[0]==""||numArr[1]==""||numArr[0].length > intDigits || numArr[1].length > decDigits) {
 				return false;
 			}
@@ -1335,7 +1473,7 @@ function decimalNum(num, intDigits, decDigits) {
 
 /**
  * 比较房产税从租应税明细信息减免租金收入合计
- * 
+ *
  * cjczmxbz 从价从租标记 jmszjsr 减免税租金收入
  */
 function jsFcssbCzjmszjsrhj() {
@@ -1418,7 +1556,7 @@ function changeSqValid() {
 
 /**
  * 校验所属期起是否是月初第一天，所属起止是否是月末最后一天
- * 
+ *
  * jsbz 校验标志：01为校验月初，02为校验月末 sssq 税款所属期
  */
 function firstOrLastDay() {
@@ -1441,7 +1579,7 @@ function firstOrLastDay() {
 
 /**
  * 计算指定日期月份的最后一天
- * 
+ *
  * @param nowDate
  * @returns {String}
  */
@@ -1463,7 +1601,7 @@ function calculateMonthLastDay(nowDate) {
 
 /**
  * 房产税纳税申报——减免明细月减免金额计算
- * 
+ *
  * @returns {Number}
  */
 function fcssbYjmje() {
@@ -1533,7 +1671,7 @@ function fcssbYjmje() {
 /**
  * 中外合作及海上自营油气田资源税纳税申报的重复申报校验 zspmDm 征收品目代码 zszmDm 征收子目代码 yqtmc 油气田名称 xssxrq
  * 销售实现日期
- * 
+ *
  */
 function checkZwhzZyssb(zspmDm, zszmDm, yqtmc, xssxrq) {
 	if (zspmDm == null || zspmDm == '') {
@@ -1580,7 +1718,7 @@ function startWidthStr(currStr, containStr) {
 
 /**
  * 获取字符串的某段字符串 startNum 截取字符串开始位置 endNum 截取字符串结束位置 strs 所要截取的字符串
- * 
+ *
  */
 function getStrs(startNum, endNum, strs) {
 	if (endNum == "") {
@@ -1590,29 +1728,35 @@ function getStrs(startNum, endNum, strs) {
 	}
 }
 
+var msgArr = [];
+var msgIndex = "";
+var height = 0;
+var merge = false;
 /**
  * 根据判断条件，弹出对话框提示信息，提示之后不影响后续的操作 flag 判断条件的结果 tipsMsg 提示的信息 tipsType
  * =error：失败的提示，=success：成功的提示，否则普通的提示, 作者 xuyaosen
  */
-function tipsMsg(flag, tipsMsg, tipsType,_width,_height) {
+function tipsMsg(flag, tipsMsg, tipsType,_width,_height,_merge) {
 	if (flag == null || flag == "") {
 		return;
 	}
 	if(!(_width && _height)){
 		_width = 400;
-		_height = 200;
+		_height = 220;
 	}
 	if(tipsMsg){
 		tipsMsg = tipsMsg.replace(/class-/,"class=");
 	}
 	if (flag) {
-		if ("error" == tipsType) {
+		msgArr.push(tipsMsg);
+		/*if ("error" == tipsType) {
 			Message.errorInfo({
 				title : "提示",
 				height : _height,
 				width : _width,
 				message : tipsMsg
 			});
+
 		} else if ("success" == tipsType) {
 			Message.succeedInfo({
 				title : "提示",
@@ -1620,16 +1764,55 @@ function tipsMsg(flag, tipsMsg, tipsType,_width,_height) {
 				width : _width,
 				message : tipsMsg
 			});
-		} else {
-			Message.alert({
+		} else {*/
+			/*Message.alert({
 				title : "提示",
 				height : _height,
 				width : _width,
 				message : tipsMsg
+			});*/
+			merge |= _merge;
+			if(merge){
+				tipsMsg = generMsgArray(msgArr);
+				layer.close(msgIndex);
+				height = MAX(height,_height);
+				_height = height;
+			}
+			msgIndex = layer.open({
+				  type: 1 //Page层类型
+				  ,area: [_width+'px', _height+'px']
+				  ,title: '提示'
+				  ,shade: false //遮罩透明度
+				  ,maxmin: false //允许全屏最小化
+				  ,closeBtn: 0
+				  ,anim: -1 //0-6的动画形式，-1不开启
+				  ,content: tipsMsg
+				  ,btn:['确认']
+				  ,yes : function(index){
+				      layer.close(index);
+				      msgArr = [];
+				  }
 			});
-		}
+		/*}*/
 	}
 
+}
+
+var titleSet = ["零","一","二","三","四","五","六","七","八","九","十"];
+function generMsgArray(arr){
+	var ret = "";
+	for(var i = 0;i < arr.length;i++){
+		if(arr[i].indexOf("class=\"red\"") > -1){
+			ret += "<span class=\"red\">"+titleSet[i+1]+"、    </span>";
+		}else{
+			ret += titleSet[i+1]+"、    ";
+		}
+		ret += arr[i];
+		if(i != arr.length -1){
+			ret += "<br>";
+		}
+	}
+	return ret;
 }
 
 /**
@@ -1682,7 +1865,7 @@ function isIndexOfStr(currStr, containStr) {
 }
 /**
  * 判断某个字符串只能由数字和字母的大写组成
- * 
+ *
  * @param str
  * @returns
  */
@@ -1691,7 +1874,7 @@ function checkisupperandnumber(str) {
 }
 /**
  * 判断某个字符串只能由数字和字母的大写组成
- * 
+ *
  * @param str
  * @returns
  */
@@ -1700,7 +1883,7 @@ function regx(r) {
 }
 /**
  * 判断某个字符串只能由数字和字母的大写汉字组成
- * 
+ *
  * @param str
  * @returns
  */
@@ -1736,7 +1919,7 @@ function checkisupperandnumberandzw(r) {
 }
 /**
  * 判断某个字符串应由多少个字节组成
- * 
+ *
  * @param str
  * @returns
  */
@@ -1754,7 +1937,7 @@ function zjlen(r) {
 
 /**
  * 判断某个字符串可以由数字或字母的大小写或汉字组成
- * 
+ *
  * @param str
  * @returns
  */
@@ -1790,7 +1973,7 @@ function checkywornumberorzw(r) {
 }
 /**
  * 判断某个字符串只能由汉字或英文字母组成
- * 
+ *
  * @param str
  * @returns cs=1校验中文名（如：陈大卫、大卫·陈、大卫·陈·弗尼斯） 其它则校验英文名（dav nik、isi hu jia）
  */
@@ -1959,7 +2142,7 @@ function strSubstring(str, num) {
 
 /**
  * ssjmxzDm 下拉所选减免性质代码 ssjmxzDm_ba 作为过滤条件的减免性质代码
- * 
+ *
  * @returns {Boolean}
  */
 function CHECK_ISBA_CZTD() {
@@ -1998,7 +2181,7 @@ function CHECK_ISBA_CZTD() {
 
 /**
  * 校验减免性质有效期与应税信息有效期是否有交集，没有不可选当前减免性质(针对房产税)
- * 
+ *
  */
 function FCSSB_CHECK_JMXZDM_YXQ() {
 	var rtnData = {};
@@ -2057,7 +2240,7 @@ function FCSSB_CHECK_JMXZDM_YXQ() {
 
 /**
  * 校验减免性质有效期与应税信息有效期是否有交集，没有不可选当前减免性质(针对城镇土地使用税)
- * 
+ *
  */
 function CZTDSYS_CHECK_JMXZDM_YXQ() {
 	var rtnData = {};
@@ -2141,7 +2324,8 @@ function CZTDSYS_CHECK_JMXZDM_YXQ() {
 			}
 		}
 		return rtnData;
-	} else {// 不用取备案的有效期
+	} else if(this.formCT.jmxzCT[ssjmxzDm]!=null && this.formCT.jmxzCT[ssjmxzDm]!=undefined
+			&& this.formCT.jmxzCT[ssjmxzDm].item!=null && this.formCT.jmxzCT[ssjmxzDm].item!=undefined){// 不用取备案的有效期
 		var jmyxqq = this.formCT.jmxzCT[ssjmxzDm].item.yxqq;
 		var jmyxqz = this.formCT.jmxzCT[ssjmxzDm].item.yxqz;
 		if (jmyxqq < yxqz && jmyxqz > yxqq) {
@@ -2205,7 +2389,7 @@ function FCSSB_CHECK_FCJSYZ() {
 
 /**
  * 城镇土地使用税有效期起与土地取得时间校验
- * 
+ *
  * @returns
  */
 function CZTDSYS_CHECK_YXQQ_TDQDSJ() {
@@ -2233,7 +2417,7 @@ function CZTDSYS_CHECK_YXQQ_TDQDSJ() {
 
 /**
  * 房产税纳税申报申报租金所属租赁期起校验
- * 
+ *
  * @returns
  */
 function FCSSB_CHECK_SBZJSSZLQQ() {
@@ -2262,7 +2446,7 @@ function FCSSB_CHECK_SBZJSSZLQQ() {
 
 /**
  * 房产税纳税申报申报租金所属租赁期起是否存在交叉校验
- * 
+ *
  * @returns
  */
 function FCSSB_CHECK_SBZJSSZLQQ_CZ() {
@@ -2303,7 +2487,7 @@ function FCSSB_CHECK_SBZJSSZLQQ_CZ() {
 
 /**
  * 房产税纳税申报采集，减免性质代码从有到无，减免税原值自动置0，减免税租金收入值自动置0；从无到有或者有变更为其他，返回原值
- * 
+ *
  * @returns
  */
 function FCSSB_JMXZDM_JMSFCYZ() {
@@ -2335,7 +2519,7 @@ function FCSSB_JMXZDM_JMSFCYZ() {
 
 /**
  * 变更时间不能早于上个税款所属期的最后一天
- * 
+ *
  * @returns {Boolean}
  */
 function CHECK_BGSJ_SSSQ() {
@@ -2489,7 +2673,7 @@ function qhxw(){
 
 /**
  * 正则表达式判定Url
- * 
+ *
  * @param url
  * @returns {Boolean}
  */
@@ -2576,7 +2760,7 @@ function DateToString(){
 	var year=date.getFullYear();
 	var month1=date.getMonth()+1;
 	var month=month1<10? "0"+month1:month1.toString();
-	var day=date.getDate() < 10 ? "0" + date.getDate() : date.getDate().toString(); 
+	var day=date.getDate() < 10 ? "0" + date.getDate() : date.getDate().toString();
 	return year+'-'+month+'-'+day;
 }
 //比较两个日期大小
@@ -2617,7 +2801,7 @@ function DATE_CHECK_TIME_SIZE_CUSTOMER(str1,str2){
 function validateIsNum(num){
     var reg = /^[0-9]*$/;
     return reg.test(num);
- 
+
 };
 
 
@@ -2633,11 +2817,11 @@ function indexOfJmxzDmAndSwsxDm(data, jmxzDm, swsxDm, _jmxzKey, _swsxKey) {
 	if (!_jmxzKey) {
 		_jmxzKey = 'hmc';
 	}
-	
+
 	if (!_swsxKey) {
 		_swsxKey = 'swsxDm';
 	}
-	
+
 	/**
 	 * 分三类
 	 * 1、只有减免性质代码			-- 具体场景自行验证
@@ -2645,7 +2829,7 @@ function indexOfJmxzDmAndSwsxDm(data, jmxzDm, swsxDm, _jmxzKey, _swsxKey) {
 	 * 3、有减免性质代码及税务实现代码	-- 已验证
 	 */
 	var index = -1;
-	
+
 	if (data.length > 0) {
 		if (jmxzDm && swsxDm) {
 			for (var i=0; i<data.length; i++) {
@@ -2675,7 +2859,7 @@ function indexOfJmxzDmAndSwsxDm(data, jmxzDm, swsxDm, _jmxzKey, _swsxKey) {
 			// 都是空的，不管
 		}
 	}
-	
+
 	return index;
 }
 
@@ -2737,7 +2921,7 @@ function checkRepeatRows(paths, lnoffset, targetJpath) {
 		lastKeys.push(path.substring(path.lastIndexOf('.')+1, path.length));// 截取jpath中最后一个节点名称
 	}
 	// 得出重复值集合
-	var valLst = {};// 值索引-jpath集合 {val1:[jpath1,jpath2],val2:[a3,a4]}  
+	var valLst = {};// 值索引-jpath集合 {val1:[jpath1,jpath2],val2:[a3,a4]}
 	var vals; // 多列值组合
 	var val;
 	var temp;
@@ -2779,7 +2963,7 @@ function checkRepeatRows(paths, lnoffset, targetJpath) {
 			for(var i=0;i< jpLst.length;i++) {
 				$i = jpLst[i];
 				if(row.rownums) {
-					row.rownums = row.rownums+'、'+($i+lnoffset); 
+					row.rownums = row.rownums+'、'+($i+lnoffset);
 				} else {
 					row.rownums = ($i+lnoffset);
 				}
@@ -2788,7 +2972,7 @@ function checkRepeatRows(paths, lnoffset, targetJpath) {
 		}
 	}
 	var lastKey = paths[0].substring(paths[0].lastIndexOf('.')+1,paths[0].length);// 截取jpath中最后一个节点名称
-	var resultPaths =[]; // 受影响结果集 [{repeatpass:{"index":{row:{rownums:"1、2"}}}}] 
+	var resultPaths =[]; // 受影响结果集 [{repeatpass:{"index":{row:{rownums:"1、2"}}}}]
     var _r = {}; // {repeatpass:{"index":{row:{rownums:"1、2"}}}}
     _r.repeatflag = 1;
 	_r.noPassLst = noPassLst;
@@ -2803,3 +2987,137 @@ function checkRepeatRows(paths, lnoffset, targetJpath) {
 	return resultPaths;
 }
 /***********重复行校验 end***********/
+
+/**
+ * 数字金额转换为大写人民币汉字的方法
+ * @param money
+ * @returns {String}
+ */
+function convertCurrency(money) {
+  //汉字的数字
+  var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
+  //基本单位
+  var cnIntRadice = new Array('', '拾', '佰', '仟');
+  //对应整数部分扩展单位
+  var cnIntUnits = new Array('', '万', '亿', '兆');
+  //对应小数部分单位
+  var cnDecUnits = new Array('角', '分', '毫', '厘');
+  //整数金额时后面跟的字符
+  var cnInteger = '整';
+  //整型完以后的单位
+  var cnIntLast = '元';
+  //最大处理的数字
+  var maxNum = 999999999999999.9999;
+  //金额整数部分
+  var integerNum;
+  //金额小数部分
+  var decimalNum;
+  //输出的中文金额字符串
+  var chineseStr = '';
+  //分离金额后用的数组，预定义
+  var parts;
+  if (money == '') { return ''; }
+  money = parseFloat(money);
+  if (money >= maxNum) {
+    //超出最大处理数字
+    return '';
+  }
+  if (money == 0) {
+    chineseStr = cnNums[0] + cnIntLast + cnInteger;
+    return chineseStr;
+  }
+  //转换为字符串
+  money = money.toString();
+  if (money.indexOf('.') == -1) {
+    integerNum = money;
+    decimalNum = '';
+  } else {
+    parts = money.split('.');
+    integerNum = parts[0];
+    decimalNum = parts[1].substr(0, 4);
+  }
+  //获取整型部分转换
+  if (parseInt(integerNum, 10) > 0) {
+    var zeroCount = 0;
+    var IntLen = integerNum.length;
+    for (var i = 0; i < IntLen; i++) {
+      var n = integerNum.substr(i, 1);
+      var p = IntLen - i - 1;
+      var q = p / 4;
+      var m = p % 4;
+      if (n == '0') {
+        zeroCount++;
+      } else {
+        if (zeroCount > 0) {
+          chineseStr += cnNums[0];
+        }
+        //归零
+        zeroCount = 0;
+        chineseStr += cnNums[parseInt(n)] + cnIntRadice[m];
+      }
+      if (m == 0 && zeroCount < 4) {
+        chineseStr += cnIntUnits[q];
+      }
+    }
+    chineseStr += cnIntLast;
+  }
+  //小数部分
+  if (decimalNum != '') {
+    var decLen = decimalNum.length;
+    for (var i = 0; i < decLen; i++) {
+      var n = decimalNum.substr(i, 1);
+      if (n != '0') {
+        chineseStr += cnNums[Number(n)] + cnDecUnits[i];
+      }
+    }
+  }
+  if (chineseStr == '') {
+    chineseStr += cnNums[0] + cnIntLast + cnInteger;
+  } else if (decimalNum == '') {
+    chineseStr += cnInteger;
+  }
+  return chineseStr;
+}
+
+/**
+ * 计数：包含
+ * @returns {number}
+ * @constructor
+ */
+function COUNT(){
+    if (arguments.length <= 1) {
+        return 0;
+    }else if (arguments.length > 2){
+    	var c = 0;
+    	for(var i = 1;i < arguments.length;i++){
+    		c += arguments.callee.apply(arguments[0],arguments[i]);
+		}
+    	return c;
+	}else {
+    	var a = arguments[0];
+    	var b = arguments[1];
+    	var c = 0;
+    	while(a.indexOf(b) > -1){
+    		a = a.replace(b,"");
+    		c++;
+		}
+		return c;
+	}
+}
+
+/**
+ * 位与操作
+ * @param strA
+ * @param strB
+ */
+function binaryAnd(strA, strB){
+	var ret = "";
+	for(var i = 0;i < strA.length;i++){
+		if(strA[i] == '0' || strB[i] == '0'){
+			ret += '0';
+		}else{
+			ret += '1';
+		}
+	}
+	return ret;
+}

@@ -1,6 +1,32 @@
 /**
  * Created by Administrator on 2016-05-12.
  */
+Number.prototype.toFixed = function(d) {
+	var s=this+""; 
+	if(!d)d=0; 
+	if(s.indexOf(".")==-1)s+="."; 
+	s+=new Array(d+1).join("0"); 
+	if(new RegExp("^(-|\\+)?(\\d+(\\.\\d{0,"+(d+1)+"})?)\\d*$").test(s)){
+		var s="0"+RegExp.$2,pm=RegExp.$1,a=RegExp.$3.length,b=true;
+		if(a==d+2){
+			a=s.match(/\d/g); 
+			if(parseInt(a[a.length-1])>4){
+				for(var i=a.length-2;i>=0;i--){
+					a[i]=parseInt(a[i])+1;
+					if(a[i]==10){
+						a[i]=0;
+						b=i!=1;
+					}else break;
+				}
+			}
+			s=a.join("").replace(new RegExp("(\\d+)(\\d{"+d+"})\\d$"),"$1.$2");
+		}
+		if(b)s=s.substr(1); 
+		return (pm+s).replace(/\.$/,"");
+	}
+	return this+"";
+};
+
 var $scopeTemp;
 var idxTemp;
 function ngDirectives(gobal, viewApp){
@@ -100,12 +126,145 @@ function ngDirectives(gobal, viewApp){
                             if(typeArr.length == 1){
                                 if(""!=typeArr[0]){
                                 	zsw = 16 - typeArr[0];
-                                	precision = typeArr[0];
+                                	precision = parseInt(typeArr[0]);
                                 }
                             }else if(typeArr.length>1){
                                 if(""!=typeArr[0]) {
                                     zsw = typeArr[0];
-                                    precision = typeArr[1];
+                                    precision = parseInt(typeArr[1]);
+                                }
+                            }
+                            if(typeArr.length == 3) {
+                                defaultValue = typeArr[2];
+                            }
+                        }
+                    }
+                    num = (numArr[0]).substr(0,zsw) +"."+ numArr[1];
+                    var result = parseFloat(num, 10);
+                    //result = isNaN(result) ? defaultValue : result;
+                    if(isNaN(result)) {
+                        var dtNum = parseFloat(defaultValue, 10);
+                        if(isNaN(dtNum)){
+                            return defaultValue;
+                        }
+                        result = dtNum;
+                    }
+                    return parseFloat(((result*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(precision));
+                },
+                "isEmpty" : function(value){
+                    return !value.$modelValue;
+                },
+                "keyDown" : function(args){
+                    var event = args.$event, viewValue = args.$viewValue, modelValue = args.$modelValue;
+
+                    if (!(gobal.keyHelper.smallKeyBoard(event) || gobal.keyHelper.numberKeyBpoard(event)
+                        || gobal.keyHelper.functionKeyBoard(event)
+                        || gobal.keyHelper.currencyKeyBoard(event, viewValue) || gobal.keyHelper.floatKeyBoard(
+                            event, viewValue))) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                    }
+                }
+            },
+            // 支持15位整数加两位小数。 -- GEARS-9907
+            "number15" : {
+                "formatter" : function(args){
+                    var modelValue = args.$modelValue, filter = args.$filter, attrs = args.$attrs, $eval = args.$eval;
+                    var precision = 2;
+                    var defaultValue = 0.00;
+
+                    if (attrs.ngDatatype) {
+                        var reg = /{(\S*)}/;    // /{(-?\d*)}/;
+                        var result = reg.exec(attrs.ngDatatype);
+                        //这里只处理了保留小数位数
+                        if (result) {
+                            result = result[1].split('\.');
+                            if(result.length == 1){
+                                precision = result[0];
+                            }else if(result.length == 2){
+                                precision = result[1];
+                            }
+                            if(result.length == 3){
+                                if("" != result[1]) {precision = result[1];}
+                                defaultValue = result[2];
+                                var dtNum = parseFloat(defaultValue, 10);
+                                defaultValue = isNaN(dtNum)? defaultValue : dtNum;
+                                if(angular.equals("",modelValue)) return defaultValue;
+                            }else{
+                                defaultValue = filter("number")(0, precision);
+                            }
+                        }
+                    }
+                    try {
+                        var rst = filter("number")(modelValue, precision);
+                        if(rst == 0){
+                            //if(defaultValue != rst){
+                            //    return defaultValue;
+                            //}
+                            //对科学计数法表示的很小的数（如6.789e-7）进行处理转换成对应小数
+                            modelValue = parent.ROUND(modelValue, precision);
+                            var str = modelValue.toString();
+                            if(str.indexOf('E') > -1 || str.indexOf('e') > -1){
+                                var reg = new RegExp("^(-?\\d+.?\\d*)[Ee]{1}(-?\\d+)$");
+                                var result = str.match(reg);
+
+                                var tail  = result[1];
+                                var power = Number(result[2]);
+
+                                var p_len = Math.abs(power);
+                                var t_str = tail.replace(".", "");
+
+                                if(power < 0){
+                                    var t_len = tail.split(".")[0].length;
+                                    var len = p_len - t_len;
+                                    if(len >= 0){
+                                        rst = "0.";
+                                        for(var i=0; i<len; i++){
+                                            rst = rst + "0";
+                                        }
+                                        rst = rst + t_str;
+                                    }
+                                }else{
+                                    var t_len = tail.split(".")[1].length;
+                                    var len = p_len - t_len;
+                                    if(len >= 0){
+                                        rst = t_str;
+                                        for(var i=0; i<len; i++){
+                                            rst = rst + "0";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return rst;
+
+                    } catch (e) {
+                        console.log("ERROR[" + e + "],ng-model is " + attrs.ngModel);
+                    }
+                },
+                "parser" : function(args){
+                    var precision = 2;
+                    var zsw = 16;   //整数位 默认为16位
+                    var viewValue = args.$viewValue, attrs = args.$attrs;
+                    var num = viewValue.replace(/[^0-9.-]/g, '');
+                    //默认取16位整数,支持number{10.2} 整数位数10位,小数位数2位  与 number{2} 小数位数2位
+                    var numArr = num.split(".");
+                    var defaultValue = 0.00;
+                    if (attrs.ngDatatype) {
+                        var reg = /{(\S*)}/;//   /{(-?\d*)}/
+                        var resultPrec = reg.exec(attrs.ngDatatype);
+                        if (resultPrec) {
+                            var precisionStr = resultPrec[1];
+                            var typeArr=precisionStr.split('\.');
+                            if(typeArr.length == 1){
+                                if(""!=typeArr[0]){
+                                    zsw = 16 - typeArr[0];
+                                    precision = parseInt(typeArr[0]);
+                                }
+                            }else if(typeArr.length>1){
+                                if(""!=typeArr[0]) {
+                                    zsw = typeArr[0];
+                                    precision = parseInt(typeArr[1]);
                                 }
                             }
                             if(typeArr.length == 3) {
@@ -178,7 +337,7 @@ function ngDirectives(gobal, viewApp){
             			}
             		}
                       result=isNaN(result)||((result+"").substr(0,1)=='-')?0:result;
-                      return parseFloat(((result*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(precision));
+                      return parseFloat(((result*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(parseInt(precision)));
             	},
             	"isEmpty" : function(value){
             		return !value.$modelValue;
@@ -454,7 +613,7 @@ function ngDirectives(gobal, viewApp){
                         	if(str.length == 2){
                        			precision=str[1].length;               			
                        		 }                        	
-                        	return parseFloat(((num*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(precision));
+                        	return parseFloat(((num*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(parseInt(precision)));
                         }
                     }
                     try {                    	 
@@ -462,7 +621,7 @@ function ngDirectives(gobal, viewApp){
                		 if(result.length == 2&&result[1].length>precision){
                			precision=result[1].length;               			
                		 }
-               		 return parseFloat(((num*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(precision));
+               		 return parseFloat(((num*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(parseInt(precision)));
                     } catch (e) {
                         console.log("ERROR[" + e + "],ng-model is " + attrs.ngModel);
                     }                              	
@@ -510,7 +669,7 @@ function ngDirectives(gobal, viewApp){
                          }
                      }
                      try {                    	                     	 
-                    	 return parseFloat(((num*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(precision));
+                    	 return parseFloat(((num*Math.pow(10,parseInt(precision)+1))/Math.pow(10,parseInt(precision)+1)).toFixed(parseInt(precision)));
                      } catch (e) {
                          console.log("ERROR[" + e + "],ng-model is " + attrs.ngModel);
                      } 
@@ -544,8 +703,8 @@ function ngDirectives(gobal, viewApp){
                         }
                     }
                     if(angular.isNumber(modelValue)) {
-                        return (Math.round(modelValue * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(decimals) + suffix;
-                    } else return (Math.round(0 * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(decimals) + suffix;
+                        return (Math.round(modelValue * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(parseInt(decimals)) + suffix;
+                    } else return (Math.round(0 * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(parseInt(decimals)) + suffix;
                 },
                 "parser" : function(args) {
                     var viewValue = args.$viewValue,filter = args.$filter, attrs = args.$attrs, $eval = args.$eval;
@@ -584,7 +743,7 @@ function ngDirectives(gobal, viewApp){
                     var decimals = 3;
                     var suffix = '%';
                     if (attrs.ngDatatype) {
-                    	var reg = /{(-?\d*)(,?)([0,1]?)}/;
+                        var reg = /{(-?\d*)(,?)([0,1]?)}/;
                         var result = reg.exec(attrs.ngDatatype);
                         if (result) {
                             decimals = parseInt(result[1], 10);
@@ -595,10 +754,10 @@ function ngDirectives(gobal, viewApp){
                     	return modelValue;
                     } else if(angular.isString(modelValue)) { 
                     	var mv = filter("number")(modelValue, decimals);
-                    	return (Math.round(mv * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(decimals) + suffix;
+                    	return (Math.round(mv * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(parseInt(decimals)) + suffix;
                     } else if(angular.isNumber(modelValue)) {
-                    	return (Math.round(modelValue * Math.pow(10, decimals + 2))/Math.pow(10, decimals)).toFixed(decimals) + suffix;
-                    } else return (Math.round(0 * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(decimals) + suffix;
+                    	return (Math.round(modelValue * Math.pow(10, decimals + 2))/Math.pow(10, decimals)).toFixed(parseInt(decimals)) + suffix;
+                    } else return (Math.round(0 * Math.pow(10, decimals))/Math.pow(10, decimals)).toFixed(parseInt(decimals)) + suffix;
                 },
                 "parser" : function(args) {
                     var viewValue = args.$viewValue,filter = args.$filter, attrs = args.$attrs, $eval = args.$eval;
@@ -1126,6 +1285,14 @@ function ngDirectives(gobal, viewApp){
                  * 4.对新增行,遍历其他jpath,执行公式
                  */
                 $scope.add=function(){
+					try {
+                         if(typeof(addcheck)==='function'){
+                             if(addcheck(_keyword)){
+                                 return;
+                             }}
+                     }catch(e){
+
+                     }
                 	//说明存在分页的情况,分页不考虑2级动态行的情况
                     //如果时分页,则改成分页后的下标
                     var _finalIdx = this.$originIndex();//获取原始数据下标
@@ -1165,10 +1332,6 @@ function ngDirectives(gobal, viewApp){
                     // 4、获取当前动态行的数据模型，无法获取到新增行的scope
                     if(undefined != $scope['_arr_' + _keyword]) {
                         _jpaths = $scope['_arr_' + _keyword];
-
-                    	//当在中间增加行时，需要替换新增行后面行的下标，即下标都要加一，替换校验公式和控制公式的下标
-                    	var tt=parent.formulaEngine.idxVariable2NoPass;
-            			var cc=parent.formulaEngine.idxVariable2Control;
 
                     	//当在中间增加行时，需要替换新增行后面行的下标，即下标都要加一，替换校验公式和控制公式的下标
                     	var tt=parent.formulaEngine.idxVariable2NoPass; // 校验未通过jpath
@@ -1619,7 +1782,7 @@ function ngDirectives(gobal, viewApp){
 //                				sfsctips = true;
                                 $scope[_keyword][idx].isDeleteTr='Y';
                                 
-                                ($element).children().find('.sbtn03').html('恢复');
+                                ($element).children().find('.layui-btn-danger').html('恢复');
                                 $(($element).children().children()).each(function(i){
                                     //跳过增加、删除按钮,控件锁定
                                     var _jpath = $(this).attr("jpath");
@@ -1633,7 +1796,7 @@ function ngDirectives(gobal, viewApp){
                                 });
                             }else if($scope[_keyword][idx].isDeleteTr==='Y'){
                                 $scope[_keyword][idx].isDeleteTr='N';
-                                ($element).children().find('.sbtn03').html('删除');
+                                ($element).children().find('.layui-btn-danger').html('删除');
                                 var _jpath;
                                 $(($element).children().children()).each(function(i){
                                     //跳过增加、删除按钮，数据恢复之后，要重新计算校验规则公式
@@ -1697,6 +1860,8 @@ function ngDirectives(gobal, viewApp){
             }
         }
     });
+
+
     /**
      *自定义指令ngJprefix
      */
@@ -1778,167 +1943,16 @@ function ngDirectives(gobal, viewApp){
             compile: function (element, attributes){
                 return {
                     pre: function preLink($scope, $element, attributes) {
-                        var _async=attributes["async"]=="false"||attributes["async"]==false?false:true; //默认为异步true
-                        var _node = $element.attr("node");
-                        var _name = $element.attr("name");
-
-                        var _url = $element.attr("url");
-                        var _model = $element.attr("model");
-                        var _params = $element.attr("params");
-
-                        var _dm = $element.attr("dm");
-                        var _mc = $element.attr("mc");
-                        var _dynamicParam = $element.attr("dynamic");
-
-                        var _multi = $element.attr("multi");
-                        var _data;
-                        if(undefined == parent.formCT[_name] || JSON.stringify(parent.formCT[_name]) == "{}") {//判断是否已缓存
-                           	var _start_ = new Date().getTime();
-                            console.log("INFO:"+_start_+" 初始化代码表"+ _name +"开始时间");
-
-                        	if(undefined != _url && "" != _url) {//URL来源
-                            	if(_url.indexOf('getDmb.do')>-1){
-                            		var ywlx="/"+location.pathname.split('/')[3];
-                            		_url=parent.pathRoot+ywlx+_url;
-                            		var gdslxDm=parent.$("#gdslxDm").val();
-                            		if(gdslxDm){
-                            			_url=_url+"&gdslxDm="+gdslxDm;
-                            		}
-                            	}
-                            	
-                            	// 允许添加参数，param为key, dynamicParam为value，可以多个逗号隔开，但个数必须一致
-                            	if (_params && _dynamicParam) {
-                            		var aryParam = _params.split(',');
-                            		var aryDynamic = _dynamicParam.split(',');
-                            		if (aryParam && aryDynamic && aryDynamic.length == aryDynamic.length) {
-                            			for (var idx=0; idx<aryParam.length; idx++) {
-                            				_data = jsonPath($scope.formData, aryDynamic[idx])[0];
-                            				if (_data) {
-                                        		_url = _url + (idx==0?"?":"&") + aryParam[idx] + "=" + _data;
-                            				} else {
-                            					// 发现有不符合的，则不进行拼接
-                            					break;
-                            				}
-                            			}
-                            		}
-                            	}
-                                //$.when($.getJSON(_url)).then(function(response){
-                        	 $.ajax({
-             		    		type : "GET",
-             		    		async: _async,
-             		    		url : _url,
-             					dataType : "json",
-             					success : function(response) {      
-                                    _data = response;
-                                    if(undefined == _node || "" == _node) {
-                                        //parent.formCT[_name] = response;
-                                        _data = response;
-                                    } else {
-                                        //parent.formCT[_name] = response[_node];
-                                        _data = response[_node];
-                                    }
-                                    parent.formEngine.cacheCodeTable(_name, _data);
-                                    viewEngine.formApply($('#viewCtrlId'), _name, _data);
-								},
-								error : function() {
-                                    dhtmlx.message("codetable指令缓存代码表"+_url+"，请检查...", "error", 2000);
-                                }
-                        	 });
-								
-                            } else if(undefined != _model && "" != _model) {//期初数来源
-                                //parent.formCT = jsonPath($scope.formData, _model)[0];
-                                _data = jsonPath($scope.formData, _model)[0];
-                                if(undefined != _dm && "" != _dm) {
-                                    var _jsons = {};
-                                    $.each(_data, function(k,v) {
-	                                    	if(_multi=='true'){
-	                                        	if(!_jsons[v[_dm]])
-	                                        		_jsons[v[_dm]]=[];
-	                                        	_jsons[v[_dm]].push(v);
-	                                        }else{
-	                                        	_jsons[v[_dm]] = v;
-	                                        }
-                                    });
-                                    _data = _jsons;
-                                    var _jpath = jsonPath($scope.formData, _model, { "resultType" : "PATH" });
-                                    if(_jpath.length == 1){
-                                    	_jpath = _jpath[0].replace(/\[\'/g,".").replace(/\'\]/g,"");
-                                    }
-                                    var _info = {"model":_model,"dm":_dm,"jpath":_jpath};
-                                    viewEngine.formApply($('#viewCtrlId'), "_info_"+_name, _info);
-                                }
-
-                                parent.formEngine.cacheCodeTable(_name, _data);
-                                viewEngine.formApply($('#viewCtrlId'), _name, _data);
-                            } else if(undefined != _params && "" != _params){
-                            	var url = parent.pathRoot+"/nssb/getDtdmb.do?";
-                            	if(_params.indexOf("=") == -1){
-                            		_params = "key=" + _params;
-                            	}
-                            	url += _params;
-                            	if(_dynamicParam && (typeof getDynamicParam == "function")){
-                            		url += "&" + getDynamicParam($scope,_dynamicParam);
-                            	}
-                            	var data = {};
-                            	data["djxh"] = $(parent.document).find("#djxh").val();
-                            	data["nsrsbh"] = $(parent.document).find("#nsrsbh").val();
-                            	data["gdslxDm"] = $(parent.document).find("#gdslxDm").val();
-                            	data["swjgdm"] = $(parent.document).find("#swjgDm").val();
-                            	data["dm"] = _dm;
-                            	if(_mc != undefined && _mc != ""){
-                            		data["mc"] = _mc;
-                            	}
-
-							$.ajax({
-             		    		type : "GET",
-             		    		async:_async,
-             		    		url : url,
-             		    		data : data,
-             					dataType : "json",
-             					success : function(response) {
-                                    _data = response;
-                                    if(typeof response == "string"){
-                                    	response = JSON.parse(response);
-                                    }
-                                    if(response && response["dtdmbxx"]){
-                                    	response = response["dtdmbxx"];
-                                    }
-                                    if(undefined == _node || "" == _node) {
-                                        //parent.formCT[_name] = response;
-                                        _data = response;
-                                    } else {
-                                        //parent.formCT[_name] = response[_node];
-                                        _data = response[_node];
-                                    }
-                                    if(typeof _data == "string"){
-                                    	_data = JSON.parse(_data);
-                                    }
-                                    if(_data && _data["root"]){
-                                    	var _jsons = {};
-                                        $.each(_data.root, function(k,v) {
-                                            _jsons[v["dm"]] = v;
-                                        });
-                                        _data = _jsons;
-                                    }
-                                    parent.formEngine.cacheCodeTable(_name, _data);
-                                    var _formApplystart_ = new Date().getTime();
-                                    console.log("INFO:"+_formApplystart_+" 初始化代码表"+ _name +" formApply开始时间");
-                                    viewEngine.formApply($('#viewCtrlId'), _name, _data);
-
-                                    var _end_ = new Date().getTime();
-                	                console.log("INFO:"+_end_+" 初始化代码表" + _name +"结束时间");
-
-                	                console.log("INFO:"+(_end_ - _formApplystart_)+"ms 初始化代码表"+ _name +" formApply耗时");
-                	                var _ms_ = _end_ - _start_;
-                	                console.log("INFO:"+_ms_+"ms 初始化代码表" + _name +"耗时");
-                            	},error : function(e) {
-                                    dhtmlx.message("codetable指令缓存代码表"+_params+"，请检查...", "error", 2000);
-                                }
-                        	});
-                            }else {//codetable指令相关参数缺失
-                                dhtmlx.message("codetable指令相关参数缺失，请检查...", "error", 2000);
+                        if($element.attr("id")){
+                            var _id = "_" + $element.attr("id");
+                            if(!parent.formCT[_id]){
+                                var _values = {};
+                                _values.name = $element.attr("name");
+                                _values.attributes = attributes;
+                                parent.formEngine.cacheCodeTable(_id, _values);
                             }
                         }
+                        initCodeTable($scope, attributes);
                     },
                     post: function postLink($scope, $element, attributes) {
                     }
@@ -1969,9 +1983,7 @@ function ngDirectives(gobal, viewApp){
                     } catch(e){}
                     var _start_ = parent.formEngine._start_;
                     var _end_ = new Date().getTime();
-                    console.log("INFO:"+_end_+" 加载完成时间");
-                    var _ms_ = _end_ - _start_;
-                    console.log("INFO:"+_ms_+"ms 加载总耗时");
+                    console.log("INFO:"+_start_+ "-" +_end_ + "-" +(_end_ - _start_)+ "ms 加载总耗时");
                 },50);
                 parent.autoResizeIframe("frmSheet");
             }
@@ -1979,11 +1991,11 @@ function ngDirectives(gobal, viewApp){
     }]);
 
     /**
-     * 修改人：huangpeiyuan
-     * 修改时间：2018-07-17
-     * 修改内容：支持传json对象参数，并支持回调函数使用
-     * 自定义laydate日期控件指令
-     * <input type="text" class="laydate-icon" id="sssqQ" ng-laydate="{}" ng-model="formData.sssq.rqQ">
+     * 加强版本，满足业务需求。重构 version 2
+     * 即，所有nglaydate 参数，都由属性传入
+     * 把日期控制 与 界面展示 区分开来处理。
+     * 先插入一个dom,并赋予调用事件，与界面作交换。
+     * 通过观察,监控值变化。
      * id为必传参数
      */
     viewApp.directive('ngLaydate', ['$filter',function($filter) {
@@ -1996,7 +2008,7 @@ function ngDirectives(gobal, viewApp){
                  * 默认值参数初始化,优先级别， attr属性 > ng-laydate 属性
                  */
                 if(!element[0].id){
-                    element[0].id= "fs"+new Date().getTime();
+                    element[0].id= "fs"+getUUID()+new Date().getTime();
                 }
 
                 //layDate插件默认最小日期 覆写此属性可变更可选时间区间
@@ -2346,8 +2358,10 @@ function ngDirectives(gobal, viewApp){
         	link: function ($scope, element, attrs, ngModel) {
         		var setting = {
         				view : {
-        					dblClickExpand : false
-        				},
+        					dblClickExpand : false,
+                            showIcon: false,
+                            showLine: false
+                        },
         				data : {
         					simpleData : {
         						enable : true
@@ -2434,7 +2448,127 @@ function ngDirectives(gobal, viewApp){
         						}
         						hideMenu();
         						$.fn.zTree.init($("#treeDemo"), setting, []);
-        					}
+        					},
+                            onCheck : function onCheck(event, treeId, treeNode) {
+                                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                                var nodes = zTree.getCheckedNodes(true);
+                                var id_ = "", v = "";
+                                nodes.sort(function compare(a, b) {
+                                    return a.id - b.id;
+                                });
+                                for (var i = 0, l = nodes.length; i < l; i++) {
+                                    var node = nodes[i];
+                                    if(!node.isParent){
+                                        v += node.name + ",";
+                                        id_ += node.id + ",";
+                                    }
+                                }
+                                if (id_.length > 0) {
+                                    v = v.substring(0, v.length - 1);
+                                    id_ = id_.substring(0, id_.length - 1);
+                                }
+
+                                //取出参数
+                                var ngTreeobj=JSON.parse(attrs.ngTree.replace(/\\/g,''));
+                                if(typeof(checkTree) === 'function'){//回调，检查业务js有无写方法，可以在这里做业务逻辑判断。
+                                    if(!checkTree(ngTreeobj.url,id_,v,element)){
+                                        return;
+                                    }
+                                }
+                                if(ngTreeobj.parentAdd==='Y'&&treeNode.getParentNode()!=null){//追加父级目录
+                                    v=treeNode.getParentNode().name+v;
+                                }
+
+                                var element_next=$(element).next();
+                                var _jpath = $(element).attr("jpath");
+                                var ngModels = new Array();
+                                var _nextngModels = new Array();
+
+                                if(attrs.ngModel.indexOf("[") > -1){
+                                    ngModels[0] = attrs.ngModel.substring(0,attrs.ngModel.indexOf("["));
+                                    ngModels[1] = attrs.ngModel.substring(attrs.ngModel.indexOf("[")+1,attrs.ngModel.indexOf("]"));
+                                    ngModels[2] = attrs.ngModel.substring(attrs.ngModel.indexOf(".")+1);
+                                }else{
+                                    ngModels=attrs.ngModel.split('.');
+                                }
+                                if(element_next.attr('ng-model').indexOf("[") > -1){
+                                    _nextngModels[0] = element_next.attr('ng-model').substring(0,element_next.attr('ng-model').indexOf("["));
+                                    _nextngModels[1] = element_next.attr('ng-model').substring(element_next.attr('ng-model').indexOf("[")+1,element_next.attr('ng-model').indexOf("]"));
+                                    _nextngModels[2] = element_next.attr('ng-model').substring(element_next.attr('ng-model').indexOf(".")+1);
+                                }else{
+                                    _nextngModels=element_next.attr('ng-model').split('.');
+                                }
+                                //是否需要使用根节点的参数,注意：建议rootNodeAdd和parentAdd不要同时使用
+                                if(ngTreeobj.rootNodeAdd==='Y'){
+                                    //获取被选中节点的根节点
+                                    var rootNode = treeNodeGetRoot(treeNode);
+                                    if(rootNode.id != treeNode.id){
+                                        //id不一样的时候才拼接，如果是一样，则是同一个节点
+                                        v = rootNode.name + "   |   " + v;
+                                    }
+                                    //使用rootNodeAdd的时候，暂时默认需要绑定rootId和rootName
+                                    var elementRootId = $(element).siblings(".rootId");
+                                    var elementRootName = $(element).siblings(".rootName");
+                                    if(elementRootId!=null && elementRootId.length>0){
+                                        //var _rootIdNgModels=elementRootId.attr('ng-model').split('.');
+                                        //$scope[ngModels[0]][_rootIdNgModels[1]]=rootNode.id;//赋值
+                                        var _rootIdNgModels = new Array();
+                                        if(elementRootId.attr('ng-model').indexOf("[") > -1){
+                                            _rootIdNgModels[0] = elementRootId.attr('ng-model').substring(0,elementRootId.attr('ng-model').indexOf("["));
+                                            _rootIdNgModels[1] = elementRootId.attr('ng-model').substring(elementRootId.attr('ng-model').indexOf("[")+1,elementRootId.attr('ng-model').indexOf("]"));
+                                            _rootIdNgModels[2] = elementRootId.attr('ng-model').substring(elementRootId.attr('ng-model').indexOf(".")+1);
+                                            $scope[ngModels[0]][ngModels[1]][_rootIdNgModels[2]]=rootNode.id;
+                                        }else{
+                                            _rootIdNgModels=elementRootId.attr('ng-model').split('.');
+                                            $scope[ngModels[0]][_rootIdNgModels[1]]=rootNode.id;
+                                        }
+
+                                        var _jpath_rootId = elementRootId.attr("jpath");
+                                        parent.formulaEngine.apply(_jpath_rootId, '');
+                                    }
+                                    if(elementRootName!=null && elementRootName.length>0){
+                                        //var _rootNameNgModels=elementRootName.attr('ng-model').split('.');
+                                        //$scope[ngModels[0]][_rootNameNgModels[1]]=rootNode.name;//赋值
+                                        var _rootNameNgModels = new Array();
+                                        if(elementRootName.attr('ng-model').indexOf("[") > -1){
+                                            _rootNameNgModels[0] = elementRootName.attr('ng-model').substring(0,elementRootName.attr('ng-model').indexOf("["));
+                                            _rootNameNgModels[1] = elementRootName.attr('ng-model').substring(elementRootName.attr('ng-model').indexOf("[")+1,elementRootName.attr('ng-model').indexOf("]"));
+                                            _rootNameNgModels[2] = elementRootName.attr('ng-model').substring(elementRootName.attr('ng-model').indexOf(".")+1);
+                                            $scope[ngModels[0]][ngModels[1]][_rootNameNgModels[2]]=rootNode.id;
+                                        }else{
+                                            var _rootNameNgModels=elementRootName.attr('ng-model').split('.');
+                                            $scope[ngModels[0]][_rootNameNgModels[1]]=rootNode.name;
+                                        }
+
+                                        var _jpath_rootName = elementRootName.attr("jpath");
+                                        parent.formulaEngine.apply(_jpath_rootName, '');
+                                    }
+                                }
+                                //$scope[ngModels[0]][ngModels[1]]=v;//赋值
+                                //$scope[ngModels[0]][_nextngModels[1]]=id_;//赋值
+                                if(ngModels.length>2){
+                                    $scope[ngModels[0]][ngModels[1]][ngModels[2]]=v;
+                                    $scope[ngModels[0]][ngModels[1]][_nextngModels[2]]=id_;
+                                }else{
+                                    $scope[ngModels[0]][ngModels[1]]=v;
+                                    $scope[ngModels[0]][_nextngModels[1]]=id_;
+                                }
+                                if(ngTreeobj.affectNode){
+                                    var affectNodes=ngTreeobj.affectNode.split(',');
+                                    $.each(affectNodes, function(i){
+                                        $scope[ngModels[0]][this]='';//赋值
+                                        var affectJpath=_jpath.substring(0,_jpath.lastIndexOf('.')+1)+this;
+                                        parent.formulaEngine.apply(affectJpath, '');
+                                    });
+                                }
+                                var _jpath_next = element_next.attr("jpath");
+                                parent.formulaEngine.apply(_jpath, v);
+                                parent.formulaEngine.apply(_jpath_next, id_);
+                                viewEngine.tipsForVerify(document.body);
+                                if (!$scope.$$phase) {
+                                    $scope.$apply();
+                                }
+                            }
         				}
         			};
         		 element.on({ "click" : function(event){
@@ -2443,6 +2577,7 @@ function ngDirectives(gobal, viewApp){
     				var _formData = ngTreeobj.formData;
     				var eleOffset = element.offset();
     				var width=ngTreeobj.width;
+    				var checkbox=ngTreeobj.checkbox;
     				$("#menuContent").css({
     					left : eleOffset.left + "px",
     					top : eleOffset.top + element.outerHeight() + "px",
@@ -2451,6 +2586,12 @@ function ngDirectives(gobal, viewApp){
     				$("#treeDemo").css({
     					width : width+"px"
     				});
+
+    				//有checkbox属性则在setting中增加check参数，支持多选树
+    				if(checkbox){
+    				    setting.check = {"enable": true, "chkStyle": "checkbox", "chkboxType": { "Y": "ps", "N": "ps" }};
+                    }
+
     				if(_url){
     					var mapKey=_url;
         				if(_url.indexOf('getDmb.do')>-1){
@@ -2463,21 +2604,53 @@ function ngDirectives(gobal, viewApp){
                     		var codeTables=_url.substring(_url.indexOf('codeTable=')+'codeTable='.length,_url.indexOf('&')).split('.');
                     		mapKey=codeTables[0];
                     	}
-    					$.getJSON(_url, function(data) {
+    					$.getJSON(encodeURI(_url), function(data) {
     						if (data !== "" || data !== undefined) {
     							$.fn.zTree.init($("#treeDemo"), setting, data);//展开下拉树控件
+
+                                if(checkbox) {
+                                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                                    var element_next = $(element).next();
+                                    var _jpath_next = element_next.attr("jpath");
+                                    var checkNodes = eval("parent.formData." + _jpath_next);
+                                    if (checkNodes) {
+                                        checkNodes = checkNodes.split(',');
+                                        for (var i = 0, len = checkNodes.length; i < len; i++) {
+                                            var nodeId = checkNodes[i];
+                                            var node = zTree.getNodeByParam("id", nodeId);
+                                            zTree.checkNode(node, true, true);
+                                        }
+                                    }
+                                }
     						}
     					});
     				}else if(_formData){
     					var _newFormDat = $scope.$eval(_formData);
     					if (_newFormDat !== "" || _newFormDat !== undefined) {
 							$.fn.zTree.init($("#treeDemo"), setting, _newFormDat);//展开下拉树控件
+
+                            if(checkbox) {
+                                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                                var element_next = $(element).next();
+                                var _jpath_next = element_next.attr("jpath");
+                                var checkNodes = eval("parent.formData." + _jpath_next);
+                                if (checkNodes) {
+                                    checkNodes = checkNodes.split(',');
+                                    for (var i = 0, len = checkNodes.length; i < len; i++) {
+                                        var nodeId = checkNodes[i];
+                                        var node = zTree.getNodeByParam("id", nodeId);
+                                        zTree.checkNode(node, true, true);
+                                    }
+                                }
+                            }
 						}
     				}
     				var ifr=window.parent.document.getElementById("frmSheet");
     				if(ifr&&ifr.contentWindow){
-    					$(ifr.contentWindow).bind("mousedown", onBodyDown);
+    					var target = ifr.contentWindow.document || ifr.contentWindow;
+    					$(target).bind("mousedown", onBodyDown);
     				}
+    				
         		 }
                  });
         	}
@@ -2537,7 +2710,7 @@ function ngDirectives(gobal, viewApp){
         		        cache: true,
         		        type: "GET",
         		        dataType: "json",
-        		        url: _url,
+        		        url: encodeURI(_url),
         		        success: function (data) {
         		        	element.empty();
         		        	for (var key in data){
@@ -2929,17 +3102,31 @@ function ngDirectives(gobal, viewApp){
 
                     // model - view
                     scope.$watch('ngModel', function (newVal) {
-                    	var _newVal = newVal;
-                    	var _multiple = $element.attr('multiple');
-                    	if(_multiple) {} else _newVal += "#"+$element.val();
-                    	
-                        /*setTimeout(function () {                  
-                            //$element.find('[value^="?"]').remove();    // 清除错误的数据
+                        var _newVal
+                        if(typeof(newVal) === 'string'){
+                            _newVal = newVal;
+                        }else{
+                            _newVal = $.isEmptyObject(newVal) ? "" : newVal;
+                        }
+
+                        if(attrs["codeTableId"]){
+                            var _id = attrs["codeTableId"];
+                            var _values = parent.formCT["_" + _id];
+                            if(_values.zt !== "200"){
+                                var attributes = _values.attributes;
+                                attributes.async = false;
+                                initCodeTable(scope, attributes);
+                            }
+                            var _multiple = $element.attr('multiple');
+                            if(_multiple) {} else _newVal += "#"+$element.val();
+
+							//设置额外属性
+            				setExtSetting($element);
                             $element.select2('val', _newVal);
-                        },500);*/
-                    	
-                    	//循环加载select2数据，直到数据加载成功，主要是等待ngCodetable初始化完成再加载数据
-                    	select2SetVal($element,_newVal);
+                        }else{
+                            //循环加载select2数据，直到数据加载成功，主要是等待ngCodetable初始化完成再加载数据
+                            select2SetVal($element,_newVal);
+                        }
                     }, true);
                     /*$element.change();
                     var element_next=$(element).next();
@@ -3043,8 +3230,15 @@ function ngDirectives(gobal, viewApp){
                 // 初始化
                 var tagName = element[0].tagName;
 	            var config = {
-                		showField : 'desc',
-                		keyField : 'id',
+                		showField : 'name', //设置下拉列表中显示文本的列
+                		keyField : 'id', //设置下拉列表项目中项目的KEY值，用于提交表单
+                        /**
+                         * 设置结果集排序，若只指定字段，不指定排序方式，则默认使用asc升序模式
+                         * 排序字段若不指定，则默认对showField指定的列进行升序排列
+                         * 若需要多字段排序，则设置['id desc','name']
+                         * 当前案例设置了使用order字段的内容进行升序排序
+                         */
+                       orderBy : ['order asc'],
                 		eSelect : function(data){
                 			scope.$apply(function () {
                 				var hiddenInput = $element.closest('input.sp_hidden');
@@ -3056,10 +3250,15 @@ function ngDirectives(gobal, viewApp){
                     			}
                 				var jb = "scope.$parent.formData." + _jpath + " = '" + data.id+"'";
     							eval(jb);
-    							parent.formulaEngine.apply(_jpath, this.value);
+    							parent.formulaEngine.apply(_jpath, $element.val());
                                 // 3、刷新校验结果和控制结果
                                 viewEngine.tipsForVerify(document.body);
                 			});
+                			// 触发ngChange事件
+                			if(attrs.ngChange){
+                                scope.$parent.$eval(attrs.ngChange);
+                            }
+
                 	    },
                 	    eClear : function(data){
                 			scope.$apply(function () {
@@ -3079,14 +3278,19 @@ function ngDirectives(gobal, viewApp){
                 	    }
 	                };
 
+	            //初始化selectPage
+                $element.selectPage(config);
+
                 // 处理input
                 if(tagName === 'INPUT') {
                     // 获取内置配置
                     if(attrs.query) {
                         scope.config = selectQuery[attrs.query]();
                     }
-                    
-                    setData4Config(attrs.ngSelectPage,$element,config);
+
+                    if(!attrs["codeTableId"]) {
+                        setData4Config(attrs.ngSelectPage, $element);
+                    }
 
                     // model - view
                     scope.$watch('selectPageModel', function (newVal) {
@@ -3094,21 +3298,25 @@ function ngDirectives(gobal, viewApp){
         				var _jpath = hiddenInput.attr('jpath');
         				hiddenInput.attr('jpath', _jpath);
                     	if(typeof newVal !== 'undefined'){
-                    		$element.val(newVal);
+                            setData4Config(attrs.ngSelectPage,$element,newVal);
                     	}
-                    	$element.selectPageRefresh();
-                    	viewEngine.tipsForVerify(document.body);
-                    	
                     }, true);
 
                     // model - view
                     scope.$watch('ngModel', function (newVal) {
                         // 跳过ajax方式以及多选情况
                     	if(typeof newVal !== 'undefined'){
-	                        $element.val(newVal);
-	                        $element.selectPageRefresh();
+                            if(attrs["codeTableId"]){
+                                var _id = attrs["codeTableId"];
+                                var _values = parent.formCT["_" + _id];
+                                if(_values.zt !== "200"){
+                                    var attributes = _values.attributes;
+                                    attributes.async = false;
+                                    initCodeTable(scope,attributes);
+                                }
+                            }
+                            setData4Config(attrs.ngSelectPage, $element, newVal);
                     	}
-                    	viewEngine.tipsForVerify(document.body);
                     }, true);
                 }
             }
@@ -3361,6 +3569,8 @@ function ngDirectives(gobal, viewApp){
             }
     	}
     });
+
+
 
     /**
      *自定义分页指令ngPaging
@@ -3722,7 +3932,6 @@ function ngDirectives(gobal, viewApp){
         }
     );
 
-    
     /**
      * 把日期格式字符串转换成日期date
      */
@@ -3889,9 +4098,7 @@ function ngDirectives(gobal, viewApp){
             if (((year % 4)==0) && ((year % 100)!=0) || ((year % 400)==0)) {
                 date['02']=28;
             }
-
             return date[month];
-
         }
     }]);
 
@@ -4059,7 +4266,9 @@ function hideMenu(_this) {
 	
 }
 function onBodyDown(event) {
-	if (!(event.target.id == "menuContent" || $(event.target).parents(
+	var eve = event || window.event;
+ 	var target = eve.srcElement || eve.target;
+	if (!(target.id == "menuContent" || $(target).parents(
 			"#menuContent").length > 0)) {
 		var _this=this;
 		hideMenu(_this);
@@ -4072,13 +4281,44 @@ function onBodyDown(event) {
  * @param _newVal
  */
 function select2SetVal($element, _newVal){
-	setTimeout(function () {
-		if("" == $element.context.innerHTML){
-			select2SetVal($element, _newVal);
-		}else{
-			$element.select2('val', _newVal);
-		}  
-	},50);
+    var ngOptions = $element.attr('ng-options');
+    var index = ngOptions.indexOf("CT.");
+    if(index > -1){
+        var ctName = ngOptions.substring(index + 3);
+        index = ctName.indexOf("CT");
+        if(index > -1){
+            ctName = ctName.substring(0, index + 2);
+        }else{
+            var reg = /([a-zA-Z0-9_]+)[\.\[\|]*.*/g;
+            ctName = reg.exec(ctName)[1];
+            ctName = $.trim(ctName);
+        }
+
+        if(parent.formCT[ctName]){
+            var _multiple = $element.attr('multiple');
+            if(_multiple) {} else _newVal += "#"+$element.val();
+
+            //设置额外属性
+            setExtSetting($element);
+            $element.select2('val', _newVal);
+        }else{
+            setTimeout(function () {
+                select2SetVal($element, _newVal);
+            },50);
+        }
+    }else{
+        if("" == $element.context.innerHTML){
+            setTimeout(function () {
+                select2SetVal($element, _newVal);
+            },50);
+        }else{
+            var _multiple = $element.attr('multiple');
+            if(_multiple) {} else _newVal += "#"+$element.val();
+            //设置额外属性
+            setExtSetting($element);
+            $element.select2('val', _newVal);
+        }
+    }
 }
 
 
@@ -4086,9 +4326,9 @@ function select2SetVal($element, _newVal){
  * IE浏览器情况下select2在加载option时早于ngCodetable初始化，导致select2加载不到数据
  * @param expression
  * @param $element
- * @param config
+ * @param newVal
  */
-function setData4Config(expression,$element,config){
+function setData4Config(expression,$element,newVal){
 	var ct = getCTData(expression,$element);
 	
 	if(ct){
@@ -4097,7 +4337,7 @@ function setData4Config(expression,$element,config){
 
 		var keyName = expression.substring(0,asIndex).replace(/(^\s*)|(\s*$)/g, '');
 		var valueName = expression.substring(asIndex + 2,forIndex).replace(/(^\s*)|(\s*$)/g, '');
-		var childNodes = $element.context.childNodes;	
+
 		var data = new Array();
 		for(var key in ct){
 			var value = ct[key];
@@ -4108,33 +4348,27 @@ function setData4Config(expression,$element,config){
 			tmp.order = key;
 			data.push(tmp);
 		}
+        $element.selectPageData(data);
 
-		//设置selectPage初始化参数
-		config.data = data; //下拉数据源
-        config.showField = 'name'; //设置下拉列表中显示文本的列
-        config.keyField = 'id'; //设置下拉列表项目中项目的KEY值，用于提交表单
-        /**
-         * 设置结果集排序，若只指定字段，不指定排序方式，则默认使用asc升序模式
-         * 排序字段若不指定，则默认对showField指定的列进行升序排列
-         * 若需要多字段排序，则设置['id desc','name']
-         * 当前案例设置了使用order字段的内容进行升序排序
-         */
-        config.orderBy = ['order asc'];
-		$element.selectPage(config);
-		//$element.val("10");
-		$element.selectPageRefresh();
-//		.selectPage({
-//            showField : 'desc',
-//            keyField : 'id',
-//            data : tag_data
-//        });
+        if(typeof newVal !== 'undefined') {
+            $element.val(newVal);
+            $element.selectPageRefresh();
+        }
 	}else{
 		setTimeout(function () {
-			setData4Config(expression,$element,config);
+			setData4Config(expression,$element,newVal);
 		},10);
 	}
 }
 
+//生成伪uuid
+function getUUID(){
+    var uuid="";
+    for(var i=0;i<8;i++){
+        uuid+=(((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+    return uuid;
+}
 
 /**
  * 解析表达式得到formCT里的ct对象
@@ -4187,3 +4421,350 @@ function getCTData(expression,$element){
 	
 	return ct;
 }
+
+/**
+ * 为下拉设置额外属性，具体场景如下：
+ * JSONE-1230 车辆购置税申报，减免性质代码显示，其中一条要红色字体
+ * @param $element
+ */
+function setExtSetting($element){
+    //获取额外属性extSetting
+    var extSetting = $element.attr('extSetting');
+    if (!extSetting) {
+        return;
+    }
+    //将extSetting转换成JSON对象
+    var extSettingJSON;
+    try {
+        extSettingJSON = angular.fromJson(extSetting);
+    } catch (e) {
+    }
+
+    if (extSettingJSON) {
+        //遍历json对象，根据key找需要设置额外属性的option元素
+        for (var key in extSettingJSON) {
+            var optEle = $element.children("option[value='" + key + "']");
+            var propJSON = extSettingJSON[key];
+            if (optEle.length > 0 && propJSON) {
+                //找到对应的option元素后，设置相关属性
+                for (var propKey in propJSON) {
+                    //设置属性
+                    optEle.prop(propKey, propJSON[propKey]);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 初始化码表
+ * 从码表数据来源层面来说支持三种方式的码表
+ *  1、码表数据来源于url（json文件和普通的getDmb.do）
+ *  2、码表数据来源于期初数model
+ *  3、码表数据来源于带参数的请求params（/nssb/getDtdmb.do）
+ * 码表请求支持同步异步配置async（默认为异步true）
+ * 码表支持累加contact，对于两个来源的数据码表的name一样，最后的结果会做合并操作
+ * @param $scope
+ * @param attributes
+ */
+function initCodeTable($scope, attributes) {
+    var _name = attributes["name"];
+    var _url = attributes["url"];
+    var _model = attributes["model"];
+    var _params = attributes["params"];
+    var _ywztParams = attributes["ywztparams"];
+
+    var _jsons = {};
+    var codeTableContact = attributes["contact"];
+
+    // 码表累加指令。如果有此指令。码表查询结果将会进行累加。
+    if(codeTableContact){
+        if(undefined !== parent.formCT[codeTableContact]){
+            _jsons = jQuery.extend(true, {}, parent.formCT[codeTableContact]);
+        }
+    }
+
+    if(undefined == parent.formCT[_name] || JSON.stringify(parent.formCT[_name]) == "{}") {//判断是否已缓存
+        if((undefined != _url && "" != _url) || (undefined !== _params && "" !== _params)) {//URL来源
+            getDmFromUrl($scope, attributes, _jsons);
+        } else if(undefined !== _model && "" !== _model) {//期初数来源
+            getDmFromModel($scope, attributes, _jsons);
+        }else if(undefined !== _ywztParams && "" !== _ywztParams){
+            getDmFromYwztParamsUrl($scope, attributes, _jsons);
+        } else {
+            //codetable指令相关参数缺失
+            dhtmlx.message("codetable指令相关参数缺失，请检查...", "error", 2000);
+        }
+    }
+}
+
+/**
+ * 从url（json文件和普通的getDmb.do）获取码表数据
+ * @param $scope
+ * @param attributes
+ * @param _jsons
+ */
+function getDmFromUrl($scope, attributes, _jsons) {
+    var _async=!(attributes["async"] === "false" || attributes["async"] === false);// 默认为异步true
+    var _node = attributes["node"];
+    var _name = attributes["name"];
+    var _url = attributes["url"];
+
+    var _params = attributes["params"];
+    var _dynamicParam = attributes["dynamic"];
+    var _data;
+
+    var filterParam = attributes["filter"];
+    var filterKey = filterParam?filterParam.split("#")[0]:null;
+    var filterValue = filterParam?filterParam.split("#")[1]:null;
+    
+    var _dm = attributes["dm"];
+    var _mc = attributes["mc"];
+
+    var _start_ = new Date().getTime();
+    console.log("INFO:"+_start_+" 初始化代码表"+ _name +"开始时间");
+    
+   
+    var data = {};
+    // 判断是否存在自定义方法名，如果存在，执行自定义方法，返回执行后得url参数
+    var _ywFuName = attributes["ywfuname"];
+    if(_ywFuName){
+    	// 自定义组装url参数
+    	_url = eval("parent."+_ywFuName+"(attributes);");
+    }else if(!(undefined != _url && "" != _url)){
+    	// 从带参数的请求params（/nssb/getDtdmb.do）获取码表数据
+    
+    	_url = parent.pathRoot+"/nssb/getDtdmb.do?";
+        if(_params.indexOf("=") === -1){
+            _params = "key=" + _params;
+        }
+        _url += _params;
+        if(_dynamicParam && (typeof getDynamicParam === "function")){
+        	_url += "&" + getDynamicParam($scope,_dynamicParam);
+        }
+        
+        data["djxh"] = $(parent.document).find("#djxh").val();
+        data["nsrsbh"] = $(parent.document).find("#nsrsbh").val();
+        data["gdslxDm"] = $(parent.document).find("#gdslxDm").val();
+        data["swjgdm"] = $(parent.document).find("#swjgDm").val();
+        data["dm"] = _dm;
+        if(_mc !== undefined && _mc !== ""){
+            data["mc"] = _mc;
+        }
+    }else{
+    	if(_url.indexOf('getDmb.do')>-1){
+	        var ywlx="/"+location.pathname.split('/')[3];
+	        _url=parent.pathRoot+ywlx+_url;
+	        var gdslxDm=parent.$("#gdslxDm").val();
+	        if(gdslxDm){
+	            _url=encodeURI(_url+"&gdslxDm="+gdslxDm);
+	        }
+	    }
+	    
+	    // 允许添加参数，param为key, dynamicParam为value，可以多个逗号隔开，但个数必须一致
+	    if (_params && _dynamicParam) {
+	        var aryParam = _params.split(',');
+	        var aryDynamic = _dynamicParam.split(',');
+	        if (aryParam && aryDynamic && aryDynamic.length == aryDynamic.length) {
+	            for (var idx=0; idx<aryParam.length; idx++) {
+	                _data = jsonPath($scope.formData, aryDynamic[idx])[0];
+	                if (_data) {
+	                    _url = _url + (idx===0?"?":"&") + aryParam[idx] + "=" + _data;
+	                } else {
+	                    // 发现有不符合的，则不进行拼接
+	                    break;
+	                }
+	            }
+	        }
+	    }
+	    
+	}
+    $.ajax({
+        type : "GET",
+        async: _async,
+        url : _url,
+        data : data,
+        dataType : "json",
+        success : function(response) {
+            _data = response;
+            
+            if(!(undefined != _url && "" != _url)){
+            	if(typeof response === "string"){
+                    response = JSON.parse(response);
+                }
+                if(response && response["dtdmbxx"]){
+                    response = response["dtdmbxx"];
+                }
+                if(undefined === _node || "" === _node) {
+                    _data = response;
+                } else {
+                    _data = response[_node];
+                }
+                if(typeof _data === "string"){
+                    _data = JSON.parse(_data);
+                }
+                if(_data && _data["root"]){
+                    $.each(_data.root, function(k,v) {
+                        _jsons[v["dm"]] = v;
+                    });
+                    _data = _jsons;
+                }
+            }else{
+            	if(undefined === _node || "" === _node) {
+                    _data = response;
+                } else {
+                    _data = response[_node];
+                }
+                var doFilter = false;
+                $.each(_data, function(k,v) {
+                    doFilter = false;
+                    if(filterKey && filterValue && v){
+                        if(v[filterKey] != filterValue){
+                            doFilter = true;
+                        }
+                    }
+                    if(!doFilter){
+                        _jsons[k] = v;
+                    }
+                });
+            }
+            
+            
+            parent.formEngine.cacheCodeTable(_name, _jsons);
+
+            if(attributes["id"]){
+                var _values = parent.formCT["_" + attributes["id"]];
+                if(_values){
+                    _values.zt = "200";
+                    parent.formEngine.cacheCodeTable("_" + attributes["id"], _values);
+                }else{
+                    var _values = {};
+                    _values.name = attributes["name"];
+                    _values.attributes = attributes;
+                    _values.zt = "200";
+                    parent.formEngine.cacheCodeTable("_" + attributes["id"], _values);
+                }
+            }
+
+            var _formApplyStart_ = new Date().getTime();
+            viewEngine.formApply($('#viewCtrlId'), _name, _jsons);
+            var _end_ = new Date().getTime();
+
+            console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms 初始化代码表:"+ _name);
+            console.log("INFO:"+_formApplyStart_+"-"+_end_+"-"+(_end_ - _formApplyStart_)+"ms formApply:"+ _name);
+        },error : function() {
+            dhtmlx.message("codetable指令缓存代码表"+_url+"，请检查...", "error", 2000);
+        }
+    });
+}
+
+/**
+ * 从期初数model获取码表数据
+ * @param $scope
+ * @param attributes
+ * @param _jsons
+ */
+function getDmFromModel($scope, attributes, _jsons) {
+    var _name = attributes["name"];
+    var _multi = attributes["multi"];
+    var _data;
+
+    var _model = attributes["model"];
+    var _dm = attributes["dm"];
+
+    var filterParam = attributes["filter"];
+    var filterKey = filterParam?filterParam.split("#")[0]:null;
+    var filterValue = filterParam?filterParam.split("#")[1]:null;
+
+    _data = jsonPath($scope.formData, _model)[0];
+    if(undefined === _data || "" === _data){
+    	console.log("ERROR:codetable指令缓存代码表获取的data为空，对应的model为:"+_model+",name为:"+_name);
+    }
+    
+    if(undefined !== _dm && "" !== _dm) {
+        var doFilter = false;
+        $.each(_data, function(k,v) {
+            doFilter = false;
+            if(filterKey && filterValue){
+                if(v[filterKey] != filterValue){
+                    doFilter = true;
+                }
+            }
+            if(!doFilter){
+                if(_multi=='true'){
+                    if(!_jsons[v[_dm]])
+                        _jsons[v[_dm]]=[];
+                    _jsons[v[_dm]].push(v);
+                }else{
+                    _jsons[v[_dm]] = v;
+                }
+            }
+        });
+        _data = _jsons;
+        var _jpath = jsonPath($scope.formData, _model, { "resultType" : "PATH" });
+        if(_jpath.length === 1){
+            _jpath = _jpath[0].replace(/\[\'/g,".").replace(/\'\]/g,"");
+        }
+        var _info = {"model":_model,"dm":_dm,"jpath":_jpath};
+        viewEngine.formApply($('#viewCtrlId'), "_info_"+_name, _info);
+    }
+
+    parent.formEngine.cacheCodeTable(_name, _data);
+    viewEngine.formApply($('#viewCtrlId'), _name, _data);
+}
+
+
+/**
+ * 从带参数的请求ywztparams 获取码表数据
+ * @param $scope
+ * @param attributes
+ * @param _jsons
+ */
+function getDmFromYwztParamsUrl($scope, attributes, _jsons) {
+    var _node = attributes["node"];
+    var _name = attributes["name"];
+    var _params = attributes["ywztparams"];
+
+    var _dm = attributes["dm"];
+    var _mc = attributes["mc"];
+    var _req_data = JSON.parse(_params);
+    _req_data["djxh"] = $(parent.document).find("#djxh").val();
+    _req_data["nsrsbh"] = $(parent.document).find("#nsrsbh").val();
+    _req_data["gdslxDm"] = $(parent.document).find("#gdslxDm").val();
+    _req_data["swjgdm"] = $(parent.document).find("#swjgDm").val();
+    _req_data["dm"] = _dm;
+    if(_mc !== undefined && _mc !== ""){
+        _req_data["mc"] = _mc;
+    }
+    var _data = null;
+    parent.parent.requestYwztData(_req_data,function(response){
+        if(undefined === _node || "" === _node) {
+            _data = response;
+        } else {
+            _data = response[_node];
+        }
+        try{
+            if(typeof _data === "string"){
+                _data = JSON.parse(_data);
+            }
+        }catch(e){
+            console.log("INFO:初始化代码表失败。失败原因："+_data);
+            return;
+        }
+        if(undefined !== _dm && "" !== _dm) {
+            $.each(_data, function(k,v) {
+                v["mc"] = v[_mc];
+                //delete v[_mc];
+                _jsons[v[_dm]] = v;
+            });
+        }else{
+            _jsons = jQuery.extend(true, _jsons, _data);
+        }
+        parent.formEngine.cacheCodeTable(_name, _jsons);
+        viewEngine.formApply($('#viewCtrlId'), _name, _jsons);
+    },function(response){
+        console.log("INFO:初始化代码表失败。失败原因："+response);
+        return;
+    });
+}
+

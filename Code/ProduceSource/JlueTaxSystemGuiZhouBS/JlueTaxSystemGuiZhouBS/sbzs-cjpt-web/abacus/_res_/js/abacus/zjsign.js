@@ -13,33 +13,47 @@ function pluginSign(zjTiket,viewOrDownload){
 		submitPdf("N");
 		return;
 	}
+	//过滤业务类型,提供给登陆前业务暂存
+	var zlpzctl = "zlpz";
+	nssoywbm = $("#nssoYwbm").val();
+	if(ywbm!=null&&nssoywbm!=null&&ywbm!=""&&nssoywbm!=""&&ywbm!=undefined&&nssoywbm!=undefined){
+		if(nssoywbm.toUpperCase().indexOf(ywbm.toUpperCase()) > -1){
+			zlpzctl = "zlpznosso";
+		}
+	}
+	var cp = $("#contextPath").val();
+	var ywkeyword = "申报";
+	if(cp.indexOf("sxsq")>-1){
+		ywkeyword = "申请";
+	}
+		
 	
 	var viewOrDownloadBtn = '';
 	var tips='';
 	if(viewOrDownload !== 'view'){
 		viewOrDownloadBtn = '下载凭证';
-		tips = '如果需要下载申报凭证，可以点击“'	+viewOrDownloadBtn+'”按钮下载凭证文件到您的电脑，进行查看打印。';
+		tips = '如果需要下载'+ywkeyword+'凭证，可以点击“'	+viewOrDownloadBtn+'”按钮下载凭证文件到您的电脑，进行查看打印。';
 	}else{
 		viewOrDownloadBtn = '查看凭证';
-		tips = '如果需要查看申报凭证，可以点击“'	+viewOrDownloadBtn+'”按钮查看凭证文件。';
+		tips = '如果需要查看'+ywkeyword+'凭证，可以点击“'	+viewOrDownloadBtn+'”按钮查看凭证文件。';
 	}
 	//非CA用户不用签名
 	if('Y' !== otherParams.cayh){
-		nocaSb(viewOrDownload,viewOrDownloadBtn,tips);
+		nocaSb(viewOrDownload,viewOrDownloadBtn,tips,ywkeyword,zlpzctl);
 	}else{
-		caSb(viewOrDownload,viewOrDownloadBtn,tips,zjTiket);
+		caSb(viewOrDownload,viewOrDownloadBtn,tips,zjTiket,ywkeyword);
 	}
 }
 
-function nocaSb(viewOrDownload,viewOrDownloadBtn,tips){
-	parent.layer.confirm('为了给您提供更佳的办税体验，系统不再展现PDF凭证界面，您可以点击“申报”按钮直接进行申报提交操作，'+tips,{
+function nocaSb(viewOrDownload,viewOrDownloadBtn,tips,ywkeyword,zlpzctl){
+	parent.layer.confirm('为了给您提供更佳的办税体验，系统不再展现PDF凭证界面，您可以点击“'+ywkeyword+'”按钮直接进行'+ywkeyword+'提交操作，'+tips,{
 		icon : 1,
 		title:'提示',
 		btn2noclose:1,
-		btn : ['申报',viewOrDownloadBtn],
+		btn : [ywkeyword,viewOrDownloadBtn],
 		btn2:function(index){
 			//查看或者下载凭证
-			var url = '/zlpz-cjpt-web/zlpz/viewOrDownloadPdfFile.do?ywbm='+$("#ywbm").val().toUpperCase()
+			var url = '/zlpz-cjpt-web/'+zlpzctl+'/viewOrDownloadPdfFile.do?ywbm='+$("#ywbm").val().toUpperCase()
 				+'&gdslxDm='+$("#gdslxDm").val()
 				+'&_query_string_='+encodeURIComponent($("#_query_string_").val())
 				+'&ysqxxid='+$("#ysqxxid").val()
@@ -78,7 +92,7 @@ function nocaSb(viewOrDownload,viewOrDownloadBtn,tips){
 	});
 }
 
-function caSb(viewOrDownload,viewOrDownloadBtn,tips,zjTiket){
+function caSb(viewOrDownload,viewOrDownloadBtn,tips,zjTiket,ywkeyword){
 	// 调用总局签名
 	var params = 'ywbm='+$("#ywbm").val().toUpperCase()
 		+'&gdslxDm='+$("#gdslxDm").val()
@@ -110,26 +124,26 @@ function caSb(viewOrDownload,viewOrDownloadBtn,tips,zjTiket){
 					rtncode = '0';
 				}
 				if('1' === rtncode){//签名成功
-				   caSbSucc(viewOrDownload,viewOrDownloadBtn,tips,json)
+				   caSbSucc(viewOrDownload,viewOrDownloadBtn,tips,json,ywkeyword)
 				}else{//签名失败
-					caSbError(viewOrDownload,viewOrDownloadBtn,tips,msg)
+					caSbError(viewOrDownload,viewOrDownloadBtn,tips,msg,ywkeyword)
 				}
 			},
 			error : function(json) {
-				var alertMsg = '尊敬的用户您好！系统检查签章客户端异常或没有启动，如非CA用户请直接申报，CA用户请确认客户端是否正常启动，谢谢！'
-					+ '<br/>如直接申报，请点击“申报”按钮。<br/>'+tips;
-				ocxLayerAlert(alertMsg,viewOrDownloadBtn,viewOrDownload);
+				var alertMsg = '尊敬的用户您好！系统检查签章客户端异常或没有启动，如非CA用户请直接'+ywkeyword+'，CA用户请确认客户端是否正常启动，谢谢！'
+					+ '<br/>如直接'+ywkeyword+'，请点击“'+ywkeyword+'”按钮。<br/>'+tips;
+				ocxLayerAlert(alertMsg,viewOrDownloadBtn,viewOrDownload,ywkeyword);
 			}
 		});
 	}catch(e){
 		var alertMsg = '尊敬的用户您好！ca签名出错！'
-			+ '<br/>如直接申报，请点击“申报”按钮。<br/>'+tips;
-	    ocxLayerAlert(alertMsg,viewOrDownloadBtn,viewOrDownload);
+			+ '<br/>如直接'+ywkeyword+'，请点击“'+ywkeyword+'”按钮。<br/>'+tips;
+	    ocxLayerAlert(alertMsg,viewOrDownloadBtn,viewOrDownload,ywkeyword);
 	}
 }
 
 //ca签名成功之后上传pdf凭证
-function caSbSucc(viewOrDownload,viewOrDownloadBtn,tips,json){
+function caSbSucc(viewOrDownload,viewOrDownloadBtn,tips,json,ywkeyword){
 	var data64 = json["parameter"][2];
 	var uploadUrl = "/zlpz-cjpt-web/zlpz/uploadSignPdf.do?_bizReq_path_=" + $("#_bizReq_path_").val()
 	    + "&_query_string_=" + encodeURIComponent($("#_query_string_").val())
@@ -147,14 +161,14 @@ function caSbSucc(viewOrDownload,viewOrDownloadBtn,tips,json){
 				result = JSON.parse(result);
 			}
 			if("01" !== result.code){
-				ocxLayerAlert(result.msg);
+				ocxLayerAlert(result.msg ,viewOrDownloadBtn,viewOrDownload,ywkeyword);
 			}else{
 				//上传成功后才能申报
-				parent.layer.confirm('尊敬的CA用户您好，系统已为您签名成功，为了给您提供更佳的办税体验，不再展现PDF凭证界面，您可以点击“申报”按钮直接进行申报提交操作，'+tips,{
+				parent.layer.confirm('尊敬的CA用户您好，系统已为您签名成功，为了给您提供更佳的办税体验，不再展现PDF凭证界面，您可以点击“'+ywkeyword+'”按钮直接进行'+ywkeyword+'提交操作，'+tips,{
 					icon : 1,
 					title:'提示',
 					btn2noclose:1,
-					btn : ['申报',viewOrDownloadBtn],
+					btn : [ywkeyword,viewOrDownloadBtn],
 					btn2:function(index){
 						//TODO 查看凭证逻辑
 						var url = '/zlpz-cjpt-web/zlpz/viewOrDownloadPdfFile.do?ywbm='+$("#ywbm").val().toUpperCase()
@@ -197,20 +211,20 @@ function caSbSucc(viewOrDownload,viewOrDownloadBtn,tips,json){
 			}
 		},
 		error : function(aa) {
-			ocxLayerAlert("上传签名后凭证出错！");
+			ocxLayerAlert("上传签名后凭证出错！",viewOrDownloadBtn,viewOrDownload,ywkeyword);
 		}
 	});
 }
 
-function caSbError(viewOrDownload,viewOrDownloadBtn,tips,msg){
+function caSbError(viewOrDownload,viewOrDownloadBtn,tips,msg,ywkeyword){
 	var alertMsg = '尊敬的CA用户您好，系统签名失败，请确认是否插入证书或重新插入证书，谢谢！'
 		+ '<br/>错误信息：' +msg
-		+ '<br/>如直接申报，请点击“申报”按钮。<br/>'+tips;
+		+ '<br/>如直接'+ywkeyword+'，请点击“'+ywkeyword+'”按钮。<br/>'+tips;
 	parent.layer.confirm(alertMsg,{
 		icon : 3,
 		title:'提示',
 		btn2noclose:1,
-		btn : ['申报',viewOrDownloadBtn],
+		btn : [ywkeyword,viewOrDownloadBtn],
 		btn2:function(index){
 			//TODO 查看凭证逻辑
 			var url = '/zlpz-cjpt-web/zlpz/viewOrDownloadPdfFile.do?ywbm='+$("#ywbm").val().toUpperCase()
@@ -252,12 +266,12 @@ function caSbError(viewOrDownload,viewOrDownloadBtn,tips,msg){
 	});
 }
 
-function ocxLayerAlert(msg,viewOrDownloadBtn,viewOrDownload){
+function ocxLayerAlert(msg,viewOrDownloadBtn,viewOrDownload,ywkeyword){
 	parent.layer.confirm(msg,{
 		icon : 3,
 		title:'提示',
 		btn2noclose:1,
-		btn : ['申报',viewOrDownloadBtn],
+		btn : [ywkeyword,viewOrDownloadBtn],
 		btn2:function(index){
 			//TODO 查看凭证逻辑
 			var url = '/zlpz-cjpt-web/zlpz/viewOrDownloadPdfFile.do?ywbm='+$("#ywbm").val().toUpperCase()

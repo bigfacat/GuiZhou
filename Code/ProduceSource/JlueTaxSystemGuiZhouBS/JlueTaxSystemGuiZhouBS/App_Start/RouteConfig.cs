@@ -18,14 +18,24 @@ namespace JlueTaxSystemGuiZhouBS
             routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/{resource}.html");
             routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/{resource}.html");
             routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/{resource}.html");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/sbzs/{resource}.html");
-            //routes.IgnoreRoute("sbzs-cjpt-web/biz/sbzs/yhssb/{pathInfo}.html");
-            //routes.IgnoreRoute("sbzs-cjpt-web/biz/sbzs/tysb/{pathInfo}.html");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/sbzs/ybnsrzzs/{pathInfo}.html");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/sbzs/fjssb/{pathInfo}.html");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/setting/{*pathInfo}");
-            //routes.IgnoreRoute("sbzs-cjpt-web/biz/cwbb/cwbb_qy_kjzz_ybqy/begin.html");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/cwbb/cwbb_qy_kjzz_ybqy.aspx");
+
+            routes.MapRoute(
+name: "zyywn",
+url: "zyywn-cjpt-web/{controller}/{action}.do",
+defaults: new { controller = "czgc", action = "queryWSDataList" }
+);
+
+            routes.MapRoute(
+name: "yqsb",
+url: "sbzs-cjpt-web/biz/yqsb/{controller}/{action}",
+defaults: new { controller = "yqsbqc", action = "enterYqsbUrl" }
+);
+
+            routes.MapRoute(
+name: "biz",
+url: "sbzs-cjpt-web/biz/{controller}/{action}",
+defaults: new { controller = "sbzs", action = "fjssb" }
+);
 
             routes.MapRoute(
 name: "zlpz",
@@ -58,9 +68,15 @@ defaults: new { controller = "sbxx", action = "getsbxx" }
 );
 
             routes.MapRoute(
+name: "formula1",
+url: "sbzs-cjpt-web/biz/cwbb/{controller}/formula/{action}.do",
+defaults: new { controller = "", action = "exttbsm" }
+);
+
+            routes.MapRoute(
 name: "formula",
-url: "sbzs-cjpt-web/{controller}/{action}.do",
-defaults: new { controller = "formula", action = "begin" }
+url: "sbzs-cjpt-web/biz/sbzs/{controller}/formula/{action}.do",
+defaults: new { controller = "", action = "exttbsm" }
 );
 
             routes.MapRoute(

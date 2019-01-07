@@ -11,16 +11,16 @@ function FormDebuging(){
     /**
      * Constant. 常量定义.
      */
-    FormDebuging.prototype.URL_SAVE_2_FILE = "/sbzs-cjpt-web/formula/save.do";
-    FormDebuging.prototype.URL_SAVE_TBSM = "/sbzs-cjpt-web/formula/savetbsm.do";
-    FormDebuging.prototype.URL_EXTRACT_TBSM = "/sbzs-cjpt-web/formula/exttbsm.do";
+    FormDebuging.prototype.URL_SAVE_2_FILE = "formula/save.do";
+    FormDebuging.prototype.URL_SAVE_TBSM = "formula/savetbsm.do";
+    FormDebuging.prototype.URL_EXTRACT_TBSM = "formula/exttbsm.do";
     FormDebuging.prototype.TBSM_JSON = null;
     this.lastSelectedFormulaElement;// Last selected formula element.
     this.jpath = "";
     this.formulaListFilters = [];
     this.flagInited = false;
     if (typeof this.formData == "" || this.formData == null) {
-        this.formData = formData; // Try global parameter.
+        this.formData = typeof formData === "undefined"?undefined:formData; // Try global parameter.
     }
     this.flagInited = true;
     this.lastStringData = "";
