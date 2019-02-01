@@ -13,6 +13,19 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 {
     public class sbqc_aqsbController : Controller
     {
+        string BDDM = "FJSSB";
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/setting.html")]
+        public System.Web.Mvc.ActionResult setting()
+        {
+            GDTXGuiZhouUserYSBQC ysbqc = GTXMethod.GetYSBQCByBDDM(this.BDDM);
+            string[] HappenDate = ysbqc.HappenDate.Split('-');
+            ViewBag.tjNd = HappenDate[0];
+            ViewBag.tjYf = HappenDate[1];
+
+            return View();
+        }
+
         public JObject enterSbqc()
         {
             JObject re_jo = new JObject();
@@ -153,6 +166,46 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 }
             }
             return re_jo;
+        }
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/setting/doHead.jsp")]
+        public void doHead()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("doHead.jsp"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/setting/lhSbbbs.jsp")]
+        public void lhSbbbs()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("lhSbbbs.jsp"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/setting/lhSbbbsKz.jsp")]
+        public void lhSbbbsKz()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("lhSbbbsKz.jsp"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/setting/lhCwbbbsKz.jsp")]
+        public void lhCwbbbsKz()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("lhCwbbbsKz.jsp"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/setting/doWord.jsp")]
+        public void doWord()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("doWord.jsp"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
         }
 
     }

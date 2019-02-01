@@ -42,11 +42,11 @@ function pbfbJudge(){
 			// layer.alert("<h1>请选择</h1>需要申报的项目！", {icon: 7})
 			if(fb5flag){
 				window.parent.layer.alert(fb5Message+"<br/>"+'您为营改增税负企业，请在【基础设置】—【表单填报设置】勾选“营改增税负分析测算明细表”并保存后，再填写申报表！', {
-					icon : 7
+					title:"提示",closeBtn:0
 				});
 			}else{
 				window.parent.layer.alert('您为营改增税负企业，请在【基础设置】—【表单填报设置】勾选“营改增税负分析测算明细表”并保存后，再填写申报表！', {
-					icon : 7
+					title:"提示",closeBtn:0
 				});
 			}
 			parent.$(window.parent.document.body).mask("&nbsp;");
@@ -65,11 +65,11 @@ function pbfbJudge(){
 			// layer.alert("<h1>请选择</h1>需要申报的项目！", {icon: 7})
 			if(fb5flag){
 				window.parent.layer.alert(fb5Message+"<br/>"+'您为营改增税负样本企业，请在【选表设置】中确认《营改增税负测算明细表》已勾选，并点击“保存”按钮后，再填写申报表！', {
-					icon : 7
+					title:"提示",closeBtn:0
 				});
 			}else{
 				window.parent.layer.alert('您为营改增税负样本企业，请在【选表设置】中确认《营改增税负测算明细表》已勾选，并点击“保存”按钮后，再填写申报表！', {
-					icon : 7
+					title:"提示",closeBtn:0
 				});
 			}
 			parent.$(window.parent.document.body).mask("&nbsp;");
@@ -78,7 +78,7 @@ function pbfbJudge(){
 	}
 	if(fb5flag && !noCheckSffxb){
 		window.parent.layer.alert(fb5Message, {
-			icon : 7
+			title:"提示",closeBtn:0
 		});
 		parent.$(window.parent.document.body).mask("&nbsp;");
 		parent.parent.$("#btnPrepareMake,#btnPrepareMakeYCSBD").remove();
@@ -94,7 +94,7 @@ function pbfbJudge(){
 		var fbxsts = window.always_xsts == undefined?true:window.always_xsts;
 		//配置显示提示为1，则每次进入附表都会提示。否则只会提示一次。 配置显示次数可以设定显示多少次。
 		if(fbxsts || ((!parent.fbpbTsArray[fb] && fbxscs >= 1) || parent.fbpbTsArray[fb] < fbxscs)){
-			window.parent.layer.alert("逾期仍未办理一般纳税人资格登记的纳税人，"+fb+"不允许填写 ");
+			window.parent.layer.alert("逾期仍未办理一般纳税人资格登记的纳税人，"+fb+"不允许填写 ",{title:"提示",closeBtn:0});
 			if(parent.fbpbTsArray[fb]){
 				parent.fbpbTsArray[fb] = parent.fbpbTsArray[fb]+1;
 			}else{

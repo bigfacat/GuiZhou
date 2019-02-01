@@ -1,0 +1,1421 @@
+﻿html{
+	padding: 0px;
+	margin: 0px;
+	background-repeat: repeat-x;
+	background-position: bottom;
+	background-image: url(../images-common/common/bot_background.jpg);
+	background-color: #FFF;			
+/*	text-align: center;*/
+}
+body{
+	background-image: url(../images-common/common/top_background.jpg);
+	background-repeat: repeat-x;
+	background-position: top;
+	margin-right: auto;
+	margin-left: auto;
+	font-size: 12px;
+}
+*,ul,li {
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+#index01{
+	background-image: url(../images-common/common/index01_bg.jpg);
+	background-repeat: no-repeat;
+	background-position: center bottom;
+	width: 977px;
+	margin-right: auto;
+	margin-left: auto;
+	padding: 0 0 10px 0;
+	background-color: #FFFFFF;
+}
+#index02{
+	width: 957px;
+	margin-right: auto;
+	margin-left: auto;
+	padding: 0 0 10px 0;
+	background-color: #FFFFFF;
+}
+table,td {
+	font-family: "微软雅黑";
+	font-size: 12px;
+	color: #333;
+	line-height: 180%;
+	}
+.STYLE1 { color:#FF0000;}
+.STYLE2 { color:#FF0000; font-weight: bold;}
+A:link {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: none
+}
+A:visited {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: none
+}
+A:hover {
+	FONT-SIZE: 12px;
+	COLOR: #D00;
+	TEXT-DECORATION: underline;
+}
+A.blue:link {
+	FONT-SIZE: 12px;
+	COLOR: #3076D5;
+	TEXT-DECORATION: underline;
+}
+A.blue:visited {
+	FONT-SIZE: 12px;
+	COLOR: #3076D5;
+	TEXT-DECORATION: underline;
+}
+A.blue:hover {
+	FONT-SIZE: 12px;
+	COLOR: #D00;
+	TEXT-DECORATION: underline;
+}
+
+A.blue12:link {
+	FONT-SIZE: 12px;
+	COLOR: #000099;
+	TEXT-DECORATION: underline;
+}
+A.blue12:visited {
+	FONT-SIZE: 12px;
+	COLOR: #000099;
+	TEXT-DECORATION: underline;	
+}
+A.blue12:hover {
+	FONT-SIZE: 12px;
+	COLOR: #D00;
+	TEXT-DECORATION: underline;
+
+}
+A.blue12none:link {
+	FONT-SIZE: 12px;
+	COLOR: #3076D5;
+	TEXT-DECORATION: none;	
+}
+A.blue12none:visited {
+	FONT-SIZE: 12px;
+	COLOR: #000099;
+	TEXT-DECORATION: none;
+}
+A.blue12none:hover {
+	FONT-SIZE: 12px;
+	COLOR: #D00;
+	TEXT-DECORATION: underline;
+}
+A.w12:link {
+	FONT-SIZE: 12px;
+	COLOR: #fff;
+	TEXT-DECORATION: none;
+}
+A.w12:visited {
+	FONT-SIZE: 12px;
+	COLOR: #fff;
+	TEXT-DECORATION: none;
+}
+A.w12:hover {
+	FONT-SIZE: 12px;
+	COLOR: #fff;
+	TEXT-DECORATION: underline;
+}
+A.grey12:link {
+	FONT-SIZE: 12px;
+	COLOR: #666;
+	TEXT-DECORATION: none
+}
+A.grey12:visited {
+	FONT-SIZE: 12px;
+	COLOR: #666;
+	TEXT-DECORATION: none
+}
+A.grey12:hover {
+	FONT-SIZE: 12px;
+	COLOR: #D00;
+	TEXT-DECORATION: underline;
+}
+
+A.xh12:link {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: underline
+}
+A.xh12:visited {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: underline
+}
+A.xh12:hover {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: underline
+}
+A.orange12:link {
+	COLOR: #F60;
+	TEXT-DECORATION: none;
+}
+A.orange12:visited {
+	COLOR: #F60;
+	TEXT-DECORATION: none;
+}
+A.orange12:hover {
+	COLOR: #F60;
+	TEXT-DECORATION: none;
+}
+
+
+A.black14:link {
+	FONT-SIZE: 14px;
+	COLOR: #333;
+	TEXT-DECORATION: none
+}
+A.black14:visited {
+	FONT-SIZE: 14px;
+	COLOR: #333;
+	TEXT-DECORATION: none
+}
+A.black14:hover {
+	FONT-SIZE: 14px;
+	COLOR: #F30;
+	TEXT-DECORATION: underline;
+}
+A.red12b:link {
+	FONT-SIZE: 12px;
+	font-weight: bold;
+	COLOR: #F30;
+	TEXT-DECORATION: none
+}
+A.red12b:visited {
+	FONT-SIZE: 12px;
+	font-weight: bold;
+	COLOR: #F30;
+	TEXT-DECORATION: none
+}
+A.red12b:hover {
+	FONT-SIZE: 12px;
+	font-weight: bold;
+	COLOR: #333;
+	TEXT-DECORATION: none;
+}
+
+A.blue12b:link {
+	FONT-SIZE: 12px;
+	font-weight: bold;
+	COLOR: #1F72D0;
+	TEXT-DECORATION: none
+}
+A.blue12b:visited {
+	FONT-SIZE: 12px;
+	font-weight: bold;
+	COLOR: #1F72D0;
+	TEXT-DECORATION: none
+}
+A.blue12b:hover {
+	FONT-SIZE: 12px;
+	font-weight: bold;
+	COLOR: #FF0000;
+	TEXT-DECORATION: none;
+}
+A.red12:link {
+	FONT-SIZE: 12px;
+	COLOR: #F30;
+	TEXT-DECORATION: underline;
+}
+A.red12:visited {
+	FONT-SIZE: 12px;
+	COLOR: #F30;
+	TEXT-DECORATION: underline;
+}
+A.red12:hover {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: underline;
+}
+A.red14:link {
+	FONT-SIZE: 14px;
+	COLOR: #F30;
+	TEXT-DECORATION: underline;
+}
+A.red14:visited {
+	FONT-SIZE: 14px;
+	COLOR: #F30;
+	TEXT-DECORATION: underline;
+}
+A.red14:hover {
+	FONT-SIZE: 14px;
+	COLOR: #333;
+	TEXT-DECORATION: underline;
+}
+A.red14b:link {
+	FONT-SIZE: 14px;
+	font-weight: bold;
+	COLOR: #F30;
+	TEXT-DECORATION: none
+}
+A.red14b:visited {
+	FONT-SIZE: 14px;
+	font-weight: bold;
+	COLOR: #F30;
+	TEXT-DECORATION: none
+}
+A.red14b:hover {
+	FONT-SIZE: 14px;
+	font-weight: bold;
+	COLOR: #00C;
+	TEXT-DECORATION: underline;
+}
+.txt12red {
+	font-size: 12px;
+	color: #D00;
+	}
+.txt12blue {
+	font-size: 12px;
+	color: #3076D5;
+	}	
+.txt12b {
+	font-size: 12px;
+	color: #333;
+	font-weight: bold;
+	line-height:18px;	
+	}
+.txt12redb {
+	font-size: 12px;
+	color: #D00;
+	font-weight:bold;	
+	}	
+.txt14red {
+	font-size: 14px;
+	color: #D00;
+	padding:2px 0;
+	}
+.txt14redb {
+	font-size: 14px;
+	color: #D00;
+	font-weight:bold;
+	padding:8px 0 2px 0;
+	}	
+img { 
+	border: 0;
+}
+
+A.ublack:link {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: underline
+}
+A.ublack:visited {
+	FONT-SIZE: 12px;
+	COLOR: #333;
+	TEXT-DECORATION: underline
+}
+A.ublack:hover {
+	FONT-SIZE: 12px;
+	COLOR: #F00;
+	TEXT-DECORATION: none
+}
+A.ubred:link {
+	FONT-SIZE: 12px;
+	COLOR: #D00;
+	TEXT-DECORATION: underline;
+	font-weight: bold;
+}
+A.ubred:visited {
+
+	FONT-SIZE: 12px;
+	COLOR: #D00;
+	font-weight: bold;	
+	TEXT-DECORATION: underline
+}
+A.ubred:hover {
+	FONT-SIZE: 12px;
+	COLOR: #00D;
+	font-weight: bold;		
+	TEXT-DECORATION: none
+}
+
+A.hdtxt:link {
+	FONT-SIZE: 12px; COLOR: #2C7F1C; TEXT-DECORATION: none;  font-weight:bold;
+}
+A.hdtxt:visited {
+	FONT-SIZE: 12px; COLOR: #2C7F1C; TEXT-DECORATION: none;  font-weight:bold;
+}
+A.hdtxt:hover {
+	FONT-SIZE: 12px; COLOR: #ED8600; TEXT-DECORATION: underline;  font-weight:bold;
+}
+.input-box { border: #7F9DB9 1px solid;  color:#666666; padding:2px 3px 1px 3px;}
+.table2 { background-color:#F3F9FD; border-left:#d1d1d1 1px solid; border-top:#d1d1d1 1px solid;}
+.table2-td1 { border-right:#d1d1d1 1px solid; border-bottom:#d1d1d1 1px solid; padding:4px 4px 5px 8px; text-align:right;}
+.table2-td { border-right:#d1d1d1 1px solid; border-bottom:#d1d1d1 1px solid; padding:4px 4px 5px 8px; text-align:left;}
+.table2-txt { color:#333; border-right:#d1d1d1 1px solid; border-bottom:#d1d1d1 1px solid; padding:4px 4px 5px 12px; line-height:150%;}
+.table2-input { border: #A9BACE 1px solid; background-color:#fff; padding:2px;} 
+.boxinput {
+	border: 1px solid #649ECE;
+	color: #30559B;
+}
+.boxinput2 {
+	border: 1px solid #A2BAC6;
+	color: #323E59; background-image:url(../images-swzj-01/common/btn_bg.gif); background-repeat:repeat-x; background-position:bottom;
+}
+.input-line01 {
+	font-size: 12px;
+	color: #0B4F7A;
+	background-color: #E8F5FE;
+	height: 16px;
+	border: 1px solid #145782;
+}
+.input-line02 {
+	font-size: 12px;
+	color: #0B4F7A;
+	border: 1px solid #B7B7B7;
+	height: 12px;
+}
+.input-box01 {
+	font-size: 12px;
+	color: #0C2970;
+	border: 1px solid #679BDD;
+	padding: 3px 2px 0 3px ;
+}
+.htitle01 {
+	color: #000000;
+	font-family: "微软雅黑";
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	padding: 10px;
+	background-image: url(../images-swzj-01/common/line02.gif);
+	background-repeat: no-repeat;
+	background-position: center bottom;
+}
+.htitle02 {
+	color: #000;
+	font-family: "微软雅黑";
+	font-size: 16px;
+	font-weight: bold;
+	padding: 2px;
+}
+.htxt01 {
+	color: #000;
+	font-family: "微软雅黑";
+	font-size: 16px;
+	padding: 2px;
+	line-height: 24px;
+}
+.htxt02 {
+	color: #000;
+	font-size: 14px;
+	padding: 2px;
+	line-height: 22px;
+}
+.htxt03 {
+	color: #000;
+	font-size: 16px;
+	padding: 2px;
+	line-height: 22px;
+	font-weight: bold;
+	text-align: center;
+}
+.dc-line {
+	color: #000;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #AACBEE;
+}
+.redstar01 {
+	background-image: url(../images-common/redstar01.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+
+
+
+
+.button01{
+	height: 24px;
+	text-align: center;
+}
+.button01 ul{
+	text-align: center;
+	height: 24px;
+	margin-right: auto;
+	margin-left: auto;
+}
+.button01 li{
+	margin:0 3px;
+	padding:0;
+	float: left;
+}
+.button01 a {
+	display:block;
+	color: #000;
+	cursor:hand;
+	text-decoration: none;
+	font-family: "微软雅黑";
+	font-size: 12px;
+	line-height: 24px;
+	text-align: left;
+	
+}
+.button01 a:hover {
+	text-decoration: none;
+}
+
+.btncommon72 a {
+	background-position: 0 0;
+	width: 72px;
+	height: 24px;
+	display: block;
+	background-image: url(../images-common/anniu/anniu72.gif);
+	background-repeat: no-repeat;
+}
+
+.btncommon72 a:hover {
+	background-position: 0 -30px;
+	color: #0A246A;
+	display: block;
+	background-image: url(../images-common/anniu/anniu72.gif);
+	background-repeat: no-repeat;
+}
+
+.btncommon72 span {
+	display: block;
+	text-align: center;
+}
+
+/*导出*/
+.daochu a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/daochu.gif); 
+background-repeat: no-repeat;
+}
+.daochu a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/daochu.gif);
+background-repeat: no-repeat;
+}
+.daochu span{display: block; margin-left: 30px;
+}
+/*查询*/
+.chaxun a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/chaxun.gif); 
+background-repeat: no-repeat;
+}
+.chaxun a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/chaxun.gif);
+background-repeat: no-repeat;
+}
+.chaxun span{display: block; margin-left: 30px;
+}
+/*打印*/
+.dayin a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/dayin.gif); 
+background-repeat: no-repeat;
+}
+.dayin a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/dayin.gif);
+background-repeat: no-repeat;
+}
+.dayin span{display: block; margin-left: 30px;
+}
+/*预览*/
+.yulan a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/yulan.gif); 
+background-repeat: no-repeat;
+}
+.yulan a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/yulan.gif);
+background-repeat: no-repeat;
+}
+.yulan span{display: block; margin-left: 30px;
+}
+/*保存 */
+.baocun a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/baocun.gif); 
+background-repeat: no-repeat;
+}
+.baocun a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/baocun.gif);
+background-repeat: no-repeat;
+}
+.baocun span{display: block; margin-left: 30px;
+}
+/*首页 */
+.shouye a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/shouye.gif); 
+background-repeat: no-repeat;
+}
+.shouye a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/shouye.gif);
+background-repeat: no-repeat;
+}
+.shouye span{display: block; margin-left: 30px;
+}
+/*尾页 */
+.weiye a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/weiye.gif); 
+background-repeat: no-repeat;
+}
+.weiye a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/weiye.gif);
+background-repeat: no-repeat;
+}
+.weiye span{display: block; margin-left: 30px;
+}
+/*取消 */
+.quxiao a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/quxiao.gif); 
+background-repeat: no-repeat;
+}
+.quxiao a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/quxiao.gif);
+background-repeat: no-repeat;
+}
+.quxiao span{display: block; margin-left: 30px;
+}
+/*提交 */
+.tijiao a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/tijiao.gif); 
+background-repeat: no-repeat;
+}
+.tijiao a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/tijiao.gif);
+background-repeat: no-repeat;
+}
+.tijiao span{display: block; margin-left: 30px;
+}
+/*重置 */
+.chongzhi a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/chongzhi.gif); 
+background-repeat: no-repeat;
+}
+.chongzhi a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/chongzhi.gif);
+background-repeat: no-repeat;
+}
+.chongzhi span{display: block; margin-left: 30px;
+}
+/*返回 */
+.fanhui a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/fanhui.gif); 
+background-repeat: no-repeat;
+}
+.fanhui a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fanhui.gif);
+background-repeat: no-repeat;
+}
+.fanhui span{display: block; margin-left: 30px;
+}
+/*关闭 */
+.guanbi a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/guanbi.gif); 
+background-repeat: no-repeat;
+}
+.guanbi a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/guanbi.gif);
+background-repeat: no-repeat;
+}
+.guanbi span{display: block; margin-left: 30px;
+}
+/*确认 */
+.queren a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/queren.gif); 
+background-repeat: no-repeat;
+}
+.queren a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/queren.gif);
+background-repeat: no-repeat;
+}
+.queren span{display: block; margin-left: 30px;
+}
+/*下载 */
+.xiazai a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/xiazai.gif); 
+background-repeat: no-repeat;
+}
+.xiazai a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/xiazai.gif);
+background-repeat: no-repeat;
+}
+.xiazai span{display: block; margin-left: 30px;
+}
+
+          
+/*详情*/
+.xiangqing a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/xiangqing.gif); 
+background-repeat: no-repeat;
+}
+.xiangqing a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/xiangqing.gif);
+background-repeat: no-repeat;
+}
+.xiangqing span{display: block; margin-left: 30px;
+}
+/*查看*/
+.chakan a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/chakan.gif); 
+background-repeat: no-repeat;
+}
+.chakan a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/chakan.gif);
+background-repeat: no-repeat;
+}
+.chakan span{display: block; margin-left: 30px;
+}
+/*投票*/
+.toupiao a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/toupiao.gif); 
+background-repeat: no-repeat;
+}
+.toupiao a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/toupiao.gif);
+background-repeat: no-repeat;
+}
+.toupiao span{display: block; margin-left: 30px;
+}
+/*登录*/
+.denglu a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/denglu.gif); 
+background-repeat: no-repeat;
+}
+.denglu a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/denglu.gif);
+background-repeat: no-repeat;
+}
+.denglu span{display: block; margin-left: 30px;
+}
+/*注册*/
+.zhuce a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/zhuce.gif); 
+background-repeat: no-repeat;
+}
+.zhuce a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zhuce.gif);
+background-repeat: no-repeat;
+}
+.zhuce span{display: block; margin-left: 30px;
+}
+/*完成*/
+.wancheng a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/wancheng.gif); 
+background-repeat: no-repeat;
+}
+.wancheng a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wancheng.gif);
+background-repeat: no-repeat;
+}
+.wancheng span{display: block; margin-left: 30px;
+}
+/*搜索*/
+.sousuo a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/sousuo.gif); 
+background-repeat: no-repeat;
+}
+.sousuo a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/sousuo.gif);
+background-repeat: no-repeat;
+}
+.sousuo span{display: block; margin-left: 30px;
+}
+/*更多*/
+.gengduo a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/gengduo.gif); 
+background-repeat: no-repeat;
+}
+.gengduo a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/gengduo.gif);
+background-repeat: no-repeat;
+}
+.gengduo span{display: block; margin-left: 30px;
+}
+/*清空*/
+.qingkong a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/qingkong.gif); 
+background-repeat: no-repeat;
+}
+.qingkong a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/qingkong.gif);
+background-repeat: no-repeat;
+}
+.qingkong span{display: block; margin-left: 30px;
+}
+/*导入外部excel*/
+.daoru a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/daoru.gif); 
+background-repeat: no-repeat;
+}
+.daoru a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/daoru.gif);
+background-repeat: no-repeat;
+}
+.daoru span{display: block; margin-left: 30px;
+}
+/*暂存*/
+.zancun a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/zancun.gif); 
+background-repeat: no-repeat;
+}
+.zancun a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zancun.gif);
+background-repeat: no-repeat;
+}
+.zancun span{display: block; margin-left: 30px;
+}
+/*GO*/
+.go a {background-position: 0 0; width:30px; height:24px; display:block; background-image: url(../images-common/anniu/go.gif); text-align:center;background-repeat: no-repeat; font-weight: bold;
+}
+.go a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/go.gif);
+background-repeat: no-repeat;
+}
+.go span{display: block; margin-left: 0px;
+}
+
+
+
+/*申报表*/
+.shenbaobiao a {background-position: 0 0; width:84px; height:24px; display:block; background-image: url(../images-common/anniu/shenbaobiao.gif);background-repeat: no-repeat;
+}
+.shenbaobiao a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/shenbaobiao.gif);
+background-repeat: no-repeat;
+}
+.shenbaobiao span{display: block; margin-left: 30px;
+}
+/*上一页*/
+.shangyiye a {background-position: 0 0; width:84px; height:24px; display:block; background-image: url(../images-common/anniu/shangyiye.gif);background-repeat: no-repeat;
+}
+.shangyiye a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/shangyiye.gif);
+background-repeat: no-repeat;
+}
+.shangyiye span{display: block; margin-left: 30px;
+}
+/*下一页*/
+.xiayiye a {background-position: 0 0; width:84px; height:24px; display:block; background-image: url(../images-common/anniu/xiayiye.gif);background-repeat: no-repeat;
+}
+.xiayiye a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/xiayiye.gif);
+background-repeat: no-repeat;
+}
+.xiayiye span{display: block; margin-left: 30px;
+}
+/*增加*/
+.zengjia a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/zengjia.gif); 
+background-repeat: no-repeat;
+}
+.zengjia a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zengjia.gif);
+background-repeat: no-repeat;
+}
+.zengjia span{display: block; margin-left: 30px;
+}
+/*删除*/
+.shanchu a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/shanchu.gif); 
+background-repeat: no-repeat;
+}
+.shanchu a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/shanchu.gif);
+background-repeat: no-repeat;
+}
+.shanchu span{display: block; margin-left: 30px;
+}
+/*计算*/
+.jisuan a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/jisuan.gif); 
+background-repeat: no-repeat;
+}
+.jisuan a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/jisuan.gif);
+background-repeat: no-repeat;
+}
+.jisuan span{display: block; margin-left: 30px;
+}
+/*申报*/
+.shenbao a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/shenbao.gif); 
+background-repeat: no-repeat;
+}
+.shenbao a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/shenbao.gif);
+background-repeat: no-repeat;
+}
+.shenbao span{display: block; margin-left: 30px;
+}
+/*上传*/
+.shangchuan a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/shangchuan.gif); 
+background-repeat: no-repeat;
+}
+.shangchuan a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/shangchuan.gif);
+background-repeat: no-repeat;
+}
+.shangchuan span{display: block; margin-left: 30px;
+}
+/*放弃*/
+.fangqi a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/fangqi.gif); 
+background-repeat: no-repeat;
+}
+.fangqi a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fangqi.gif);
+background-repeat: no-repeat;
+}
+.fangqi span{display: block; margin-left: 30px;
+}
+
+
+
+/*缴纳税款*/
+.jnsk a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/jnsk.gif);background-repeat: no-repeat;
+}
+.jnsk a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/jnsk.gif);
+background-repeat: no-repeat;
+}
+.jnsk span{display: block; margin-left: 30px;
+}
+/*凭证打印*/
+.pzdy a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/pzdy.gif);background-repeat: no-repeat;
+}
+.pzdy a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/pzdy.gif);
+background-repeat: no-repeat;
+}
+.pzdy span{display: block; margin-left: 30px;
+}
+/*打印回执*/
+.dyhz a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/dyhz.gif);background-repeat: no-repeat;
+}
+.dyhz a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/dyhz.gif);
+background-repeat: no-repeat;
+}
+.dyhz span{display: block; margin-left: 30px;
+}
+/*退出登录*/
+.tcdl a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/tcdl.gif);background-repeat: no-repeat;
+}
+.tcdl a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/tcdl.gif);
+background-repeat: no-repeat;
+}
+.tcdl span{display: block; margin-left: 30px;
+}
+/*修改资料*/
+.xgzl a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/xgzl.gif);background-repeat: no-repeat;
+}
+.xgzl a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/xgzl.gif);
+background-repeat: no-repeat;
+}
+.xgzl span{display: block; margin-left: 30px;
+}
+
+
+
+/*按钮60*/
+.anniu60 a {background-position: 0 0; width:60px; height:24px; display:block; background-image: url(../images-common/anniu/anniu60.gif);background-repeat: no-repeat;
+}
+.anniu60 a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/anniu60.gif);
+background-repeat: no-repeat;
+}
+.anniu60 span{
+	display: block;
+	text-align: center;
+}
+/*按钮72*/
+.anniu72 a {background-position: 0 0; width:72px; height:24px; display:block; background-image: url(../images-common/anniu/anniu72.gif);background-repeat: no-repeat;
+}
+.anniu72 a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/anniu72.gif);
+background-repeat: no-repeat;
+}
+.anniu72 span{
+	display: block;
+	text-align: center;
+}
+/*按钮90*/
+.anniu90 a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/anniu90.gif);background-repeat: no-repeat;
+}
+.anniu90 a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/anniu90.gif);
+background-repeat: no-repeat;
+}
+.anniu90 span{
+	display: block;
+	text-align: center;
+}
+/*按钮130*/
+.anniu130 a {background-position: 0 0; width:130px; height:24px; display:block; background-image: url(../images-common/anniu/anniu130.gif);background-repeat: no-repeat;
+}
+.anniu130 a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/anniu130.gif);
+background-repeat: no-repeat;
+}
+.anniu130 span{
+	display: block;
+	text-align: center;
+}
+
+
+        
+/*清缴税款*/
+.qjsk a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/qjsk.gif);background-repeat: no-repeat;
+}
+.qjsk a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/qjsk.gif);
+background-repeat: no-repeat;
+}
+.qjsk span{display: block; margin-left: 30px;
+}
+/*我要办理*/
+.wybl a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wybl.gif);background-repeat: no-repeat;
+}
+.wybl a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wybl.gif);
+background-repeat: no-repeat;
+}
+.wybl span{display: block; margin-left: 30px;
+}
+/*我要留言*/
+.wyly a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wyly.gif);background-repeat: no-repeat;
+}
+.wyly a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wyly.gif);
+background-repeat: no-repeat;
+}
+.wyly span{display: block; margin-left: 30px;
+}
+/*我要咨询*/
+.wyzx a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wyzx.gif);background-repeat: no-repeat;
+}
+.wyzx a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wyzx.gif);
+background-repeat: no-repeat;
+}
+.wyzx span{display: block; margin-left: 30px;
+}
+/*使用帮助*/
+.sybz a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/sybz.gif);background-repeat: no-repeat;
+}
+.sybz a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/sybz.gif);
+background-repeat: no-repeat;
+}
+.sybz span{display: block; margin-left: 30px;
+}
+/*许可指南*/
+.xkzn a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/xkzn.gif);background-repeat: no-repeat;
+}
+.xkzn a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/xkzn.gif);
+background-repeat: no-repeat;
+}
+.xkzn span{display: block; margin-left: 30px;
+}
+/*审批指南*/
+.spzn a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/spzn.gif);background-repeat: no-repeat;
+}
+.spzn a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/spzn.gif);
+background-repeat: no-repeat;
+}
+.spzn span{display: block; margin-left: 30px;
+}
+/*我要投诉*/
+.wyts a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wyts.gif);background-repeat: no-repeat;
+}
+.wyts a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wyts.gif);
+background-repeat: no-repeat;
+}
+.wyts span{display: block; margin-left: 30px;
+}
+/*常见问题*/
+.cjwt a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/cjwt.gif);background-repeat: no-repeat;
+}
+.cjwt a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/cjwt.gif);
+background-repeat: no-repeat;
+}
+.cjwt span{display: block; margin-left: 30px;
+}
+/*在线办理*/
+.zxbl a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/zxbl.gif);background-repeat: no-repeat;
+}
+.zxbl a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zxbl.gif);
+background-repeat: no-repeat;
+}
+.zxbl span{display: block; margin-left: 30px;
+}
+/*操作演示*/
+.czys a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/czys.gif);background-repeat: no-repeat;
+}
+.czys a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/czys.gif);
+background-repeat: no-repeat;
+}
+.czys span{display: block; margin-left: 30px;
+}
+/*表证单书*/
+.bdzs a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/bdzs.gif);background-repeat: no-repeat;
+}
+.bdzs a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/bdzs.gif);
+background-repeat: no-repeat;
+}
+.bdzs span{display: block; margin-left: 30px;
+}
+/*办税软件*/
+.bsrj a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/bsrj.gif);background-repeat: no-repeat;
+}
+.bsrj a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/bsrj.gif);
+background-repeat: no-repeat;
+}
+.bsrj span{display: block; margin-left: 30px;
+}
+
+          
+/*操作手册*/
+.czsc a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/czsc.gif);background-repeat: no-repeat;
+}
+.czsc a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/czsc.gif);
+background-repeat: no-repeat;
+}
+.czsc span{display: block; margin-left: 30px;
+}
+/*网上认证*/
+.wsrz a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wsrz.gif);background-repeat: no-repeat;
+}
+.wsrz a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wsrz.gif);
+background-repeat: no-repeat;
+}
+.wsrz span{display: block; margin-left: 30px;
+}
+/*我要发布*/
+.wyfb a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wyfb.gif);background-repeat: no-repeat;
+}
+.wyfb a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wyfb.gif);
+background-repeat: no-repeat;
+}
+.wyfb span{display: block; margin-left: 30px;
+}
+/*更多留言*/
+.gdly a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/gdly.gif);background-repeat: no-repeat;
+}
+.gdly a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/gdly.gif);
+background-repeat: no-repeat;
+}
+.gdly span{display: block; margin-left: 30px;
+}
+/*查询结果*/
+.cxjg a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/cxjg.gif);background-repeat: no-repeat;
+}
+.cxjg a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/cxjg.gif);
+background-repeat: no-repeat;
+}
+.cxjg span{display: block; margin-left: 30px;
+}
+/*马上投票*/
+.mstp a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/mstp.gif);background-repeat: no-repeat;
+}
+.mstp a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/mstp.gif);
+background-repeat: no-repeat;
+}
+.mstp span{display: block; margin-left: 30px;
+}
+/*搜索答案*/
+.ssda a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/ssda.gif);background-repeat: no-repeat;
+}
+.ssda a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/ssda.gif);
+background-repeat: no-repeat;
+}
+.ssda span{display: block; margin-left: 30px;
+}
+/*我有问题*/
+.wywt a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wywt.gif);background-repeat: no-repeat;
+}
+.wywt a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/wywt.gif);
+background-repeat: no-repeat;
+}
+.wywt span{display: block; margin-left: 30px;
+}
+/*高级搜索*/
+.gjss a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/gjss.gif);background-repeat: no-repeat;
+}
+.gjss a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/gjss.gif);
+background-repeat: no-repeat;
+}
+.gjss span{display: block; margin-left: 30px;
+}
+/*表格下载*/
+.bgxz a {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/bgxz.gif);background-repeat: no-repeat;
+}
+.bgxz a:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/bgxz.gif);
+background-repeat: no-repeat;
+}
+.bgxz span{display: block; margin-left: 30px;
+}
+/*办税指南*/
+.bszn {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/bszn.gif);background-repeat: no-repeat;
+}
+.bszn:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/bszn.gif);
+background-repeat: no-repeat;
+}
+.bszn span{display: block; margin-left: 30px;
+}
+/*在线咨询*/
+.zxzx {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/zxzx.gif);background-repeat: no-repeat;
+}
+.zxzx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zxzx.gif);
+background-repeat: no-repeat;
+}
+.zxzx span{display: block; margin-left: 30px;
+}
+/*增加用户*/
+.zjyh {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/zjyh.gif);background-repeat: no-repeat;
+}
+.zjyh:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zjyh.gif);
+background-repeat: no-repeat;
+}
+.zjyh span{display: block; margin-left: 30px;
+}
+/*删除用户*/
+.scyh {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/scyh.gif);background-repeat: no-repeat;
+}
+.scyh:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/scyh.gif);
+background-repeat: no-repeat;
+}
+.scyh span{display: block; margin-left: 30px;
+}
+/*启用用户*/
+.qyyh {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/qyyh.gif);background-repeat: no-repeat;
+}
+.qyyh:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/qyyh.gif);
+background-repeat: no-repeat;
+}
+.qyyh span{display: block; margin-left: 30px;
+}
+/*停用用户*/
+.tyyh {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/tyyh.gif);background-repeat: no-repeat;
+}
+.tyyh:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/tyyh.gif);
+background-repeat: no-repeat;
+}
+.tyyh span{display: block; margin-left: 30px;
+}
+/*返回上页*/
+.fhsy {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/fhsy.gif);background-repeat: no-repeat;
+}
+.fhsy:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fhsy.gif);
+background-repeat: no-repeat;
+}
+.fhsy span{display: block; margin-left: 30px;
+}
+/*设置权限*/
+.szqx {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/szqx.gif);background-repeat: no-repeat;
+}
+.szqx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/szqx.gif);
+background-repeat: no-repeat;
+}
+.szqx span{display: block; margin-left: 30px;
+}
+/*增加权限*/
+.zjqx {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/zjqx.gif);background-repeat: no-repeat;
+}
+.zjqx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zjqx.gif);
+background-repeat: no-repeat;
+}
+.zjqx span{display: block; margin-left: 30px;
+}
+/*增加站点*/
+.zjzd {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/zjzd.gif);background-repeat: no-repeat;
+}
+.zjzd:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zjzd.gif);
+background-repeat: no-repeat;
+}
+.zjzd span{display: block; margin-left: 30px;
+}
+/*删除用户*/
+.scyh {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/scyh.gif);background-repeat: no-repeat;
+}
+.scyh:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/scyh.gif);
+background-repeat: no-repeat;
+}
+.scyh span{display: block; margin-left: 30px;
+}
+
+/*提交申报*/
+.tjsb {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/tjsb.gif);background-repeat: no-repeat;
+}
+.tjsb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/tjsb.gif);
+background-repeat: no-repeat;
+}
+.tjsb span{display: block; margin-left: 30px;
+}
+/*取消申报*/
+.qxsb {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/qxsb.gif);background-repeat: no-repeat;
+}
+.qxsb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/qxsb.gif);
+background-repeat: no-repeat;
+}
+.qxsb span{display: block; margin-left: 30px;
+}
+/*邮件订阅*/
+.yjdy {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wydy1.gif);background-repeat: no-repeat;}
+.yjdy:hover {background-position: 0 -30px; color:#0A246A; display:block;}
+.yjdy span{display: block; margin-left: 30px;}
+/*手机订阅*/
+.sjdy {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wydy2.gif);background-repeat: no-repeat;}
+.sjdy:hover {background-position: 0 -30px; color:#0A246A; display:block;}
+.sjdy span{display: block; margin-left: 30px;}
+/*查询订阅*/
+.cxdy {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/cxdy.gif);background-repeat: no-repeat;}
+.cxdy:hover {background-position: 0 -30px; color:#0A246A; display:block;}
+.cxdy span{display: block; margin-left: 30px;}
+/*我要退订*/
+.wytd {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wytd.gif);background-repeat: no-repeat;}
+.wytd:hover {background-position: 0 -30px; color:#0A246A; display:block;}
+.wytd span{display: block; margin-left: 30px;}
+/*我要报名*/
+.wybm{background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/wybm.gif);background-repeat: no-repeat;}
+.wybm:hover {background-position: 0 -30px; color:#0A246A; display:block;}
+.wybm span{display: block; margin-left: 30px;}
+
+
+/*填写申请表*/
+.txsqb {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/txsqb.gif);background-repeat: no-repeat;
+}
+.txsqb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/txsqb.gif);
+background-repeat: no-repeat;
+}
+.txsqb span{display: block; margin-left: 30px;
+}
+/*进入问题库 */
+.jrwtk {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/jrwtk.gif);background-repeat: no-repeat;
+}
+.jrwtk:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/jrwtk.gif);
+background-repeat: no-repeat;
+}
+.jrwtk span{display: block; margin-left: 30px;
+}
+/*办税我帮您*/
+.bswbn {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/bswbn.gif);background-repeat: no-repeat;
+}
+.bswbn:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/bswbn.gif);
+background-repeat: no-repeat;
+}
+.bswbn span{display: block; margin-left: 30px;
+}
+/*知识库搜索*/
+.zskss {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/zskss.gif);background-repeat: no-repeat;
+}
+.zskss:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zskss.gif);
+background-repeat: no-repeat;
+}
+.zskss span{display: block; margin-left: 30px;
+}
+/*反馈信息查询*/
+.fkxxcx {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/fkxxcx.gif);background-repeat: no-repeat;
+}
+.fkxxcx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fkxxcx.gif);
+background-repeat: no-repeat;
+}
+.fkxxcx span{display: block; margin-left: 30px;
+}
+/*打印申报表*/
+.dysbb {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/dysbb.gif);background-repeat: no-repeat;
+}
+.dysbb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/dysbb.gif);
+background-repeat: no-repeat;
+}
+.dysbb span{display: block; margin-left: 30px;
+}
+/*子用户管理*/
+.zyhgl {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/zyhgl.gif);background-repeat: no-repeat;
+}
+.zyhgl:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/zyhgl.gif);
+background-repeat: no-repeat;
+}
+.zyhgl span{display: block; margin-left: 30px;
+}
+/*保存并查看回执*/
+.bcbckhz {background-position: 0 0; width:128px; height:24px; display:block; background-image: url(../images-common/anniu/bcbckhz.gif);background-repeat: no-repeat;
+}
+.bcbckhz:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/bcbckhz.gif);
+background-repeat: no-repeat;
+}
+.bcbckhz span{display: block; margin-left: 30px;
+}
+/*打印错误列表*/
+.dycwlb {background-position: 0 0; width:128px; height:24px; display:block; background-image: url(../images-common/anniu/dycwlb.gif);background-repeat: no-repeat;
+}
+.dycwlb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/dycwlb.gif);
+background-repeat: no-repeat;
+}
+.dycwlb span{display: block; margin-left: 30px;
+}
+/*下载错误列表*/
+.xzcwlb {background-position: 0 0; width:128px; height:24px; display:block; background-image: url(../images-common/anniu/xzcwlb.gif);background-repeat: no-repeat;
+}
+.xzcwlb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/xzcwlb.gif);
+background-repeat: no-repeat;
+}
+.xzcwlb span{display: block; margin-left: 30px;
+}
+/*修改错误数据*/
+.xgcwsj {background-position: 0 0; width:128px; height:24px; display:block; background-image: url(../images-common/anniu/xgcwsj.gif);background-repeat: no-repeat;
+}
+.xgcwsj:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/xgcwsj.gif);
+background-repeat: no-repeat;
+}
+.xgcwsj span{display: block; margin-left: 30px;
+}
+/*查看认证结果*/
+.ckrzjg {background-position: 0 0; width:118px; height:24px; display:block; background-image: url(../images-common/anniu/ckrzjg.gif);background-repeat: no-repeat;
+}
+.ckrzjg:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/ckrzjg.gif);
+background-repeat: no-repeat;
+}
+.ckrzjg span{display: block; margin-left: 30px;
+}
+/*上传认证发票*/
+.scrzfp {background-position: 0 0; width:118px; height:24px; display:block; background-image: url(../images-common/anniu/scrzfp.gif);background-repeat: no-repeat;
+}
+.scrzfp:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/scrzfp.gif);
+background-repeat: no-repeat;
+}
+.scrzfp span{display: block; margin-left: 30px;
+}
+/*查看稽核结果*/
+.ckjhjg {background-position: 0 0; width:118px; height:24px; display:block; background-image: url(../images-common/anniu/ckjhjg.gif);background-repeat: no-repeat;
+}
+.ckjhjg:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/ckjhjg.gif);
+background-repeat: no-repeat;
+}
+.ckjhjg span{display: block; margin-left: 30px;
+}
+/*填写申报表*/
+.txsbb {background-position: 0 0; width:118px; height:24px; display:block; background-image: url(../images-common/anniu/txsbb.gif);background-repeat: no-repeat;
+}
+.txsbb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/txsbb.gif);
+background-repeat: no-repeat;
+}
+.txsbb span{display: block; margin-left: 30px;
+}
+/*查看上期申报*/
+.cksqsb {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/cksqsb.gif);background-repeat: no-repeat;
+}
+.cksqsb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/cksqsb.gif);
+background-repeat: no-repeat;
+}
+.cksqsb span{display: block; margin-left: 30px;
+}
+
+/*发送到我邮箱*/
+.fsdwyx {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/fsdwyx.gif);background-repeat: no-repeat;
+}
+.fsdwyx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fsdwyx.gif);
+background-repeat: no-repeat;
+}
+.fsdwyx span{display: block; margin-left: 30px;
+}
+
+/*发送到我手机*/
+.fsdwsj {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/fsdwsj.gif);background-repeat: no-repeat;
+}
+.fsdwsj:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fsdwsj.gif);
+background-repeat: no-repeat;
+}
+.fsdwsj span{display: block; margin-left: 30px;
+}
+
+/*复制到剪贴板*/
+.fzdjtb {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/fzdjtb.gif);background-repeat: no-repeat;
+}
+.fzdjtb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fzdjtb.gif);
+background-repeat: no-repeat;
+}
+.fzdjtb span{display: block; margin-left: 30px;
+}
+/*发送到我手机*/
+.fsdx {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/fsdx.gif);background-repeat: no-repeat;
+}
+.fsdx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fsdx.gif);
+background-repeat: no-repeat;
+}
+.fsdx span{display: block; margin-left: 30px;
+}
+/*管理订阅人信息*/
+.fzdjtb {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/fzdjtb.gif);background-repeat: no-repeat;
+}
+.fzdjtb:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fzdjtb.gif);
+background-repeat: no-repeat;
+}
+.fzdjtb span{display: block; margin-left: 30px;
+}
+/*管理订阅人信息*/
+.gldyrxx {background-position: 0 0; width:90px; height:24px; display:block; background-image: url(../images-common/anniu/anniu90.gif);background-repeat: no-repeat;
+}
+.gldyrxx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/anniu90.gif);
+background-repeat: no-repeat;
+}
+.gldyrxx span{display: block; margin-left: 4px;
+}
+/*发送错误信息*/
+.fscwxx {background-position: 0 0; width:115px; height:24px; display:block; background-image: url(../images-common/anniu/fsxx.gif);background-repeat: no-repeat;
+}
+.fscwxx:hover {background-position: 0 -30px; color:#0A246A; display:block; background-image: url(../images-common/anniu/fsxx.gif);
+background-repeat: no-repeat;
+}
+.fscwxx span{display: block; margin-left: 30px;
+}
+
+.button-left{
+	width: 10px;
+}
+.button-left label{
+	display:block;
+	width:10px;
+	height:200px;
+	overflow:hidden;
+	float: left;
+}
+.button-left span{
+	display: block;
+	float: left;
+	height: 200px;}
+.button-left a {
+	display:block;
+	width:10px;
+	height:200px;
+	overflow:hidden;
+	background-image: url(../images-common/leftnav/left.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+a#b {
+	background-image: url(../images-common/leftnav/right.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}

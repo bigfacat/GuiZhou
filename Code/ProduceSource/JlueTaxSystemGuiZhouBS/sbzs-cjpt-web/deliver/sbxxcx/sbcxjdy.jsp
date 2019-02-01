@@ -287,7 +287,7 @@ viewApp.controller('viewCtrl', function ($scope) {
     $scope.showGdsbz = (db_showGdsbz == 'null' || db_showGdsbz=='' || db_showGdsbz=='undefined')?'Y':db_showGdsbz;
 });
 
-var date = new Date('2018-10-24');
+var date = new Date('2018-10-25');
 //var date = new Date();  
 var year = date.getFullYear();  
 var month = date.getMonth() + 1;

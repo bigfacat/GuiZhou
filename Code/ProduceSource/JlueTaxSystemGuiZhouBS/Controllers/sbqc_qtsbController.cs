@@ -13,6 +13,19 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 {
     public class sbqc_qtsbController : Controller
     {
+        string BDDM = "YHSSB";
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/setting.html")]
+        public System.Web.Mvc.ActionResult setting()
+        {
+            GDTXGuiZhouUserYSBQC ysbqc = GTXMethod.GetYSBQCByBDDM(this.BDDM);
+            string[] HappenDate = ysbqc.HappenDate.Split('-');
+            ViewBag.tjNd = HappenDate[0];
+            ViewBag.tjYf = HappenDate[1];
+
+            return View();
+        }
+
         public JObject enterQtsb()
         {
             JObject re_jo = new JObject();
@@ -50,6 +63,22 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string str = System.IO.File.ReadAllText(Server.MapPath("sburlControl_" + sbywbm + ".json"));
             re_jo = JsonConvert.DeserializeObject<JObject>(str);
             return re_jo;
+        }
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/setting/doWord.jsp")]
+        public void doWord()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("doWord.jsp"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
+        }
+
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/setting/lhQtsbbs.jsp")]
+        public void lhQtsbbs()
+        {
+            string str = System.IO.File.ReadAllText(Server.MapPath("lhQtsbbs.jsp"));
+            Response.ContentType = "text/html;charset=UTF-8";
+            Response.Write(str);
         }
 
     }

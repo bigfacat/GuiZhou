@@ -1,0 +1,329 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=8; IE=EDGE">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/_res_/css/abacus/main.css">
+    <link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/_res_/css/message/message_solid.css">
+    <link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/_res_/js/message/skin/default/Message.css" />
+    <link type="text/css" href="/sbzs-cjpt-web/abacus/_res_/style/green/css/table.css" rel="stylesheet">
+    <script src="/sbzs-cjpt-web/abacus/_res_/js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="/sbzs-cjpt-web/resources/js/ecm-taglib/laydate-v1.1/laydate/laydate.js"></script>
+    <script type="text/javascript" src="/sbzs-cjpt-web/abacus/_res_/js/message/Message.js"></script>
+    <script type="text/javascript" src="/sbzs-cjpt-web/sbzs_res/common.js"></script>
+    <script>
+$(function(){
+	var menuBtnConfig = {'btnPrepareForm':{'name':'下一步','func':'prepareForm()','disp':'block'}};
+	parent.menuBtnControl(menuBtnConfig);
+})
+
+    </script>
+    <script>
+    var jsonParams = {"nsqx_dm":"","zsxmDm":"","sbSign":"cb292f4b10858f68905a383f0f7a34f0","gdslxDm":"2","nsrsbh":"91520190314387738N","skssq_z":"","shxyDm":"null","ywbm":"TYSB","yhid":"R1U4BO3kjushmMb6mZYKqqhn8Y/6KHcF6gz6qtkIB7k=","swjgDm":"25201152600","tjNd":"2018","djxh":"10125201000030977005","sssqZ":"","skssq_q":"","yhm":"F Nbj4P6nPpzSpnPY7cmFA==","sbqx":"","sssqQ":"","tjYf":"11","nsqxDmIn":"08-06-11-","gsdq":"252","zspmDm":""};
+    var pathRoot = "/sbzs-cjpt-web";
+    var pathRes = "/sbzs-cjpt-web/abacus/_res_";
+    var flagFormDebuging = true;//默认开发者模式是关闭的
+
+  	//阻断提示和非阻断提示
+	var errors = '' ;
+    var warns = '' ;
+    var startElemt = {
+			elem : '#sssqQ',
+			format : 'YYYY-MM-DD',
+			min : "2000-01-01", // 设定最小日期为当前日期
+			max : '2099-12-31', // 最大日期
+			istime : false,
+			istoday : false,
+			choose : function(datas) {
+				var startTime = getStartTime(datas);
+				$(this.elem).val(startTime);
+				var endTime = getEndTime(startTime);
+				$("#sssqZ").val(endTime);
+			}
+		};
+
+    function getStartTime(){
+    	var startTime = arguments[0];
+    	var nsqx = $("#nsqxSel").val();
+    	var _start = parseISO8601(startTime);
+    	if("06"==nsqx){
+    		return _start.getFullYear() + '-' + ((_start.getMonth()+1)<=9?'0'+(_start.getMonth()+1):(_start.getMonth()+1)) + '-01';
+    	}else if("08"==nsqx){
+    		if(_start.getMonth() >= 0 && _start.getMonth() < 3){
+    			return (_start.getFullYear()) + '-01-01';
+    		}else if(_start.getMonth() >= 3 && _start.getMonth() < 6){
+    			return _start.getFullYear() + '-04-01';
+    		}else if(_start.getMonth() >= 6 && _start.getMonth() < 9){
+    			return _start.getFullYear() + '-07-01';
+    		}else if(_start.getMonth() >= 9){
+    			return _start.getFullYear() + '-10-01';
+    		}
+    	}else if("09"==nsqx){
+    		if(_start.getMonth() >= 0 && _start.getMonth() < 6){
+    			return (_start.getFullYear()) + '-01-01';
+    		}else if(_start.getMonth() >= 6 && _start.getMonth() < 12){
+    			return _start.getFullYear() + '-07-01';
+    		}
+		}else if("10"==nsqx){
+    		return _start.getFullYear() + '-01-01';
+    	}else if("11"==nsqx){
+    		return startTime;
+    	}
+    }
+
+    function getEndTime(){
+    	var startTime = arguments[0];
+    	if(startTime==null || startTime==""){
+    		return "";
+    	}
+    	var nsqx = $("#nsqxSel").val();
+    	var _start = parseISO8601(startTime);
+    	if("06"==nsqx){
+    		if(_start.getMonth() == 11){
+    			var _end = new Date(_start.getFullYear()+1,0,0);
+    			return _start.getFullYear() + '-12' + '-' + (_end.getDate());
+    		}else{
+    			var _end = new Date(_start.getFullYear(),_start.getMonth()+1,0);
+    			return _start.getFullYear() + '-' + ((_start.getMonth()+1)<=9?'0'+(_start.getMonth()+1):(_start.getMonth()+1)) + '-' + (_end.getDate());
+    		}
+    	}else if("08"==nsqx){
+    		if(_start.getMonth() == 9){
+    			var _end = new Date(_start.getFullYear()+1,0,0);
+    			return _start.getFullYear() + '-12' + '-' + (_end.getDate());
+    		}else{
+    			var _end = new Date(_start.getFullYear(),_start.getMonth()+3,0);
+    			return _start.getFullYear() + '-' + ((_start.getMonth()+3)<=9?'0'+(_start.getMonth()+3):(_start.getMonth()+3)) + '-' + (_end.getDate());
+    		}
+    	}else if("09"==nsqx){
+    		if(_start.getMonth() == 6){
+    			var _end = new Date(_start.getFullYear()+1,0,0);
+    			return _start.getFullYear() + '-12' + '-' + (_end.getDate());
+    		}else{
+    			var _end = new Date(_start.getFullYear(),_start.getMonth()+6,0);
+    			return _start.getFullYear() + '-' + ((_start.getMonth()+6)<=6?'0'+(_start.getMonth()+6):(_start.getMonth()+6)) + '-' + (_end.getDate());
+    		}
+		}else if("10"==nsqx){
+    		return _start.getFullYear() + '-12-31';
+    	}else if("11"==nsqx){
+    		if(_start.getMonth() == 11){
+    			return _start.getFullYear() + '-12' + '-' + ((_start.getDate())<=9?'0'+(_start.getDate()):(_start.getDate()));
+    		}else{
+    			return _start.getFullYear() + '-' + ((_start.getMonth()+1)<=9?'0'+(_start.getMonth()+1):(_start.getMonth()+1)) + '-' + ((_start.getDate())<=9?'0'+(_start.getDate()):(_start.getDate()));
+    		}
+    	}
+    }
+    function parseISO8601(dateStringInRange) {
+        var isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s*$/,
+            date = new Date(NaN), month,
+            parts = isoExp.exec(dateStringInRange);
+
+        if(parts) {
+            month = +parts[2];
+            date.setFullYear(parts[1], month - 1, parts[3]);
+            if(month != date.getMonth() + 1) {
+                date.setTime(NaN);
+            }
+        }
+        return date;
+    }
+$(function(){
+    	$("#nsqxSel").change(function(){
+    		var nsqx = $("#nsqxSel").val();
+    		var _start = new Date("@ViewBag.year","@ViewBag.month","@ViewBag.day");
+    		var _endTime = "";
+    		var _startTime = "";
+    		if("06"==nsqx){
+    			if(_start.getMonth() == 0){
+    				_startTime = (_start.getFullYear()-1) + '-12-01';
+    				var _end = new Date(_start.getFullYear()+1,0,0);
+    				_endTime = (_start.getFullYear()-1) + '-12-31'
+    			}else{
+    				_startTime = _start.getFullYear() + '-' + ((_start.getMonth())<=9?'0'+(_start.getMonth()):(_start.getMonth())) + '-01';
+    				var _end = new Date(_start.getFullYear(),_start.getMonth(),0);
+    				_endTime = _start.getFullYear() + '-' + ((_start.getMonth())<=9?'0'+(_start.getMonth()):(_start.getMonth())) + '-' + (_end.getDate());
+    			}
+    		}else if("08"==nsqx){
+    			if(_start.getMonth() >= 0 && _start.getMonth() < 3){
+    				_startTime = (_start.getFullYear()-1) + '-10-01';
+    				_endTime = (_start.getFullYear()-1) + '-12-31';
+    			}else if(_start.getMonth() >= 3 && _start.getMonth() < 6){
+    				_startTime = _start.getFullYear() + '-01-01';
+    				_endTime = _start.getFullYear() + '-03-31';
+    			}else if(_start.getMonth() >= 6 && _start.getMonth() < 9){
+    				_startTime = _start.getFullYear() + '-04-01';
+    				_endTime = _start.getFullYear() + '-06-30';
+    			}else if(_start.getMonth() >= 9){
+    				_startTime = _start.getFullYear() + '-07-01';
+    				_endTime = _start.getFullYear() + '-09-30';
+    			}
+    		}else if("09"==nsqx){
+    			if(_start.getMonth() >= 0 && _start.getMonth() <= 6){
+    				_startTime = (_start.getFullYear()-1) + '-07-01';
+    				_endTime = (_start.getFullYear()-1) + '-12-31';
+    			}else if(_start.getMonth() > 6 && _start.getMonth() <= 12){
+    				_startTime = _start.getFullYear() + '-01-01';
+    				_endTime = _start.getFullYear() + '-06-30';
+    			}
+    		}else if("10"==nsqx){
+    			_startTime = (_start.getFullYear()-1) + '-01-01';
+    			_endTime = (_start.getFullYear()-1) + '-12-31';
+    		}else if("11"==nsqx){
+    			_startTime = _start.getFullYear() + '-' + ((_start.getMonth()+1)<=9?'0'+(_start.getMonth()+1):(_start.getMonth()+1)) + '-'+(_start.getDate()<=9?'0'+_start.getDate():_start.getDate());
+    			_endTime = _start.getFullYear() + '-' + ((_start.getMonth()+1)<=9?'0'+(_start.getMonth()+1):(_start.getMonth()+1)) + '-' +(_start.getDate()<=9?'0'+_start.getDate():_start.getDate());
+    		}
+    		$("#sssqQ").val(_startTime);
+    		$("#sssqZ").val(_endTime);
+    	});
+});
+    </script>
+</head>
+<body class="USER">
+    <div class="TableMain">
+        <table width="100%" border="0" cellspacing="0" class="all_table" cellpadding="0">
+            <tr>
+                <td valign="top" width="100%">
+                    <div class="boxmain" id="viewCtrlId" ng-controller="viewCtrl">
+
+                        <div class="NewTableHead">
+                            <h1>税（费）通用申报表</h1>
+                        </div>
+
+                        <div class="linkpagebox" style="border:1px solid #fff; margin-bottom:5px;">
+                            <div class="table"></div>
+                        </div>
+
+                        <div class="linkpagebox">
+                            <div class="titleText">核定信息</div>
+                            <div class="table">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td width="130">纳税期限：      </td>
+                                        <td>
+                                            <select name="nsqxSel" id="nsqxSel" class="inputSelect01">
+                                                <option value='06' selected="selected">按月申报</option>
+                                                <option value='08'>按季申报</option>
+                                                <option value='10'>按年申报</option>
+                                                <option value='11'>按次申报</option>
+                                                <option value='09'>按半年申报</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div class="linkpagebox" style="margin-top:-15px">
+                            <div class="titleText">税款所属时期</div>
+                            <div class="table">
+                                <table border="0" cellspacing="0" cellpadding="0">
+                                    <col width="135" />
+                                    <col width="170" />
+                                    <col width="350" />
+                                    <tr>
+                                        <td style="padding:0px">税款所属时期起：      </td>
+                                        <td style="padding:0px"><input name="sssqQ" onclick="laydate(startElemt)" id="sssqQ" type="text" readonly="readonly" class="inputDate01" /></td>
+                                        <td style="padding:0px"> 如（税款所属时期起：<span class="font-color01">2014-01-01</span>）</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0px">税款所属时期止：      </td>
+                                        <td style="padding:0px">
+                                            <input name="sssqZ" id="sssqZ" type="text" readonly="readonly" class="inputDate01" />
+                                        </td>
+                                        <td style="padding:0px">如（税款所属时期止：<span class="font-color01">2014-01-31</span>）</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div class='line' id='line'></div>
+    <div class='linefoot' id='linefoot'></div>
+    <script src="/sbzs-cjpt-web/abacus/_res_/js/lib/json3.min.js"></script>
+    <script src="/sbzs-cjpt-web/abacus/_res_/js/lib/jsonpath.js"></script>
+    <script src="/sbzs-cjpt-web/abacus/_res_/js/lib/mask.js"></script>
+    <input type="hidden" id="contextPath" value="/sbzs-cjpt-web" />
+    <script>
+	var prepareFormFlag = true;
+	function prepareForm(){
+		//防止重复点击 设置标志位
+		if(prepareFormFlag){
+			var sssqQ=$("#sssqQ").val();
+			var sssqZ=$("#sssqZ").val();
+			if (sssqQ==null || sssqQ=="" || sssqZ==null || sssqZ==""){
+				layer.alert('请选择税款所属时期', {title:"提示",icon: 5});
+			}else {
+				var reqUrl=window.location.href;
+				var sssqQBegin=reqUrl.indexOf("sssqQ=");
+				var sssqQEnd=reqUrl.indexOf("&",sssqQBegin);
+				if(sssqQBegin!=-1){
+					reqUrl=reqUrl.replace(reqUrl.substring(sssqQBegin,sssqQEnd),"sssqQ="+$("#sssqQ").val());
+					var sssqZBegin=reqUrl.indexOf("sssqZ=");
+					var sssqZEnd=reqUrl.indexOf("&",sssqZBegin);
+					if(sssqZBegin!=-1){
+						reqUrl=reqUrl.replace(reqUrl.substring(sssqZBegin,sssqZEnd),"sssqZ="+$("#sssqZ").val());
+					}
+				}else{
+					reqUrl=reqUrl.replace("#","")+"&sssqQ="+$("#sssqQ").val()+"&sssqZ="+$("#sssqZ").val();
+				}
+
+				reqUrl=reqUrl.replace("begin","form");
+				prepareFormFlag = false;
+				$("body").mask("处理中，请稍候...");
+				//组装请求的URL 若存在逻辑处理错误，则修复【下一步】可以用标志位为prepareFormFlag true
+				parent.loadFrmMainURL(reqUrl);
+				// 调用父页面的函数，清空按钮区域
+				parent.cleanMeunBtn();
+			}
+
+		}
+
+	}
+	window.console = window.console || {
+	    log: $.noop,
+	    debug: $.noop,
+	    info: $.noop,
+	    warn: $.noop,
+	    exception: $.noop,
+	    assert: $.noop,
+	    dir: $.noop,
+	    dirxml: $.noop,
+	    trace: $.noop,
+	    group: $.noop,
+	    groupCollapsed: $.noop,
+	    groupEnd: $.noop,
+	    profile: $.noop,
+	    profileEnd: $.noop,
+	    count: $.noop,
+	    clear: $.noop,
+	    time: $.noop,
+	    timeEnd: $.noop,
+	    timeStamp: $.noop,
+	    table: $.noop,
+	    error: $.noop
+	};
+	window.contextPath = $("#contextPath").val();
+	$("#sssqQ").val('@ViewBag.sssqQ');
+	$("#sssqZ").val('@ViewBag.sssqZ');
+    </script>
+
+    <script src="/sbzs-cjpt-web/abacus/_res_/js/lib/message.js"></script>
+
+    <!-- //TODO 此文件中有包含页面自适应的代码，后续要剥离出来 -->
+
+    <script src="/sbzs-cjpt-web/abacus/_res_/js/layer-v2.2/layer/layer.js"></script>
+</body>
+</html>

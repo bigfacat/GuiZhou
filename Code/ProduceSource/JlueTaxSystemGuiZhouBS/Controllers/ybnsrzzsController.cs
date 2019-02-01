@@ -23,7 +23,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
         public JArray xFormula()
         {
             JArray re_jo = new JArray();
-            string str = System.IO.File.ReadAllText(Server.MapPath("xFormula.json"));
+            string str = System.IO.File.ReadAllText(Server.MapPath("xFormula.new.json"));
             re_jo = JsonConvert.DeserializeObject<JArray>(str);
             return re_jo;
         }
@@ -61,7 +61,12 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 }
             }
 
-            JObject zzsybnsrsbInitData_jo = (JObject)re_jo_body["qcs"]["initData"]["zzsybnsrsbInitData"];
+            //JObject zzsybnsrsbInitData_jo = (JObject)re_jo_body["qcs"]["initData"]["zzsybnsrsbInitData"];
+            string Name = System.Web.HttpContext.Current.Session["Name"].ToString();
+            JToken industry = JToken.Parse(System.IO.File.ReadAllText(Server.MapPath("~/industry.json")));
+            industry = industry.Where(a => a["name"].ToString() == Name).ToList()[0];
+            JObject zzsybnsrsbInitData_jo = JObject.Parse(System.IO.File.ReadAllText(Server.MapPath("~/YBNSRZZSQCS." + industry["value"] + ".json")));
+
             GTXResult gr1 = GTXMethod.GetUserReportData(id, "YBNSRZZSQCS");
             if (gr1.IsSuccess)
             {

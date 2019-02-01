@@ -21,10 +21,17 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             logger = _logger;
         }
 
-        public string begin()
+        public System.Web.Mvc.ActionResult begin()
         {
-            string str = System.IO.File.ReadAllText(Server.MapPath("begin.html"));
-            return str;
+            GDTXGuiZhouUserYSBQC ysbqc = GTXMethod.GetYSBQCByBDDM(this.BDDM);
+            string[] HappenDate = ysbqc.HappenDate.Split('-');
+            ViewBag.year = HappenDate[0];
+            ViewBag.month = int.Parse(HappenDate[1]) - 1;
+            ViewBag.day = HappenDate[2];
+            ViewBag.sssqQ = ysbqc.SKSSQQ;
+            ViewBag.sssqZ = ysbqc.SKSSQZ;
+
+            return View();
         }
 
         public string form(string sssqQ, string sssqZ)
@@ -181,6 +188,8 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             re_jo_body["fxmtysbbdVO"]["fxmtySbb"]["sbbhead"]["sbrq1"] = tbrq;
             re_jo_body["fxmtysbbdVO"]["fxmtySbb"]["sbbhead"]["skssqq"] = rqQ;
             re_jo_body["fxmtysbbdVO"]["fxmtySbb"]["sbbhead"]["skssqz"] = rqZ;
+            re_jo_body["qcs"]["formContent"]["sbTysb"]["body"]["sbxxGrid"]["sbxxGridlb"][0]["skssqq"] = rqQ;
+            re_jo_body["qcs"]["formContent"]["sbTysb"]["body"]["sbxxGrid"]["sbxxGridlb"][0]["skssqz"] = rqZ;
 
             GTXResult gr1 = GTXMethod.GetCompany();
             if (gr1.IsSuccess)
@@ -210,8 +219,8 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                     JArray mxxx = (JArray)re_jo_body["qcs"]["formContent"]["sbTysb"]["body"]["sbxxGrid"]["sbxxGridlb"];
                     for (int i = 0; i < data_ja.Count; i++)
                     {
-                        mxxx[i]["skssqq"] = data_ja[i]["sfkssqq"];
-                        mxxx[i]["skssqz"] = data_ja[i]["sfkssqz"];
+                        //mxxx[i]["skssqq"] = data_ja[i]["sfkssqq"];
+                        //mxxx[i]["skssqz"] = data_ja[i]["sfkssqz"];
                         mxxx[i]["ysx"] = data_ja[i]["ysx"];
                         mxxx[i]["kce"] = data_ja[i]["jcx"];
                         mxxx[i]["yssdl"] = data_ja[i]["yssdl"];

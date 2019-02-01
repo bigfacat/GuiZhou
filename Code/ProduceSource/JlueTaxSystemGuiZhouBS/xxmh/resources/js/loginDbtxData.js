@@ -369,7 +369,7 @@ function getSstxTrHtml(num,item){
 	}else{
 		html+=gdsmc;
 	}*/
-		html+="<td><a title='"+item.bt+"' href=\"javascript:showTzggDetail('"+num+"','"+item.id+"','"+item.bt+"','sstx');updateSSxxzt('"+item.id+"','"+item.ly+"','SSTX','"+item.sxzt+"');\">"
+		html+="<td><a title='"+item.bt+"' href=\"javascript:return false;showTzggDetail('"+num+"','"+item.id+"','"+item.bt+"','sstx');updateSSxxzt('"+item.id+"','"+item.ly+"','SSTX','"+item.sxzt+"');\">"
 			+subString(item.bt,60)+"</a></td><td>"+item.txsj+"</td></tr>";
 	
 	html += 	"<tr style=\"display:none\"><td><div class=\"\" style=\"display:none\" id=\"sstx_"+(num)+"\">"

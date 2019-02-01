@@ -15,10 +15,12 @@ namespace JlueTaxSystemGuiZhouBS
 
             routes.RouteExistingFiles = true;
 
+            routes.MapMvcAttributeRoutes();
+
             routes.IgnoreRoute("xxmh/html/{*relpath}");
             routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/{resource}.html");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/{resource}.html");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/{resource}.html");
+            //routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/{resource}.html");
+            //routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/{resource}.html");
 
             routes.MapRoute(
 name: "zyywn",

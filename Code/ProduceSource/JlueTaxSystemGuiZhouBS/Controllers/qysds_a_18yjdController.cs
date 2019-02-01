@@ -61,6 +61,12 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             re_json_body_fq["sssq"]["sqQ"] = item.SKSSQQ;
             re_json_body_fq["sssq"]["sqZ"] = item.SKSSQZ;
 
+            //企业所得税期初数设置
+            string Name = System.Web.HttpContext.Current.Session["Name"].ToString();
+            JToken industry = JToken.Parse(System.IO.File.ReadAllText(Server.MapPath("~/industry.json")));
+            industry = industry.Where(a => a["name"].ToString() == Name).ToList()[0];
+            re_json_body["ht"]["qysdsczzsyjdSbbdxxVO"]["A200000Ywbd"]["sbbxxForm"] = JObject.Parse(System.IO.File.ReadAllText(Server.MapPath("~/QYSDS_A_18YJD." + industry["value"] + ".json")));
+
             GTXResult gr1 = GTXMethod.GetCompany();
             if (gr1.IsSuccess)
             {

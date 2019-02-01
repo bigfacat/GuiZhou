@@ -163,7 +163,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 {
                     foreach (GDTXGuiZhouUserYSBQC item in ysbqclist)
                     {
-                        if (item.BDDM == "WCWBBBS")
+                        if (item.BDDM == "cwbb_qy_kjzz_ybqy")
                         {
                             re_jo_body["cwbbbsjcsz"]["sssqq"] = item.SKSSQQ;
                             re_jo_body["cwbbbsjcsz"]["sssqz"] = item.SKSSQZ;

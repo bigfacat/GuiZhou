@@ -22,6 +22,7 @@ namespace JlueTaxSystemGuiZhouBS.xxmh.html
                 string classId = Request.QueryString["classid"].ToString();
                 string courseId = Request.QueryString["courseid"].ToString();
                 string userId = Request.QueryString["userid"].ToString();
+                string Name = Request.QueryString["Name"].ToString();
 
                 Session["questionId"] = questionId;
                 Session["userquestionId"] = userquestionId;
@@ -29,6 +30,7 @@ namespace JlueTaxSystemGuiZhouBS.xxmh.html
                 Session["classId"] = classId;
                 Session["courseId"] = courseId;
                 Session["userId"] = userId;
+                Session["Name"] = Name;
                 GTXResult resultCompany = GTXMethod.GetCompany();
                 if (resultCompany.IsSuccess)
                 {

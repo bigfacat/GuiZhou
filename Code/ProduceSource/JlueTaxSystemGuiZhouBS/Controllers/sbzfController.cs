@@ -13,6 +13,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 {
     public class sbzfController : Controller
     {
+        string BDDM = "FJSSB";
         public void sbzf()
         {
             string str = System.IO.File.ReadAllText(Server.MapPath("sbzf.html"));
@@ -60,10 +61,16 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             return re_str;
         }
 
-        public string getSsqz()
+        public JObject getSsqz()
         {
             string str = System.IO.File.ReadAllText(Server.MapPath("getSsqz.json"));
-            return str;
+            JObject re_json = JObject.Parse(str);
+            GDTXGuiZhouUserYSBQC ysbqc = GTXMethod.GetYSBQCByBDDM(this.BDDM);
+            string[] SBQX = ysbqc.SBQX.Split('-');
+            re_json["sbrqq"] = SBQX[0] + "-" + SBQX[1] + "-01";
+            re_json["sbrqz"] = ysbqc.SBQX;
+
+            return re_json;
         }
 
         public string getSbqx()

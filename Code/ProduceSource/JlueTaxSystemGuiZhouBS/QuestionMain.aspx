@@ -139,7 +139,7 @@
                             if (v.QuestionType == 2) {
                                 QuestionTypeName = "申报类";
                             }
-                            var Gtxpath = "/xxmh/html/index_login.aspx?userid=" + userId + "&username=" + username + "&classid=" + ClassId + "&courseid=" + courseid + "&sortid=" + sortid + "&questionId=" + v.QuestionId + "&userquestionId=" + v.Id + "&CompanyId=" + v.CompanyId + "&rand=" + new Date().getTime();
+                            var Gtxpath = "/xxmh/html/index_login.aspx?userid=" + userId + "&username=" + username + "&classid=" + ClassId + "&courseid=" + courseid + "&sortid=" + sortid + "&questionId=" + v.QuestionId + "&userquestionId=" + v.Id + "&CompanyId=" + v.CompanyId + "&Name=" + v.Name + "&rand=" + new Date().getTime();
                             var Dtxpath = '<%=System.Web.Configuration.WebConfigurationManager.AppSettings["Dtxpath"]%>' + "/MainAction.php?sessionId=" + v.NSRSBH + ";timestamp&questionid=" + v.QuestionId + "&happenddate=" + v.HappenDate + "&userid=" + userId + "&classid=" + ClassId + "&CompanyId=" + v.CompanyId;
                             debugger;
                             var FPpath = "GotoFP.ashx?sessionId=" + v.NSRSBH + ";timestamp&questionId=" + v.QuestionId + "&happenDate=" + v.HappenDate + "&userId=" + userId + "&classId=" + ClassId + "&companyId=" + v.CompanyId + "&sortid=" + sortid;
@@ -302,7 +302,9 @@
             </div>
         </div>
         <div class="ksmc-tabc" style="" id="bills">
-            <div style="margin: 5px 65px 5px; padding: 5px; float: right;"><a id="videoa" class="ksmc-dt radius box-shadow" style="margin-right: 10px; display: none" href="#" onclick="showRight();return false;">税种视频</a><a class="ksmc-dt radius box-shadow" onclick="DeleteAllTax()">重做所有题目</a></div>
+            <div style="margin: 5px 65px 5px; padding: 5px; float: right;"><a id="videoa" class="ksmc-dt radius box-shadow" style="margin-right: 10px; display: none" href="#" onclick="showRight();return false;">税种视频</a>
+                <a href="http://d.kjcytk.com/SingleTax/SingleTax.zip" class="ksmc-dt radius box-shadow" style="margin-right: 10px">个税下载</a>
+                <a class="ksmc-dt radius box-shadow" onclick="DeleteAllTax()">重做所有题目</a></div>
             <div style="clear: both"></div>
             <ul class="ksmc-zjlx" style="display: block" id="ulTax">
                 <li>

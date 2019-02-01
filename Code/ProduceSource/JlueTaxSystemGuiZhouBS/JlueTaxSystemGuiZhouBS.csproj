@@ -101,6 +101,7 @@
     <Content Include="js\jquery.cookie.js" />
     <Content Include="js\json2.js" />
     <Content Include="QuestionMain.aspx" />
+    <Content Include="resource\html\swzj\tzgg\tzggIndex.htm" />
     <Content Include="sbzs-cjpt-web\abacus\resources4\layui\css\layui.css" />
     <Content Include="sbzs-cjpt-web\abacus\resources4\layui\css\modules\laydate\default\date01.png" />
     <Content Include="sbzs-cjpt-web\abacus\resources4\layui\css\modules\laydate\default\date02.png" />
@@ -365,6 +366,12 @@
     <Content Include="sbzs-cjpt-web\view\nssb\sbxxcx\sbcxzdy.js" />
     <Content Include="sbzs-cjpt-web\view\nssb\sbzf\cp\cpDateControl.js" />
     <Content Include="sbzs-cjpt-web\view\nssb\sbzf\sb\sbzf.js" />
+    <Content Include="skin\www\style\css-common\style-common.css" />
+    <Content Include="skin\www\style\css-swzj-01\style.css" />
+    <Content Include="skin\www\style\images-swzj-01\style-loginlist-01\dot.gif" />
+    <Content Include="skin\www\style\images-swzj-01\style-loginlist-01\top_left.gif" />
+    <Content Include="skin\www\style\images-swzj-01\style-loginlist-01\top_table.gif" />
+    <Content Include="skin\www\style\images-swzj-01\style-loginpic-01\more.gif" />
     <Content Include="sso\images\ieicon.png" />
     <Content Include="sso\js\ca\CAPlugin.js" />
     <Content Include="sso\js\jquery\jquery.min.js" />
@@ -601,6 +608,7 @@
     <Compile Include="Controllers\sbqc_aqsbController.cs" />
     <Compile Include="Controllers\sbqc_qtsbController.cs" />
     <Compile Include="Controllers\sbxxController.cs" />
+    <Compile Include="Controllers\sbxxcxController.cs" />
     <Compile Include="Controllers\sbzfController.cs" />
     <Compile Include="Controllers\sbzsController.cs" />
     <Compile Include="Controllers\settingController.cs" />
@@ -798,7 +806,6 @@
     <Content Include="sbzs-cjpt-web\biz\setting\ybnsrzzsxbsz\setting\rule.json" />
     <Content Include="sbzs-cjpt-web\biz\yqsb\yqsbqc\enterYqsbUrl.QYSDS_A_18YJD.json" />
     <Content Include="sbzs-cjpt-web\deliver\sbxxcx\sbcxjdy.jsp" />
-    <Content Include="sbzs-cjpt-web\deliver\sbxxcx\sbcxjdy.jsp%253fcdId%253d26%2526gnDm%253dsbjs.sbcxjdy%2526gdslxDm%253d3" />
     <Content Include="sbzs-cjpt-web\jyxx\updateJyxx.do" />
     <Content Include="sbzs-cjpt-web\jyxx\updateJyxx.json" />
     <Content Include="sbzs-cjpt-web\nssb\jscwbbSbqx.json" />
@@ -837,6 +844,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="zsxm.config.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="industry.json" />
+    <None Include="Properties\PublishProfiles\IISConfig.pubxml" />
+    <Content Include="Views\sbqc_aqsb\setting.cshtml" />
+    <Content Include="Views\sbqc_qtsb\setting.cshtml" />
+    <Content Include="Views\sbxxcx\sbcxjdy.cshtml" />
+    <Content Include="Views\tysb\begin.cshtml" />
+    <Content Include="YBNSRZZSQCS.commerce.json" />
+    <Content Include="YBNSRZZSQCS.industry.json" />
+    <Content Include="sbzs-cjpt-web\biz\sbzs\ybnsrzzs\xFormula.new.json" />
+    <Content Include="QYSDS_A_18YJD.commerce.json" />
+    <Content Include="QYSDS_A_18YJD.industry.json" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

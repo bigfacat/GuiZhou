@@ -224,7 +224,7 @@
                         <div class="layui-tab-item layui-show">
                             <div style="height: 270px;border:1px solid #E6E6E6;">
                                 <iframe frameborder="0" style="width: 100%;height: 100%; border:none" scrolling="no"
-                                        src="http://www.gzgs12366.gov.cn/resource/html/swzj/tzgg/tzggIndex.htm"></iframe>
+                                        src="/resource/html/swzj/tzgg/tzggIndex.htm"></iframe>
                             </div>
                         </div>
                     </div>
