@@ -2021,7 +2021,20 @@ function submitFormData(signType, isSecondCall){
 				viewOrDownload = 'download';
 			}
 		    if(returnFlag==='N'){
+		    	var returnType = data.returnType;
 		    	var errMsg = data.errMsg;
+		    	if(returnType&&returnType==='refresh'){
+		    		parent.layer.confirm(errMsg,{
+	            		icon : 1,
+	            		title:'提示',
+	            		btn2noclose:1,
+	            		btn : ["是","否"]
+	            	},function(index){
+	            		parent.layer.close(index);
+	            		window.location.reload();
+	            	});
+		    		return;
+		    	}
 		    	parent.layer.alert(errMsg, {title: "填表页报文保存异常", icon: 5});
 		    	parent.layer.close(index);
 				$("body").unmask();
@@ -2029,8 +2042,6 @@ function submitFormData(signType, isSecondCall){
 			} else {
 				//isSecondCall为1时表示直接进行申报，不需要进行弹框签名
 				if("undefined" !== typeof isSecondCall && isSecondCall === 1){
-					tempSave();//cx添加
-
 					// 提交表单
 					$("#myform").submit();
 					// 调用父页面的函数，则清空按钮区域

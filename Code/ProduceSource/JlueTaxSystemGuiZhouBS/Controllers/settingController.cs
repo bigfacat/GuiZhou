@@ -50,25 +50,19 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 
             re_jv = JsonConvert.DeserializeObject<JValue>(str);
             re_jo = JsonConvert.DeserializeObject<JObject>(re_jv.ToString());
+            JObject re_jo_body = JsonConvert.DeserializeObject<JObject>(re_jo["body"].ToString());
 
-            string id = "";
-            GTXResult resultq = GTXMethod.GetGuiZhouYSBQC();
-            if (resultq.IsSuccess)
+            GDTXGuiZhouUserYSBQC ysbqc = GTXMethod.GetYSBQCByBDDM("YBNSRZZS");
+
+            if (ywbm == "YBNSRZZSQCS")
             {
-                List<GDTXGuiZhouUserYSBQC> ysbqclist = JsonConvert.DeserializeObject<List<GDTXGuiZhouUserYSBQC>>(resultq.Data.ToString());
-                if (ysbqclist.Count > 0)
-                {
-                    foreach (GDTXGuiZhouUserYSBQC item in ysbqclist)
-                    {
-                        if (item.BDDM == "YBNSRZZS")
-                        {
-                            id = item.Id.ToString();
-                        }
-                    }
-                }
+                re_jo_body["sssq"]["rqQ"] = ysbqc.SKSSQQ;
+                re_jo_body["sssq"]["rqZ"] = ysbqc.SKSSQZ;
+                re_jo["body"] = new JValue(re_jo_body.ToString());
+                str = "" + JsonConvert.SerializeObject(new JValue(JsonConvert.SerializeObject(re_jo))) + "";
             }
 
-            GTXResult gr = GTXMethod.GetUserReportData(id, ywbm);
+            GTXResult gr = GTXMethod.GetUserReportData(ysbqc.Id.ToString(), ywbm);
             if (gr.IsSuccess)
             {
                 JArray jarr = new JArray();

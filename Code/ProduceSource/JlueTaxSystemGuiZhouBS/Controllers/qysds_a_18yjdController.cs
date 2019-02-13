@@ -43,7 +43,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 
             GDTXGuiZhouUserYSBQC item = GTXMethod.GetYSBQCByBDDM(this.BDDM);
 
-            GTXResult gr = GTXMethod.GetUserReportData(item.Id.ToString(), "");
+            GTXResult gr = GTXMethod.GetUserReportData(item.Id.ToString(), this.BDDM);
             if (gr.IsSuccess)
             {
                 JArray jarr = new JArray();
@@ -113,7 +113,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string _result = Convert.ToBase64String(bytes);
             nv.value = _result;
             nameList.Add(nv);
-            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), item.Id.ToString(), "");
+            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), item.Id.ToString(), this.BDDM);
             if (saveresult.IsSuccess)
             {
                 GTXMethod.UpdateSBSE(item.Id.ToString(), input_jo.SelectToken("ht.qysdsczzsyjdSbbdxxVO.A200000Ywbd.sbbxxForm.ybtsdseLj").Value<string>());

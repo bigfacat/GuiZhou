@@ -30,14 +30,13 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string _result = Convert.ToBase64String(bytes);
             nv.value = _result;
             nameList.Add(nv);
-            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), item.Id.ToString(), "");
+            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), item.Id.ToString(), item.BDDM);
             if (saveresult.IsSuccess)
             {
-                JToken sbse = input_jo.SelectToken("ht.qysdsczzsyjdSbbdxxVO.A200000Ywbd.sbbxxForm.ybtsdseLj");
-
-                if (sbse != null)
+                string sbse = GTXMethod.getSbseFromJSON(item.BDDM, input_jo);
+                if (sbse != "")
                 {
-                    GTXMethod.UpdateSBSE(item.Id.ToString(), sbse.Value<string>());
+                    GTXMethod.UpdateSBSE(item.Id.ToString(), sbse);
                 }
 
                 re_json["returnFlag"] = "Y";

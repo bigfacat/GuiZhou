@@ -41,6 +41,7 @@ function delBranch2(data, key){
 	}
 }
 
+
 /**
  * 小规模差额征收起征点计算
  */
@@ -2248,4 +2249,26 @@ function gdXsbdcywYwzt(lc1, lc4, lc9, lc13) {
 	}
 	
 }
-
+/**
+ * 收入支出表_月报（适用科学事业单位会计制度的单位)中的
+ *五、本年非财政补助结转结余_本月数应满足公式：四、弥补以前年度经营亏损后的经营结余_本月数0.00＜=0时，五、本年非财政补助结转结余_本月数=2.事业结转结余_本月数
+ *四、弥补以前年度经营亏损后的经营结余_本月数0.00大于0时，规则不变。
+ *
+ * @param mbbys 弥补以前年度经营亏损后的经营结余
+ * @param sybys  2.事业结转结余
+ * @param zgswskfjdm  主管税务机关代码
+ * @returns   本年非财政补助结转结余月
+ */
+function bMbjyjy(mbbys,sybys,zgswskfjdm){
+	var subzgswjdm=zgswskfjdm.substr(0,3);
+	var Ybys=0;
+	if(subzgswjdm=='144'|subzgswjdm=='244'){
+		if(mbbys>0){
+			return Ybys;
+		}else{
+			return sybys;
+		}
+	}else{
+		return Ybys;
+	}
+}

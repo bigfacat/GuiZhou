@@ -14,6 +14,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 {
     public class cwbb_qy_kjzz_ybqyController : Controller, IRequiresSessionState
     {
+        string BDDM = "cwbb_qy_kjzz_ybqy";
         public string begin()
         {
             string str = System.IO.File.ReadAllText(Server.MapPath("begin.html"));
@@ -47,13 +48,12 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 {
                     foreach (GDTXGuiZhouUserYSBQC item in ysbqclist)
                     {
-                        if (item.ZSXM == "财务报表")
+                        if (item.BDDM == this.BDDM)
                         {
                             id = item.Id.ToString();
                             bsrq = item.HappenDate;
                             rqQ = item.SKSSQQ;
                             rqZ = item.SKSSQZ;
-
                         }
                     }
                 }
@@ -62,7 +62,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             JObject re_jo_body = new JObject();
             re_jo_body = JsonConvert.DeserializeObject<JObject>(re_jo["body"].ToString());
 
-            GTXResult gr = GTXMethod.GetUserReportData(id, "");
+            GTXResult gr = GTXMethod.GetUserReportData(id, this.BDDM);
             if (gr.IsSuccess)
             {
                 JArray jarr = new JArray();
@@ -116,7 +116,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 {
                     foreach (GDTXGuiZhouUserYSBQC item in ysbqclist)
                     {
-                        if (item.ZSXM == "财务报表")
+                        if (item.BDDM == this.BDDM)
                         {
                             id = item.Id.ToString();
                         }
@@ -131,7 +131,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string _result = Convert.ToBase64String(bytes);
             nv.value = _result;
             nameList.Add(nv);
-            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), id, "");
+            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), id, this.BDDM);
             if (saveresult.IsSuccess)
             {
                 re_jo["returnFlag"] = "Y";

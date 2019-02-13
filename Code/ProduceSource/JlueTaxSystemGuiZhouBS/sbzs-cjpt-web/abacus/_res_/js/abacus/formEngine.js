@@ -21,6 +21,10 @@ var formulaExecType = ''; //1=实时监控，初始化报文中返回otherData�
 var info2tip;//提交表单时提醒类是否需要提示：1=提示；0=不提示
 var showTipsType = {'gs_error':'1','gs_info':'1','fxsm_error':'2','fxsm_info':'2'}; // 默认公式提示显示右上角，风险扫描提示显示至填表说明栏
 var serverTime;   //获取时间
+
+//业务中台自动化测试标志
+var flagYwztAutoTest = false;
+
 /**
  * 表单引擎，负责管理整个表单框架的表单列表管理、数据访问管理、规则库管理等。
  */
@@ -680,6 +684,11 @@ function FormEngine(){
 	        	 var obj = JSON.parse(querystr);
 	             if("Y"===obj.ywzt){
                      async = false;
+
+                     if("true"===obj.test){
+                         //url 中同时含有test=true和ywzt=Y 即为业务中台自动化测试
+                         flagYwztAutoTest = true;
+                     }
 	             }
 	        }  
 	        return async;
@@ -814,7 +823,7 @@ function FormEngine(){
                          var result = reg.exec(sheet.bdsxmc);                         
                          sheet.bdsxmc=result!=null?sheet.bdsxmc.replace(result[0],result[0].toUpperCase()):sheet.bdsxmc;
                     }
-                    html += "<li><a target=\"frmSheet\" title=\""+sheet.name.replace(/<[^>]+>/g,"")+"\"  href=\"" + sheet.url + "\" dzbdbm=\""+(sheet.dzbdbm ? sheet.dzbdbm : '')+"\" bdsxmc=\""+(sheet.bdsxmc ? sheet.bdsxmc : '')+"\">" + sheet.name + "</a>"
+                    html += "<li><a target=\"frmSheet\" style=\"display: inline-block;width: 100%;\" title=\""+sheet.name.replace(/<[^>]+>/g,"")+"\"  href=\"" + sheet.url + "\" dzbdbm=\""+(sheet.dzbdbm ? sheet.dzbdbm : '')+"\" bdsxmc=\""+(sheet.bdsxmc ? sheet.bdsxmc : '')+"\">" + sheet.name + "</a>"
                 	+ "<span></span>"
                     + "</li>";
                 }

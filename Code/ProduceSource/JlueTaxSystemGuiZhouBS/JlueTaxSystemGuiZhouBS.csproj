@@ -227,7 +227,6 @@
     <Content Include="sbzs-cjpt-web\biz\sbzs\qysds_a_18yjd\form\qysds_A201020.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\qysds_a_18yjd\form\qysds_A201030.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\tysb.html" />
-    <Content Include="sbzs-cjpt-web\biz\sbzs\tysb\begin.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\tysb\form.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\tysb\form\tysb_BDA0610100.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\tysb\xInitData.error.html" />
@@ -460,6 +459,7 @@
     <Content Include="xxmh\resources4\tax-images\logo\logo_gz.png" />
     <Content Include="xxmh\resources\css\newcss\addstyle.css" />
     <Content Include="xxmh\resources\css\newcss\common.css" />
+    <Content Include="xxmh\resources\images\common\favicon.ico" />
     <Content Include="xxmh\resources\images\common\icon_add.png" />
     <Content Include="xxmh\resources\images\login\bg01.png" />
     <Content Include="xxmh\resources\images\login\foot.png" />
@@ -474,13 +474,33 @@
     <Content Include="xxmh\resources\images\login\login_ico2.png" />
     <Content Include="xxmh\resources\images\login\login_ico3.png" />
     <Content Include="xxmh\resources\images\login\top_register.png" />
+    <Content Include="xxmh\resources\images\newimg\10.png" />
     <Content Include="xxmh\resources\images\newimg\102.png" />
     <Content Include="xxmh\resources\images\newimg\105.png" />
+    <Content Include="xxmh\resources\images\newimg\107.png" />
+    <Content Include="xxmh\resources\images\newimg\109.png" />
+    <Content Include="xxmh\resources\images\newimg\11.png" />
+    <Content Include="xxmh\resources\images\newimg\116.png" />
+    <Content Include="xxmh\resources\images\newimg\119.png" />
+    <Content Include="xxmh\resources\images\newimg\13.png" />
+    <Content Include="xxmh\resources\images\newimg\14.png" />
+    <Content Include="xxmh\resources\images\newimg\15.png" />
+    <Content Include="xxmh\resources\images\newimg\16.png" />
+    <Content Include="xxmh\resources\images\newimg\17.png" />
+    <Content Include="xxmh\resources\images\newimg\2.png" />
+    <Content Include="xxmh\resources\images\newimg\21.png" />
+    <Content Include="xxmh\resources\images\newimg\22.png" />
     <Content Include="xxmh\resources\images\newimg\24.png" />
     <Content Include="xxmh\resources\images\newimg\25.png" />
+    <Content Include="xxmh\resources\images\newimg\27.png" />
+    <Content Include="xxmh\resources\images\newimg\32.png" />
+    <Content Include="xxmh\resources\images\newimg\4.png" />
+    <Content Include="xxmh\resources\images\newimg\41.png" />
+    <Content Include="xxmh\resources\images\newimg\46.png" />
     <Content Include="xxmh\resources\images\newimg\47.png" />
     <Content Include="xxmh\resources\images\newimg\48.png" />
     <Content Include="xxmh\resources\images\newimg\49.png" />
+    <Content Include="xxmh\resources\images\newimg\5.png" />
     <Content Include="xxmh\resources\images\newimg\50.png" />
     <Content Include="xxmh\resources\images\newimg\51.png" />
     <Content Include="xxmh\resources\images\newimg\52.png" />
@@ -490,12 +510,20 @@
     <Content Include="xxmh\resources\images\newimg\56.png" />
     <Content Include="xxmh\resources\images\newimg\57.png" />
     <Content Include="xxmh\resources\images\newimg\58.png" />
+    <Content Include="xxmh\resources\images\newimg\6.png" />
+    <Content Include="xxmh\resources\images\newimg\60.png" />
     <Content Include="xxmh\resources\images\newimg\62.png" />
     <Content Include="xxmh\resources\images\newimg\66.png" />
     <Content Include="xxmh\resources\images\newimg\71.png" />
     <Content Include="xxmh\resources\images\newimg\77.png" />
+    <Content Include="xxmh\resources\images\newimg\79.png" />
+    <Content Include="xxmh\resources\images\newimg\8.png" />
     <Content Include="xxmh\resources\images\newimg\80.png" />
     <Content Include="xxmh\resources\images\newimg\88.png" />
+    <Content Include="xxmh\resources\images\newimg\9.png" />
+    <Content Include="xxmh\resources\images\newimg\94.png" />
+    <Content Include="xxmh\resources\images\newimg\96.png" />
+    <Content Include="xxmh\resources\images\newimg\dwscbsxxqr.png" />
     <Content Include="xxmh\resources\js\ecm-taglib\json2\json2.js" />
     <Content Include="xxmh\resources\js\ecm-taglib\layer-v2.2\layer\layer.js" />
     <Content Include="xxmh\resources\js\ecm-taglib\layer-v2.2\layer\skin\layer.css" />
@@ -559,6 +587,7 @@
     <Content Include="xxmh\resources\skin\js\jquery.SuperSlide.2.1.1.js" />
     <Content Include="xxmh\resources\skin\js\js.js" />
     <Content Include="zyywn-cjpt-web\czgc\queryWSDataList.QYSDS_A_18YJD.html" />
+    <Content Include="zyywn-cjpt-web\czgc\queryWSDataList.YBNSRZZS.html" />
     <Content Include="zyywn-cjpt-web\resources4\layui\css\layui.css" />
     <Content Include="zyywn-cjpt-web\resources4\layui\css\modules\layer\default\layer.css" />
     <Content Include="zyywn-cjpt-web\resources4\layui\layui.js" />
@@ -598,6 +627,7 @@
     <Compile Include="Controllers\czgcController.cs" />
     <Compile Include="Controllers\fileController.cs" />
     <Compile Include="Controllers\fjssbController.cs" />
+    <Compile Include="Controllers\formulaController.cs" />
     <Compile Include="Controllers\jyxxController.cs" />
     <Compile Include="Controllers\mlogControllerController.cs" />
     <Compile Include="Controllers\myCenterControllerController.cs" />
@@ -671,6 +701,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\formula\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ChuShiHua.ashx" />
@@ -835,8 +866,6 @@
     <Content Include="sso\style\bj\layui\font\iconfont.woff" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="zyywn-cjpt-web\czgc\loadDataList.json" />
-    <Content Include="zyywn-cjpt-web\czgc\queryDataLoad.json" />
     <Content Include="zyywn-cjpt-web\file\readFile.json" />
   </ItemGroup>
   <ItemGroup>
@@ -852,11 +881,16 @@
     <Content Include="Views\sbqc_qtsb\setting.cshtml" />
     <Content Include="Views\sbxxcx\sbcxjdy.cshtml" />
     <Content Include="Views\tysb\begin.cshtml" />
-    <Content Include="YBNSRZZSQCS.commerce.json" />
-    <Content Include="YBNSRZZSQCS.industry.json" />
-    <Content Include="sbzs-cjpt-web\biz\sbzs\ybnsrzzs\xFormula.new.json" />
     <Content Include="QYSDS_A_18YJD.commerce.json" />
     <Content Include="QYSDS_A_18YJD.industry.json" />
+    <Content Include="sbzs-cjpt-web\biz\sbzs\ybnsrzzs\zzsybnsrsbInitData.industry.json" />
+    <Content Include="sbzs-cjpt-web\biz\sbzs\ybnsrzzs\zzsybnsrsbInitData.commerce.json" />
+    <Content Include="sbzs-cjpt-web\formula\exttbsm.json" />
+    <Content Include="sbzs-cjpt-web\biz\yqsb\yqsbqc\enterYqsbUrl.YBNSRZZS.json" />
+    <Content Include="zyywn-cjpt-web\czgc\loadDataList.QYSDS_A_18YJD.json" />
+    <Content Include="zyywn-cjpt-web\czgc\loadDataList.YBNSRZZS.json" />
+    <Content Include="zyywn-cjpt-web\czgc\queryDataLoad.8acb6bd536aa4489bc64627eb67f8164.json" />
+    <Content Include="zyywn-cjpt-web\czgc\queryDataLoad.b88b5a2a06dd413fbcc12edec4ca87ae.json" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

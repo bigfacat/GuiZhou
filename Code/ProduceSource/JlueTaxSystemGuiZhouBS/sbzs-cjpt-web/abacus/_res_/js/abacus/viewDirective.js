@@ -64,7 +64,7 @@ function ngDirectives(gobal, viewApp){
                     }
                     try {
                         var rst = filter("number")(modelValue, precision);
-                        if(rst == 0){
+                        if(rst == 0 || rst.toString().indexOf('e') > -1 || rst.toString().indexOf('E') > -1){
                             //if(defaultValue != rst){
                             //    return defaultValue;
                             //}
@@ -90,6 +90,18 @@ function ngDirectives(gobal, viewApp){
                                             rst = rst + "0";
                                         }
                                         rst = rst + t_str;
+
+                                        //补满保留的小数位
+                                        //取小数位
+                                        var d_len = rst.split(".")[1].length;
+                                        //计算保留的小数位和真实小数位的差值
+                                        var c_len = precision - d_len;
+                                        if(c_len > 0){
+                                            //补满保留的小数位
+                                            for(var j=0; j<c_len; j++){
+                                                rst = rst + "0";
+                                            }
+                                        }
                                     }
                                 }else{
                                     var t_len = tail.split(".")[1].length;
@@ -98,6 +110,30 @@ function ngDirectives(gobal, viewApp){
                                         rst = t_str;
                                         for(var i=0; i<len; i++){
                                             rst = rst + "0";
+                                        }
+
+                                        //补满保留的小数位
+                                        //取小数部分
+                                        var decimal = rst.split(".")[1];
+                                        //需要补的位数
+                                        var c_len;
+                                        if(decimal){
+                                            //小数部分存在，取小数位数
+                                            var d_len = decimal.length;
+                                            //计算保留的小数位和真实小数位的差值
+                                            c_len = precision - d_len;
+                                        }else{
+                                            //小数部分不存在，保留的小数位即为需要补的位数
+                                            c_len = precision;
+                                            //加上小数点
+                                            rst = rst + ".";
+                                        }
+
+                                        //补相应位数的0
+                                        if(c_len > 0){
+                                            for(var j=0; j<c_len; j++){
+                                                rst = rst + "0";
+                                            }
                                         }
                                     }
                                 }
@@ -1787,7 +1823,8 @@ function ngDirectives(gobal, viewApp){
                                     //跳过增加、删除按钮,控件锁定
                                     var _jpath = $(this).attr("jpath");
                                     if(_jpath){
-                                    	$(this).attr("disabled","disabled");
+                                    	//$(this).attr("disabled","disabled");
+                                    	viewEngine.setDynamicElementEditFlag(this,true);
                                     	parent.formulaEngine.apply(_jpath, '');
                                     	if(!_jpathLast){
                                     		_jpathLast=_jpath.split('\].')[0]+'].isDeleteTr';
@@ -1802,7 +1839,8 @@ function ngDirectives(gobal, viewApp){
                                     //跳过增加、删除按钮，数据恢复之后，要重新计算校验规则公式
                                     _jpath = $(this).attr("jpath");
                                     if(_jpath!=undefined){
-                                    	$(this).removeAttr("disabled");
+                                    	viewEngine.setDynamicElementEditFlag(this,false);
+                                    	//$(this).removeAttr("disabled");
                                     	parent.formulaEngine.apply(_jpath, '');
                                     	if(!_jpathLast){
                                     		_jpathLast=_jpath.split('\].')[0]+'].isDeleteTr';
@@ -1971,20 +2009,29 @@ function ngDirectives(gobal, viewApp){
                 finished: '=isFinish'
             },
             link: function ($scope, $element, $attr) {
-                $timeout(function(){
-                    viewEngine.tipsForVerify2(document.body);
-                    try {
-                    	//事项受理隐藏页面的按钮
-                    	viewEngine.hideButtons();
-                    } catch(e){}
-                    try {
-                    	// 单元格关联表单间跳转定位，渲染完成后才有风险扫描信息显示 C.Q 20170320
-                    	viewEngine.focusEle();
-                    } catch(e){}
-                    var _start_ = parent.formEngine._start_;
-                    var _end_ = new Date().getTime();
-                    console.log("INFO:"+_start_+ "-" +_end_ + "-" +(_end_ - _start_)+ "ms 加载总耗时");
-                },50);
+                var asyncCallTipsForVerify2 = function(){
+                    var rootScope = angular.element($('#viewCtrlId')).scope();
+                    if(parent.flagExcuted && !rootScope.$$phase){
+                        viewEngine.tipsForVerify2(document.body);
+                        try {
+                            //事项受理隐藏页面的按钮
+                            viewEngine.hideButtons();
+                        } catch(e){}
+                        try {
+                            // 单元格关联表单间跳转定位，渲染完成后才有风险扫描信息显示 C.Q 20170320
+                            viewEngine.focusEle();
+                        } catch(e){}
+                        var _start_ = parent.formEngine._start_;
+                        var _end_ = new Date().getTime();
+                        console.log("INFO:"+_start_+ "-" +_end_ + "-" +(_end_ - _start_)+ "ms 总耗时，公式");
+                    }else{
+                       $timeout(function(){
+                           asyncCallTipsForVerify2();
+                       },10);
+                    }
+                };
+
+                asyncCallTipsForVerify2();
                 parent.autoResizeIframe("frmSheet");
             }
         }
@@ -3107,6 +3154,9 @@ function ngDirectives(gobal, viewApp){
                             _newVal = newVal;
                         }else{
                             _newVal = $.isEmptyObject(newVal) ? "" : newVal;
+                        }
+                        if($element.attr("disabled") || $element.attr("readonly")){
+                            $element.select2("enable",false);
                         }
 
                         if(attrs["codeTableId"]){

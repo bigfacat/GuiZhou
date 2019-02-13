@@ -23,7 +23,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
         public JArray xFormula()
         {
             JArray re_jo = new JArray();
-            string str = System.IO.File.ReadAllText(Server.MapPath("xFormula.new.json"));
+            string str = System.IO.File.ReadAllText(Server.MapPath("xFormula.json"));
             re_jo = JsonConvert.DeserializeObject<JArray>(str);
             return re_jo;
         }
@@ -65,7 +65,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string Name = System.Web.HttpContext.Current.Session["Name"].ToString();
             JToken industry = JToken.Parse(System.IO.File.ReadAllText(Server.MapPath("~/industry.json")));
             industry = industry.Where(a => a["name"].ToString() == Name).ToList()[0];
-            JObject zzsybnsrsbInitData_jo = JObject.Parse(System.IO.File.ReadAllText(Server.MapPath("~/YBNSRZZSQCS." + industry["value"] + ".json")));
+            JObject zzsybnsrsbInitData_jo = JObject.Parse(System.IO.File.ReadAllText(Server.MapPath("zzsybnsrsbInitData." + industry["value"] + ".json")));
 
             GTXResult gr1 = GTXMethod.GetUserReportData(id, "YBNSRZZSQCS");
             if (gr1.IsSuccess)
@@ -76,10 +76,10 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 {
                     byte[] bytes = Convert.FromBase64String(jarr[0]["dataValue"].ToString().Replace(" ", "+"));
                     string dataValue = Encoding.Default.GetString(bytes);
-                    zzsybnsrsbInitData_jo = JsonConvert.DeserializeObject<JObject>(dataValue);
-                    zzsybnsrsbInitData_jo.Add("sbrq", new JValue(sbrq));
+                    zzsybnsrsbInitData_jo.Merge(JsonConvert.DeserializeObject<JObject>(dataValue), new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Union });
                 }
             }
+
             zzsybnsrsbInitData_jo["sbrq"] = sbrq;
             zzsybnsrsbInitData_jo["sssq"]["rqQ"] = rqQ;
             zzsybnsrsbInitData_jo["sssq"]["rqZ"] = rqZ;

@@ -1,10 +1,49 @@
-﻿
+
+  
+<!-- 框架公用代码 -->
+
+
 
   
   
 
 
 
+
+<script src="/sbzs-cjpt-web/resources/js/jquery.base64.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/jquery.min.js"></script>
+<script src="/sbzs-cjpt-web/abacus/resources4/layui/layui.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var config = {'btnCzgc':{'name':'操作规程','func':'showCzgc()','disp':'none'},'btnSave':{'name':'暂存','func':'tempSave()','disp':'block'},'btnSaved':{'name':'保存','func':'save()','disp':'block'},'btnReset':{'name':'重置','func':'resetForm()','disp':'block'},'btnVerify':{'name':'校验','func':'verifyMake()','disp':'none'},'btnExportXML':{'name':'导出报盘','func':'exportXML()','disp':'block'},'btnExportXMLOnly':{'name':'导出报盘','func':'exportXMLOnly()','disp':'block'},'btnPrepareMake':{'name':'下一步','func':'prepareMake()','disp':'block','isUsual':'true'},'btnXbsz':{'name':'选表设置','func':'linkXbsz()','disp':'block'},'btnEdit':{'name':'修改','func':'','disp':'none'},'btnPrint':{'name':'打印','func':'printForm()','disp':'none'},'btnDelete':{'name':'删除','func':'tempSave','disp':'none'},'btnClose':{'name':'关闭','func':'closeForm()','disp':'none'},'btnQcssz':{'name':'期初数设置','func':'linkQcssz()','disp':'block'},'btnImport01':{'name':'导入JSON','func':'importJson()','disp':'block'},'btnExport01':{'name':'导出JSON','func':'exportJson()','disp':'block'},};
+		parent.menuBtnControl(config,isExporting);
+		
+		var layer;
+		layui.use('layer', function() { //独立版的layer无需执行这一句
+			layer = layui.layer;
+		});
+	});
+	//声明为全局变量，pdfCheck.js会根据该值，若为“HTML”则表示没有确认页，不校验浏览器信息
+	var makeType = "HTML";
+    var jsonParams = {"nsqx_dm":"06","zsxmDm":"10101","sbSign":"ea2915167a9455c186ef499d0f12cf03","gdslxDm":"1","skssq_z":"2019-01-31","shxyDm":"null","ywbm":"YBNSRZZS","yhid":"R1U4BO3kjushmMb6mZYKqqhn8Y/6KHcF6gz6qtkIB7k=","tjNd":"2019","gszgswskfjDm":"15201156300","djxh":"10115201000083900814","sssqZ":"2019-01-31","skssq_q":"2019-01-01","yhm":"F Nbj4P6nPpzSpnPY7cmFA==","sbqx":"2019-02-26","gsnsrsbh":"91520190314387738N","sssqQ":"2019-01-01","gotoSbb":"Y","tjYf":"02","nsqxDmIn":"","gsdq":"152","zspmDm":"101014001","djxh":"10115201000083900814","nsrsbh":"91520190314387738N","sssqQ":"2019-01-01","sssqZ":"2019-01-31","tbbd":"1111110000010001110111111111000000000000"};
+    var temp = '';
+    var _bizReq_path_ = "sbzs/ybnsrzzs";
+    var pathRoot = "/sbzs-cjpt-web";
+    var pathRes = "/sbzs-cjpt-web/abacus/_res_";
+    var ywbm = "ybnsrzzs";
+    var flagFormDebuging = false;//默认开发者模式是关闭的
+    var environment = "";
+  	//阻断提示和非阻断提示
+	var errors = '[]' ;
+    var warns = '[]' ;
+    var rfTips = '';
+    if(rfTips){
+    	//存在容峰排队信息，把提醒都去除，避免弹出的框把容峰的去除
+    	warns = "";
+    }
+    var isExporting = false;	
+    var cp = '/sbzs-cjpt-web';
+</script>
 
 <!DOCTYPE html>
 <html>
@@ -15,43 +54,7 @@
 <link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/_res_/css/abacus/main.css">
 <link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/_res_/css/message/message_solid.css">
 <link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/_res_/js/message/skin/default/Message.css"/>
-<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/jquery.min.js"></script>
-<script src="/sbzs-cjpt-web/resources/js/jquery.base64.js"></script>
-<script type="text/javascript" src="/sbzs-cjpt-web/abacus/_res_/js/message/Message.js"></script>
-
-<script type="text/javascript" src="/sbzs-cjpt-web/sbzs_res/common.js"></script>
-<script>
-	$(function(){
-		var config = {'btnSave':{'name':'保存','func':'tempSave()','disp':'block'},'btnReset':{'name':'重置','func':'resetForm()','disp':'block'},'btnVerify':{'name':'校验','func':'verifyMake()','disp':'none'},'btnExportXML':{'name':'导出报盘','func':'exportXML()','disp':'block'},'btnExportXMLOnly':{'name':'导出报盘','func':'exportXMLOnly()','disp':'block'},'btnPrepareMake':{'name':'下一步','func':'prepareMake(1)','disp':'block','isUsual':'true'},'btnXbsz':{'name':'选表设置','func':'linkXbsz()','disp':'block'},'btnEdit':{'name':'修改','func':'','disp':'none'},'btnPrint':{'name':'打印','func':'printForm()','disp':'none'},'btnDelete':{'name':'删除','func':'tempSave','disp':'none'},'btnClose':{'name':'关闭','func':'closeForm()','disp':'none'},'btnQcssz':{'name':'期初数设置','func':'linkQcssz()','disp':'block'},'btnImport01':{'name':'导入JSON','func':'importJson()','disp':'block'},'btnExport01':{'name':'导出JSON','func':'exportJson()','disp':'block'},};
-		parent.menuBtnControl(config,isExporting);
-
-		var layer;
-		layui.use('layer', function() { //独立版的layer无需执行这一句
-			layer = layui.layer;
-		});
-
-	});
-
-	//声明为全局变量，pdfCheck.js会根据该值，若为“HTML”则表示没有确认页，不校验浏览器信息
-	var makeType = "HTML";
-	// 所有参数的json格式
-    var jsonParams = {"nsqx_dm":"06","zsxmDm":"10101","sbSign":"b97b473107e2115b591f28e8d83cba8f","gdslxDm":"1","skssq_z":"2018-10-31","shxyDm":"null","ywbm":"YBNSRZZS","yhid":"R1U4BO3kjushmMb6mZYKqqhn8Y/6KHcF6gz6qtkIB7k=","tjNd":"2018","gszgswskfjDm":"15201040100","djxh":"10115201000083900814","sssqZ":"2018-10-31","skssq_q":"2018-10-01","yhm":"F Nbj4P6nPpzSpnPY7cmFA==","sbqx":"2018-11-15","reset":"Y","gsnsrsbh":"91520190314387738N","sssqQ":"2018-10-01","gotoSbb":"Y","tjYf":"11","nsqxDmIn":"","gsdq":"152","zspmDm":"101014001","tbbd":"1111110000010001110111111111000000000000"};
-    var _bizReq_path_ = "sbzs/ybnsrzzs";
-    var pathRoot = "/sbzs-cjpt-web";
-    var pathRes = "/sbzs-cjpt-web/abacus/_res_";
-    var ywbm = "ybnsrzzs";
-    var flagFormDebuging = false;//默认开发者模式是关闭的
-    var environment = "";
-  	//阻断提示和非阻断提示
-	var errors = '[]' ;
-    var warns = '[]' ;
-    var isExporting = false;	
-    // 改变选中附表 C.Q 20170317
-    function fbSelected(index) {
-    	$("#divSheetlist").find("li:.current_selected_BD").removeClass("current_selected_BD");
-    	$("#divSheetlist").find("li:eq("+index+")").addClass("current_selected_BD");
-    }
-  </script>
+<link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/resources4/layui/css/layui.css"/>
 <style>
 	.MenuNormal .SheetMenu {
 		min-width:300px;
@@ -61,7 +64,7 @@
 <body class="USER">
 <form  id="myform"  name= "myform" method = 'post' action="/sbzs-cjpt-web/biz/sbzs/ybnsrzzs/make">
 	<input type="hidden" id="zssbxx"  name="zssbxx" value="" />
-	<input type="hidden" id="_query_string_"  name="_query_string_" value='"nsqx_dm":"06","zsxmDm":"10101","sbSign":"b97b473107e2115b591f28e8d83cba8f","gdslxDm":"1","skssq_z":"2018-10-31","shxyDm":"null","ywbm":"YBNSRZZS","yhid":"R1U4BO3kjushmMb6mZYKqqhn8Y/6KHcF6gz6qtkIB7k=","tjNd":"2018","gszgswskfjDm":"15201040100","djxh":"10115201000083900814","sssqZ":"2018-10-31","skssq_q":"2018-10-01","yhm":"F Nbj4P6nPpzSpnPY7cmFA==","sbqx":"2018-11-15","reset":"Y","gsnsrsbh":"91520190314387738N","sssqQ":"2018-10-01","gotoSbb":"Y","tjYf":"11","nsqxDmIn":"","gsdq":"152","zspmDm":"101014001","tbbd":"1111110000010001110111111111000000000000"'/>
+	<input type="hidden" id="_query_string_"  name="_query_string_" value='"nsqx_dm":"06","zsxmDm":"10101","sbSign":"ea2915167a9455c186ef499d0f12cf03","gdslxDm":"1","skssq_z":"2019-01-31","shxyDm":"null","ywbm":"YBNSRZZS","yhid":"R1U4BO3kjushmMb6mZYKqqhn8Y/6KHcF6gz6qtkIB7k=","tjNd":"2019","gszgswskfjDm":"15201156300","djxh":"10115201000083900814","sssqZ":"2019-01-31","skssq_q":"2019-01-01","yhm":"F Nbj4P6nPpzSpnPY7cmFA==","sbqx":"2019-02-26","gsnsrsbh":"91520190314387738N","sssqQ":"2019-01-01","gotoSbb":"Y","tjYf":"02","nsqxDmIn":"","gsdq":"152","zspmDm":"101014001","djxh":"10115201000083900814","nsrsbh":"91520190314387738N","sssqQ":"2019-01-01","sssqZ":"2019-01-31","tbbd":"1111110000010001110111111111000000000000"'/>
 	<input type="hidden" id="msg" value=""/>
 	<input type="hidden" id="ysqxxid" name="ysqxxid" value=""/>
 	<input type="hidden" id="saveData1" name="saveData" value=""/>
@@ -69,10 +72,10 @@
 	<input type="hidden" id="ywbm" name="ywbm" value="ybnsrzzs"/>
 	<input type="hidden" id="swjgDm" name="swjgDm" value=""/>
 	<input type="hidden" id="djxh" name="djxh" value="10115201000083900814"/>
-	<input type="hidden" id="sssqQ" name="sssqQ" value="2018-10-01"/>
-	<input type="hidden" id="sssqZ" name="sssqZ" value="2018-10-31"/>
+	<input type="hidden" id="sssqQ" name="sssqQ" value="2019-01-01"/>
+	<input type="hidden" id="sssqZ" name="sssqZ" value="2019-01-31"/>
 	<input type="hidden" id="gdslxDm" name="gdslxDm" value="1"/>
-	<input type="hidden" id="nsrsbh" name="nsrsbh" value=""/>
+	<input type="hidden" id="nsrsbh" name="nsrsbh" value="91520190314387738N"/>
 	<input type="hidden" id="test" name="test" value=""/>
 	<input type="hidden" id="sjlybz" name="sjlybz" value=""/>
 	<input type="hidden" id="dzbdbmList" name="dzbdbmList" value=""/>
@@ -82,7 +85,7 @@
 	<input type="hidden" id="fxsm"  value=""/>
 	<input type="hidden" id="fbid"  value=""/>
 	<input type="hidden" id="showTipsType"  value=""/>
-	<input type="hidden" id="backBegin" name="backBegin" value="/sbzs-cjpt-web/biz/sbzs/ybnsrzzs/begin?gotoSbb=Y&djxh=10115201000083900814&gdslxDm=1&sssqQ=2018-10-01&sssqZ=2018-10-31&skssq_q=2018-10-01&skssq_z=2018-10-31&nsqx_dm=06&sbqx=2018-11-15&zsxmDm=10101&zspmDm=101014001&yhid=R1U4BO3kjushmMb6mZYKqqhn8Y/6KHcF6gz6qtkIB7k=&gsnsrsbh=91520190314387738N&gszgswskfjDm=15201040100&shxyDm=null&yhm=F+Nbj4P6nPpzSpnPY7cmFA==&nsqxDmIn=&sbSign=b97b473107e2115b591f28e8d83cba8f&tjNd=2018&tjYf=11&reset=Y"/>
+	<input type="hidden" id="backBegin" name="backBegin" value="/sbzs-cjpt-web/biz/sbzs/ybnsrzzs/begin?gotoSbb=Y&djxh=10115201000083900814&gdslxDm=1&sssqQ=2019-01-01&sssqZ=2019-01-31&skssq_q=2019-01-01&skssq_z=2019-01-31&nsqx_dm=06&sbqx=2019-02-26&zsxmDm=10101&zspmDm=101014001&yhid=R1U4BO3kjushmMb6mZYKqqhn8Y/6KHcF6gz6qtkIB7k=&gsnsrsbh=91520190314387738N&gszgswskfjDm=15201156300&shxyDm=null&yhm=F+Nbj4P6nPpzSpnPY7cmFA==&nsqxDmIn=&sbSign=ea2915167a9455c186ef499d0f12cf03&tjNd=2019&tjYf=02"/>
 	<input type="hidden" id="formulaExecType"  value=""/>
 	<input type="hidden" id="info2tip"  value=""/>
 	<input type="hidden" id="fxsmFjp"  value=""/>
@@ -93,6 +96,8 @@
 	<input type="hidden" id="toForm" name="toForm" value="null"/>
 	<input type="hidden" id="toWbsj" name="toWbsj" value="null"/>
 	<input type="hidden" id="xbszKey" name="xbszKey" value=""/>
+	<input type="hidden" id="zyywnWebContextPath" value="/zyywn-cjpt-web"/>
+	<input type="hidden" id="czgcFlag" value="Y"/>
 </form>
 	<div class="TableMain">
 		<table width="100%" border="0" cellspacing="0" class="all_table" cellpadding="0">
@@ -190,20 +195,41 @@
 	</div>
 	<div class='line' id='line'></div>
 	<div class='linefoot' id='linefoot'></div>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/json3.min.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/jsonpath.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/mask.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/fsjpath.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formEngine.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/fxsmInitData.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formulaFunction.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formulaEngine.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/sbCommon.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/menuBtnEvent.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/framework/diyImport.js"></script>		
-	<script type="text/javascript" src="/sbzs-cjpt-web/abacus/resources/js/lib/pdfcheck.js"></script>
 	<input type="hidden" id="contextPath" value="/sbzs-cjpt-web"/>
+	<!-- 框架公共引入的js将迁移到此文件中,在此控制js引入顺序,替换原来的autoLoadJS.js的作用,以后框架添加公用的js在此文件添加 -->
+
+  
+
+<script type="text/javascript" src="/sbzs-cjpt-web/abacus/_res_/js/message/Message.js"></script>
+<script type="text/javascript" src="/sbzs-cjpt-web/sbzs_res/common.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/json3.min.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/jsonpath.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/mask.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/fsjpath.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formEngine.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/fxsmInitData.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/menuBtnEvent.js"></script>
+<script type="text/javascript" src="/sbzs-cjpt-web/abacus/sbzs_res/sbzs.js"></script>
+<script type="text/javascript" src="/sbzs-cjpt-web/abacus/sbzs_res/ybnsrzzs/js/ybnsrzzs.js"></script>
+<script type="text/javascript" src="/sbzs-cjpt-web/abacus/sbzs_res/commonDeliver.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formulaFunction.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formulaEngine.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/sbCommon.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/framework/diyImport.js"></script>		
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/viewEvent.js"></script>
+<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/message.js"></script>
+<!-- //TODO 此文件中有包含页面自适应的代码，后续要剥离出来 -->
+<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formDebuging.js"></script>
+<script type="text/javascript" src="/sbzs-cjpt-web/abacus/_res_/js/abacus/responsive.tabs.js"></script>
+<script type="text/javascript" src="/sbzs-cjpt-web/abacus/resources/js/lib/pdfcheck.js"></script>
+	
 	<script>
+    // 改变选中附表 C.Q 20170317
+    function fbSelected(index) {
+    	$("#divSheetlist").find("li:.current_selected_BD").removeClass("current_selected_BD");
+    	$("#divSheetlist").find("li:eq("+index+")").addClass("current_selected_BD");
+    }
+    
 	$(function(){
 		DiyImport.load($("#ywbm").val(),
 				[{
@@ -294,15 +320,6 @@
 	    error: $.noop
 	};
 	window.contextPath = $("#contextPath").val();
-	
 	</script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/viewEvent.js"></script>
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/lib/message.js"></script>
-	
-	<!-- //TODO 此文件中有包含页面自适应的代码，后续要剥离出来 -->
-	<script src="/sbzs-cjpt-web/abacus/_res_/js/abacus/formDebuging.js"></script>
-<script src="/sbzs-cjpt-web/resources4/layui/layui.js"></script>
-	<script type="text/javascript" src="/sbzs-cjpt-web/abacus/_res_/js/abacus/responsive.tabs.js"></script>
-	<script type="text/javascript" src="/sbzs-cjpt-web/abacus/_res_/js/autoLoadJS.js"></script>
 </body>
 </html>

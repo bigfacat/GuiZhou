@@ -38,6 +38,10 @@ function RegEvent() {
                 }
                 // 若校验不通过的公式中既有error又有info，则先提示error，info暂不提示。
                 $.each(idxVariable2NoPass, function(id,FormulaObject) {
+                    if(id === "idx"){
+                        _subscript = FormulaObject;
+                        return;
+                    }
                 	// 若info2tip设置为0，即info级别不提示，则跳过 A by C.Q 20170213
                 	if((!info2tip || info2tip === '0') && FormulaObject.tipType === 'info') {
                 		return true; // 下一循环相当于continue
@@ -143,6 +147,10 @@ function RegEvent() {
                 	_subscript = jpath.substring(jpath.indexOf('[')+1,jpath.indexOf(']'));
                 }
                 $.each(idxVariable2NoPass, function(id,FormulaObject) {
+                    if(id === "idx"){
+                        _subscript = FormulaObject;
+                        return;
+                    }
                 	// 风险提示中非error级别不能提示，其他类型无论info还是error级别都阻断显示，A by C.Q 20170213
                 	if(FormulaObject.isFxsm && FormulaObject.tipType !== 'error') {
                 		return true;
@@ -218,6 +226,10 @@ function RegEvent() {
                 	_subscript = jpath.substring(jpath.indexOf('[')+1,jpath.indexOf(']'));
                 }
                 $.each(idxVariable2NoPass, function(id,FormulaObject) {
+                    if(id === "idx"){
+                        _subscript = FormulaObject;
+                        return;
+                    }
                 	// 风险提示中非error级别不能提示，其他类型无论info还是error级别都阻断显示，A by C.Q 20170213
                 	if((!info2tip || info2tip === '0')  && FormulaObject.tipType !== 'error') {
                 		return true;
@@ -288,6 +300,10 @@ function RegEvent() {
                 	jpath=jpath.substring(jpath.indexOf(']')+1);                	               
                 }
                 $.each(idxVariable2NoPass, function(id,FormulaObject) {
+                    if(id === "idx"){
+                        _subscript = FormulaObject;
+                        return;
+                    }
                 	// 风险提示中非error级别不能提示，其他类型无论info还是error级别都阻断显示，A by C.Q 20170213
                 	if(FormulaObject.isFxsm && FormulaObject.tipType !== 'error') {
                 		return true;

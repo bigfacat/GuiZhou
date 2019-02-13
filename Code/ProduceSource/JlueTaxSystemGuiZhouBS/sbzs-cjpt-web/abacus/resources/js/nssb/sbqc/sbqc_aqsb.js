@@ -199,13 +199,16 @@ viewApp.filter('cbgdsbzFilter',
 viewApp.filter('cbBtnFilter',
 		function() {
 			return function(item) {
-				if(item.sbztDm=="210"){
+				if(item.sbztDm=="210"){   //已申报 ，但不允许重复申报, -  sbzs.yxcbcfbsbz = N  (不允许重复申报标志)
 					//已申报
 					return "<div class=\"sbtnbox\"><span>已申报</span></div>";
-				}else
+				}else if(item.bsrq === "") {     //未申报
 					//填写按钮
-//					return "<div class=\"sbtnbox\"><a class=\"sbtn sbtn01\"  href='javaScript:cbinit(\""+item.url+"\",\""+item.bsssqQ+"\",\""+item.bsssqZ+"\",\""+item.bsqx+"\")'>填写财报</a></div>";
 					return "<a class=\"layui-btn layui-btn-sm\" style=\"height:24px;line-height:24px;\" href='javaScript:cbinit(\""+item.url+"\",\""+item.bsssqQ+"\",\""+item.bsssqZ+"\",\""+item.bsqx+"\")'>填写财报</a>";
+				}else{    //已申报，sbztDm='000'   ，sbzs.yxcbcfbsbz = Y 时回写000  可重复申报
+					//更正填写
+					return "<a class=\"layui-btn layui-btn-primary\" style=\"height:24px;line-height:24px;padding:0 10px;\" href='javaScript:cbgzinit(\""+item.url+"\",\""+item.bsssqQ+"\",\""+item.bsssqZ+"\",\""+item.bsqx+"\",\""+item.bsrq+"\")'>更正财报</a>";
+				}
 			};
 		});
 
@@ -461,7 +464,7 @@ function sbinit(url,sbqx,skssqQ,skssqZ,gdslxDm,zsxmDm,nsqxDm,yzpzzlDm){
 	var index = layer.load(2, {shade:0.1});
 	//父页面sksq
 //	var sksq = parent.document.getElementById("sksq").innerText;
-	var sksq = parent.document.getElementById("test3").innerText;
+	var sksq = parent.$("#test3").val();
 	var nd = sksq.substr(0, 4);
 	var yf = sksq.substr(5, 6);
 	//加工url
@@ -681,11 +684,14 @@ function oneRefreshSbqc(gdslxDm, uuid, sxh) {
 /**
   *刷新申报状态
   */
-function refreshSbqc() {
+function refreshSbqc(isCheckHxzgBz) {
 	//获取父页面sksq
 	//var sksq = parent.document.getElementById("sksq").innerText;
 	//加工url
 	var url = parent.refreshAndresetSbqcUrl+"&type=refresh";
+	if(isCheckHxzgBz != null && isCheckHxzgBz != "" && isCheckHxzgBz != undefined){
+		url += "&isCheckHxzgBz=" + isCheckHxzgBz;
+	}
 	//获取当前行数
 	var top="auto"//默认自动
 	if(window.top==window.self){
@@ -802,9 +808,45 @@ function resetSbqc() {
 }
 
 /**
+ * 更正申报
+ */
+
+function cbgzinit(url, bsssqQ, bsssqZ, bsqx, bsrq) {
+	var top="auto"//默认自动
+ 	if(window.top==window.self){
+		//不存在父页面
+  	}else{
+  		//获取父页面滚动条的高度
+		top=window.parent.document.documentElement.scrollTop+100+"px";
+  	}
+	//加工提示信息
+	var msg = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您已于"+bsrq+"提交过所属期为"+bsssqQ+"到"+bsssqZ+"的财务报表，是否进行更正？";
+	layer.open({
+        type: 1
+		,area: ['400px']
+		,title:['提示信息'] 
+		,offset: top 
+		,scrollbar: false
+        ,info: 1 //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+        ,content: msg
+        ,btn: ['是', '否']
+        ,btnAlign: 'r' //按钮居中
+        ,yes: function(){
+			//打开财务报表
+        	var cfsbBz = "Y";
+			cbinit(url, bsssqQ, bsssqZ, bsqx ,cfsbBz);
+			layer.closeAll();
+		}
+		,btn2: function(index, layero){
+			return;	
+		}
+	});
+}
+
+/**
  *填写财务报表 
  */
-function cbinit(url, bsssqQ, bsssqZ, bsqx) {
+function cbinit(url, bsssqQ, bsssqZ, bsqx, cfsbBz) {
 	//提前逾期监控
 	var index = layer.load(2, {shade:0.1});
 	$.ajax({
@@ -827,7 +869,7 @@ function cbinit(url, bsssqQ, bsssqZ, bsqx) {
 				return;
 			} else {
 				//打开财务报表
-				cwbainit(url, "Y", "");
+				cwbainit(url, "Y", "", cfsbBz);
 			}
 		},
 		error : function() {
@@ -843,7 +885,7 @@ function cbinit(url, bsssqQ, bsssqZ, bsqx) {
 /**
  *财报报表
  */
-function cwbainit(url, isCwbabz,gdslxDm) {
+function cwbainit(url, isCwbabz,gdslxDm,cfsbBz) {
 	//根据isCwbabz 加工url
 	if (isCwbabz == "Y") {
 		url = contextRoot+"/biz/sbqc/sbqc_aqsb/cburlControl?" + url;
@@ -863,6 +905,12 @@ function cwbainit(url, isCwbabz,gdslxDm) {
 			var success = data.success;
 			if (success =="Y") {
 				var urlList = data.urlList;
+				//可重复申报标志（用于在引导页判断是否弹出申报更正提示）
+				if(cfsbBz == "Y"){
+					for(var i in urlList){
+						urlList[i].gnurl += "&cfsbBz=Y";
+					}
+				}
 				//展示财报
 				showCburldata(urlList);
 			} else {

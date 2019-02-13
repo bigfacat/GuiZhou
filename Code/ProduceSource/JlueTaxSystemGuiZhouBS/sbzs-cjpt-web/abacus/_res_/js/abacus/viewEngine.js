@@ -1185,25 +1185,28 @@ function ViewEngine(){
                     	var _fxsmFxlx = ''; // 风险扫描-风险类型
                     	var _fxsmGlbd = []; // 风险扫描-关联表单
                         $.each(var2NoPass, function(id, FormulaObject) {
-                        	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
-                        	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                    		if (position === '1') {
-                    			// 显示至右上角
-                    			_tips += FormulaObject.tips + '<br/>';
- 	                            _tips_title += FormulaObject.tips + '\n';
-                    		} else {
-                    			// 默认显示至右边栏
-                    			_fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>') ;
-                            	_fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
-                            	_fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
-                            	_fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
-                            	if(FormulaObject.glbd) {
-                            		_fxsmGlbd = $.extend(true,_fxsmGlbd,FormulaObject.glbd);
-                            	}
-                    		}
-                    		tipType = FormulaObject.tipType;
-                    		key = FormulaObject.tipType + '_' + FormulaObject.level;
-
+                            if(id === "idx"){
+                                _subscript = FormulaObject;
+                            }else {
+                                // 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
+                                var position = parent.showTipsType[FormulaObject.channel + '_' + FormulaObject.tipType];
+                                if (position === '1') {
+                                    // 显示至右上角
+                                    _tips += FormulaObject.tips + '<br/>';
+                                    _tips_title += FormulaObject.tips + '\n';
+                                } else {
+                                    // 默认显示至右边栏
+                                    _fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>');
+                                    _fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
+                                    _fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
+                                    _fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
+                                    if (FormulaObject.glbd) {
+                                        _fxsmGlbd = $.extend(true, _fxsmGlbd, FormulaObject.glbd);
+                                    }
+                                }
+                                tipType = FormulaObject.tipType;
+                                key = FormulaObject.tipType + '_' + FormulaObject.level;
+                            }
                         });
                         if(_fxsmJcjg) {
                         	_fxsmJcjg = parent.formulaEngine.textSubstitution(_fxsmJcjg,_subscript);
@@ -1408,24 +1411,28 @@ function ViewEngine(){
                     	var _fxsmFxlx = ''; // 风险扫描-风险类型
                     	var _fxsmGlbd = []; // 风险扫描-关联表单
                         $.each(var2NoPass, function(id, FormulaObject){
-                        	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
-                        	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                    		if (position === '1') {
-                    			// 显示至右上角
-                    			_tips += FormulaObject.tips + '<br/>';
- 	                            _tips_title += FormulaObject.tips + '\n';
-                    		} else {
-                    			// 默认显示至右边栏
-                    			_fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>') ;
-                            	_fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
-                            	_fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
-                            	_fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
-                            	if(FormulaObject.glbd) {
-                            		_fxsmGlbd = $.extend(true,_fxsmGlbd,FormulaObject.glbd);
-                            	}
-                    		}
-                    		tipType = FormulaObject.tipType;
-                    		key = FormulaObject.tipType + '_' + FormulaObject.level;
+                            if(id === "idx"){
+                                _subscript = FormulaObject;
+                            }else {
+                                // 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
+                                var position = parent.showTipsType[FormulaObject.channel + '_' + FormulaObject.tipType];
+                                if (position === '1') {
+                                    // 显示至右上角
+                                    _tips += FormulaObject.tips + '<br/>';
+                                    _tips_title += FormulaObject.tips + '\n';
+                                } else {
+                                    // 默认显示至右边栏
+                                    _fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>');
+                                    _fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
+                                    _fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
+                                    _fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
+                                    if (FormulaObject.glbd) {
+                                        _fxsmGlbd = $.extend(true, _fxsmGlbd, FormulaObject.glbd);
+                                    }
+                                }
+                                tipType = FormulaObject.tipType;
+                                key = FormulaObject.tipType + '_' + FormulaObject.level
+                            }
                         });
                         if(_fxsmJcjg) {
                         	_fxsmJcjg = parent.formulaEngine.textSubstitution(_fxsmJcjg,_subscript);
@@ -1488,6 +1495,11 @@ function ViewEngine(){
             viewEngine.showFbBgcolor(idxVariable2NoPass);
             var _end_ = new Date().getTime();
             console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms tipsForVerify2");
+
+            //清理校验公式列表和控制公式列表
+            parent.formulaEngine.procVerifyFormulas.length = 0;
+            parent.formulaEngine.procContorlFormulas.length = 0;
+            parent.formulaEngine.procVariableInStack = {};
         };
         /**
          * 检查校验不通过单元格，并提示
@@ -1610,25 +1622,28 @@ function ViewEngine(){
                         	var _fxsmFxlx = ''; // 风险扫描-风险类型
                         	var _fxsmGlbd = []; // 风险扫描-关联表单
                             $.each(var2NoPass, function(id, FormulaObject) {
-                            	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
-                            	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                        		if (position === '1') {
-                        			// 显示至右上角
-                        			_tips += FormulaObject.tips + '<br/>';
-     	                            _tips_title += FormulaObject.tips + '\n';
-                        		} else {
-                        			// 默认显示至右边栏
-                        			_fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>') ;
-                                	_fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
-                                	_fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
-                                	_fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
-                                	if(FormulaObject.glbd) {
-                                		_fxsmGlbd = $.extend(true,_fxsmGlbd,FormulaObject.glbd);
-                                	}
-                        		}
-                        		tipType = FormulaObject.tipType;
-                        		key = FormulaObject.tipType + '_' + FormulaObject.level;
-
+                                if(id === "idx"){
+                                    _subscript = FormulaObject;
+                                }else{
+                                    // 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
+                                    var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
+                                    if (position === '1') {
+                                        // 显示至右上角
+                                        _tips += FormulaObject.tips + '<br/>';
+                                        _tips_title += FormulaObject.tips + '\n';
+                                    } else {
+                                        // 默认显示至右边栏
+                                        _fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>') ;
+                                        _fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
+                                        _fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
+                                        _fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
+                                        if(FormulaObject.glbd) {
+                                            _fxsmGlbd = $.extend(true,_fxsmGlbd,FormulaObject.glbd);
+                                        }
+                                    }
+                                    tipType = FormulaObject.tipType;
+                                    key = FormulaObject.tipType + '_' + FormulaObject.level;
+                                }
                             });
                             if(_fxsmJcjg) {
                             	_fxsmJcjg = parent.formulaEngine.textSubstitution(_fxsmJcjg,_subscript);
@@ -1708,24 +1723,28 @@ function ViewEngine(){
                         	var _fxsmFxlx = ''; // 风险扫描-风险类型
                         	var _fxsmGlbd = []; // 风险扫描-关联表单
                             $.each(var2NoPass, function(id, FormulaObject){
-                            	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
-                            	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                        		if (position === '1') {
-                        			// 显示至右上角
-                        			_tips += FormulaObject.tips + '<br/>';
-     	                            _tips_title += FormulaObject.tips + '\n';
-                        		} else {
-                        			// 默认显示至右边栏
-                        			_fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>') ;
-                                	_fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
-                                	_fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
-                                	_fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
-                                	if(FormulaObject.glbd) {
-                                		_fxsmGlbd = $.extend(true,_fxsmGlbd,FormulaObject.glbd);
-                                	}
-                        		}
-                        		tipType = FormulaObject.tipType;
-                        		key = FormulaObject.tipType + '_' + FormulaObject.level;
+                                if(id === "idx"){
+                                    _subscript = FormulaObject;
+                                }else {
+                                    // 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
+                                    var position = parent.showTipsType[FormulaObject.channel + '_' + FormulaObject.tipType];
+                                    if (position === '1') {
+                                        // 显示至右上角
+                                        _tips += FormulaObject.tips + '<br/>';
+                                        _tips_title += FormulaObject.tips + '\n';
+                                    } else {
+                                        // 默认显示至右边栏
+                                        _fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>');
+                                        _fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
+                                        _fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
+                                        _fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
+                                        if (FormulaObject.glbd) {
+                                            _fxsmGlbd = $.extend(true, _fxsmGlbd, FormulaObject.glbd);
+                                        }
+                                    }
+                                    tipType = FormulaObject.tipType;
+                                    key = FormulaObject.tipType + '_' + FormulaObject.level;
+                                }
                             });
                             //_tips_title = parent.formulaEngine.textSubstitution(_tips_title,_subscript);
                             _obj.attr('title', _tips_title);
@@ -1822,24 +1841,28 @@ function ViewEngine(){
                         	var _fxsmFxlx = ''; // 风险扫描-风险类型
                         	var _fxsmGlbd = []; // 风险扫描-关联表单
                             $.each(var2NoPass, function(id, FormulaObject){
-                            	// 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
-                            	var position = parent.showTipsType[FormulaObject.channel+'_'+FormulaObject.tipType];
-                        		if (position === '1') {
-                        			// 显示至右上角
-                        			_tips += FormulaObject.tips + '<br/>';
-     	                            _tips_title += FormulaObject.tips + '\n';
-                        		} else {
-                        			// 默认显示至右边栏
-                        			_fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>') ;
-                                	_fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
-                                	_fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
-                                	_fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
-                                	if(FormulaObject.glbd) {
-                                		_fxsmGlbd = $.extend(true,_fxsmGlbd,FormulaObject.glbd);
-                                	}
-                        		}
-                        		tipType = FormulaObject.tipType;
-                        		key = FormulaObject.tipType + '_' + FormulaObject.level;
+                                if(id === "idx"){
+                                    _subscript = FormulaObject;
+                                }else {
+                                    // 取得显示位置 showTipsType在配置中心配置{ysq.showTipsType}
+                                    var position = parent.showTipsType[FormulaObject.channel + '_' + FormulaObject.tipType];
+                                    if (position === '1') {
+                                        // 显示至右上角
+                                        _tips += FormulaObject.tips + '<br/>';
+                                        _tips_title += FormulaObject.tips + '\n';
+                                    } else {
+                                        // 默认显示至右边栏
+                                        _fxsmCljy += (!FormulaObject.cljy ? '' : FormulaObject.cljy + '<br/>');
+                                        _fxsmFxmc += (!FormulaObject.fxmc ? '' : FormulaObject.fxmc + '<br/>');
+                                        _fxsmJcjg += (!FormulaObject.tips ? '' : FormulaObject.tips + '<br/>');
+                                        _fxsmFxlx = (!FormulaObject.fxlx ? '' : FormulaObject.fxlx);
+                                        if (FormulaObject.glbd) {
+                                            _fxsmGlbd = $.extend(true, _fxsmGlbd, FormulaObject.glbd);
+                                        }
+                                    }
+                                    tipType = FormulaObject.tipType;
+                                    key = FormulaObject.tipType + '_' + FormulaObject.level;
+                                }
                             });
                             if(_fxsmJcjg) {
                             	_fxsmJcjg = parent.formulaEngine.textSubstitution(_fxsmJcjg,_subscript);
@@ -1921,6 +1944,11 @@ function ViewEngine(){
             viewEngine.showFbBgcolor(idxVariable2NoPass);
             var _end_ = new Date().getTime();
             console.log("INFO:"+_start_+"-"+_end_+"-"+(_end_ - _start_)+"ms tipsForVerify");
+
+            //清理校验公式列表和控制公式列表
+            parent.formulaEngine.procVerifyFormulas.length = 0;
+            parent.formulaEngine.procContorlFormulas.length = 0;
+            parent.formulaEngine.procVariableInStack = {};
         };
         // glbd数组去重
         ViewEngine.prototype.disGlbds = function(arr){
@@ -1989,6 +2017,9 @@ function ViewEngine(){
         		var arr = viewEngine.filterByLevels(var2NoPass); // 过滤低级别提示以筛选出高级别提示背景色
         		var num = 1; // 错误数量
         		$.each(arr, function(id, FormulaObject) {
+                    if(id === "idx"){
+                        return ;
+                    }
         			var jpathInfo = {};
         			jpathInfo['tipType'] = FormulaObject.tipType;
         			jpathInfo['level'] = FormulaObject.level;
@@ -2131,67 +2162,7 @@ function ViewEngine(){
                         }
                     }
                 }  else if (ctl === "lock") {
-                	//zoufeng@foresee.cn 2017-03-15 锁定元素，如果元素是“下拉框”，则置为disabled,否则置为readOnly
-                	var isSelect = domElem.tagName == 'SELECT',
-                		needDisabled = (isSelect || domElem.type == 'radio' || domElem.type == 'checkbox'),
-                		clickEventName = jqElem.attr("onclick"),
-                		foculsEventName = jqElem.attr("onfocus"),
-                		mouseoverEventName = jqElem.attr("onmouseover"),	//专门针对升级后的日期控件
-                		ngClickEventName= jqElem.attr("ng-click"),
-                		myClick = jqElem.attr("myclick"),
-                		myFocus = jqElem.attr("myfocus"),
-                		myMouseover = jqElem.attr("mymouseover"),
-                		myNgClick = jqElem.attr("myngclick");
-                	if (flag) {
-                        if (typeof domElem["$OLD_LOCK$"] == "undefined") {
-                            domElem["$OLD_LOCK$"] = (needDisabled ? jqElem.attr("disabled") : jqElem.attr("readonly")) || false;
-                        }
-                        jqElem.attr("readonly", "readonly");
-                        if (needDisabled) {
-                        	jqElem.attr("disabled", "disabled");
-                        	//GEARS-4961 兼容IE8，当select无option时，执行domElem.options[index].text会报错“TypeError: 对象不支持此属性或方法”；解决方案判断有无options，domElem.options.length > 0. M By C.Q 20171031 
-                        	isSelect && domElem.options.length > 0 && domElem.selectedIndex!=-1 && domElem.options[domElem.selectedIndex] && (domElem.title = domElem.options[domElem.selectedIndex].text);	//鼠标移上去时，提示选中的文本
-                        }
-                        if (clickEventName) {
-                        	jqElem.attr("myclick", clickEventName);
-                        	jqElem.removeAttr("onclick");
-                        }
-                        if (foculsEventName) {
-                        	jqElem.attr("myfocus", foculsEventName);
-                        	jqElem.removeAttr("onfocus");
-                        }
-                        if (mouseoverEventName) {
-                        	jqElem.attr("mymouseover", mouseoverEventName);
-                        	jqElem.removeAttr("onmouseover");
-                        }
-                        if (ngClickEventName) {
-                        	jqElem.attr("myngclick", ngClickEventName);
-                        	jqElem.removeAttr("ng-click")
-                        }
-                        jqElem.off("click");	//解绑ng-click与onclick事件
-                        jqElem.off("focus");	//解绑focus
-                        jqElem.off("mouseover");	//解绑mouseover
-                    } else {
-                    	jqElem.removeAttr("readonly");
-                    	jqElem.removeAttr("unselectable");
-                    	needDisabled && jqElem.removeAttr("disabled");
-                    	if (myClick) {
-                    		jqElem.attr("onclick", myClick);
-                    		jqElem.removeAttr("myclick");
-                    	}
-                    	if (myNgClick) {
-                    		jqElem.attr("ng-click", myNgClick);
-                    		jqElem.removeAttr("myngclick");
-                    	}
-                    	if (myFocus) {
-                    		jqElem.attr("onfocus", myClick);
-                    		jqElem.removeAttr("myfocus");
-                    	}
-                    	if (myMouseover) {
-                    		jqElem.attr("onmouseover", myClick);
-                    		jqElem.removeAttr("mymouseover");
-                    	}
-                    }
+					this.setElementEditFlag(domElem,flag);
                 } else {
                     var tmp = ctl.split("=");
                     if (tmp.length > 1) {
@@ -2668,7 +2639,7 @@ function ViewEngine(){
         ViewEngine.prototype.doPasteExcelAdv = function (eTable) {
             // 检查元素可执行环境
             eSource = event.srcElement;
-            if ("INPUT" != eSource.tagName) {
+            if ("INPUT" != eSource.tagName || !eSource.attributes.jpath) {
                 return false; // 忽略：仅支持在INPUT控件上的复制效果
             }
             if ("TABLE" != eTable.tagName) {
@@ -2937,6 +2908,94 @@ ViewEngine.prototype.hideButtons = function() {
 			}
 		}
 	}
+}
+/**
+ * 点击“删除”，“恢复“按钮，控制动态行元素是否可编辑
+ * @author jiangyunchun@foresee.com.cn
+ * */
+ViewEngine.prototype.setDynamicElementEditFlag = function(domElem,flag) {
+	var jqElem=$(domElem);
+	var isSelect = domElem.tagName == 'SELECT';
+	if(!isSelect){
+		if (flag) {
+			jqElem.attr("disabled", "disabled");
+		} else {
+			jqElem.removeAttr("disabled");
+		}
+	}else {
+		this.setElementEditFlag(domElem,flag);
+	}
+}
+/**
+ * 控制元素是否可编辑
+ * @author jiangyunchun@foresee.com.cn
+ * */
+ViewEngine.prototype.setElementEditFlag = function(domElem,flag) {
+	var jqElem = $(domElem),isSelect = domElem.tagName == 'SELECT',needDisabled = (isSelect || domElem.type == 'radio' || domElem.type == 'checkbox'),
+		clickEventName = jqElem.attr("onclick"),
+		foculsEventName = jqElem.attr("onfocus"),
+		mouseoverEventName = jqElem.attr("onmouseover"),	//专门针对升级后的日期控件
+		ngClickEventName= jqElem.attr("ng-click"),
+		myClick = jqElem.attr("myclick"),
+		myFocus = jqElem.attr("myfocus"),
+		myMouseover = jqElem.attr("mymouseover"),
+		myNgClick = jqElem.attr("myngclick");
+		if (flag) {
+			if (typeof domElem["$OLD_LOCK$"] == "undefined") {
+				domElem["$OLD_LOCK$"] = (needDisabled ? jqElem.attr("disabled") : jqElem.attr("readonly")) || false;
+			}
+			jqElem.attr("readonly", "readonly");
+			if (needDisabled) {
+				jqElem.attr("disabled", "disabled");
+				//GEARS-4961 兼容IE8，当select无option时，执行domElem.options[index].text会报错“TypeError: 对象不支持此属性或方法”；解决方案判断有无options，domElem.options.length > 0. M By C.Q 20171031 
+				isSelect && domElem.options.length > 0 && domElem.selectedIndex!=-1 && domElem.options[domElem.selectedIndex] && (domElem.title = domElem.options[domElem.selectedIndex].text);	//鼠标移上去时，提示选中的文本
+			}
+			if (clickEventName) {
+				jqElem.attr("myclick", clickEventName);
+				jqElem.removeAttr("onclick");
+			}
+			if (foculsEventName) {
+				jqElem.attr("myfocus", foculsEventName);
+				jqElem.removeAttr("onfocus");
+			}
+			if (mouseoverEventName) {
+				jqElem.attr("mymouseover", mouseoverEventName);
+				jqElem.removeAttr("onmouseover");
+			}
+			if (ngClickEventName) {
+				jqElem.attr("myngclick", ngClickEventName);
+				jqElem.removeAttr("ng-click")
+			}
+			jqElem.off("click");	//解绑ng-click与onclick事件
+			jqElem.off("focus");	//解绑focus
+			jqElem.off("mouseover");	//解绑mouseover
+			if(jqElem.attr("ng-select-query")!==undefined){
+				jqElem.select2("enable",false);
+			}
+		} else {
+			jqElem.removeAttr("readonly");
+			jqElem.removeAttr("unselectable");
+			needDisabled && jqElem.removeAttr("disabled");
+			if (myClick) {
+				jqElem.attr("onclick", myClick);
+				jqElem.removeAttr("myclick");
+			}
+			if (myNgClick) {
+				jqElem.attr("ng-click", myNgClick);
+				jqElem.removeAttr("myngclick");
+			}
+			if (myFocus) {
+				jqElem.attr("onfocus", myClick);
+				jqElem.removeAttr("myfocus");
+			}
+			if (myMouseover) {
+				jqElem.attr("onmouseover", myClick);
+				jqElem.removeAttr("mymouseover");
+			}
+			if(jqElem.attr("ng-select-query")!==undefined){
+				jqElem.select2("enable",true);
+			}
+		}
 }
 
 // 初始化ViewEngine

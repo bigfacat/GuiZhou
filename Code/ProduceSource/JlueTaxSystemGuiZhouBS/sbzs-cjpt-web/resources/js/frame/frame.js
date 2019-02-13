@@ -173,7 +173,7 @@ function menuBtnControl(menuBtnConfig, isExporting) {
                 func = func.replace(reg,"'");
                 if (typeof btnTitle[name]!=="undefined") {
                 	menuBtn += '<li><a id=\"' + name + '\" class="' + clas + '\" onClick=\"javascript:window.frames[0].' + func + ';\" title="'+btnTitle[name]+'">' + btnName + '</a></li>';
-                }　else {
+                }else {
                 	menuBtn += '<li><a id=\"' + name + '\" class="' + clas + '\" onClick=\"javascript:window.frames[0].' + func + ';\">' + btnName + '</a></li>';
                 }    
             }
@@ -499,17 +499,15 @@ function alertWarns() {
 }
 /**
  * 封装业务中台ajax请求
- * @param reqParams,successCallback,errorCallback, setAsync
- * @desc reqParams为json格式{"sid":"dzswj.rd.rdSfzrdxxb.cxSfzrdxx","qqbw":{}}
- * 		qqbw可以为json对象也可以为字符串，请求金三核心报文时qqbw必传。
- * 		当请求wbzy jsp报文时qqbw可以不传，不传会把会话参数和url参数作为qqbw
- *		successCallback为数据请求成功的回调函数，errorCallback为数据请求失败的回调函数,
- *		有errorCallback(msg,code,stack)回调函数就会把错误信息返回给errorCallback回调函数,code="02"为业务错误码
- *		code="01"为系统错误码。
- *      默认为异步。
+ * @param reqParams
+ *  调jsp服务的样例：{"sid":"dzswj.wbzy.rd.rdSfzrdxxb.cxSfzrdxx","业务key":"业务值" ....} djxh、nsrsbh等字段，无需传，后台从会话获取；
+ *  直接调核心接口的样例为：{"sid":"核心接口名称","sidType":"02","qqbw":"请求金三核心接口的业务报文；"}
+ * @param successCallback 为数据请求成功的回调函数
+ * @param errorCallback  数据请求失败的回调函数,
+ * @param setAsync为：true或false 默认为异步
  */
 function requestYwztData(reqParams,successCallback,errorCallback,setAsync){
-	var url = window.location.protocol + "//" + window.location.host + "/" + cp +"/ywzt/getData.do";
+	var url = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname.split("/")[1] +"/ywzt/getData.do";
 	var realUrl = window.location.href;
 	//把页面url后的参数拼接到请求参数
 	var index = -1,
@@ -545,12 +543,26 @@ function requestYwztData(reqParams,successCallback,errorCallback,setAsync){
 		if(typeof reqParams.async != "undefined" && reqParams.async != null && reqParams.async != ""){
 			requestAsync = reqParams.async;
 	    }
-		res["projectName"] = "wbzy";
+		var requestData = {};
+		try{
+			requestData = Object.assign(res,reqParams);
+		}catch(e){
+			//requestData =res;
+			//ie合并json对象
+			for(var keyName in res){
+				if(reqParams[keyName]){
+					continue;
+				}else{
+					reqParams[keyName] = res[keyName];
+				}
+				}
+			requestData = reqParams;
+		}
 		$.ajax({        		
 			type : "POST",
 	 		url : url,
 	 		async: async,
-	 		data:res,
+	 		data:requestData,
 	 		success:function(data){
 	 			//尝试转化为json对象，转化不了直接返回数据
 	 			var json = JSON.parse(data);
@@ -574,13 +586,14 @@ function requestYwztData(reqParams,successCallback,errorCallback,setAsync){
 			 					if (window["console"]){
 			 				        console.log(json["errInfo"]["msg"]);
 			 				    }
-			 					if(errorCallback && typeof(eval(errorCallback))=="function"){
+			 					if(errorCallback && typeof errorCallback =="function"){
 			 						if(json["errInfo"]["stack"]){
 			 							errorCallback(json["errInfo"]["msg"],"02",json["errInfo"]["stack"]);
+			 						}else{
+			 							errorCallback(json["errInfo"]["msg"],"02","");
 			 						}
 			 					}else{
 			 						layer.alert(json["errInfo"]["msg"]);
-			 						//alert(json["errInfo"]["msg"])
 			 					}
 			 				}
 			 			}
@@ -593,14 +606,12 @@ function requestYwztData(reqParams,successCallback,errorCallback,setAsync){
 	 				errorCallback(err,"01");
 	 			}else{
 	 				layer.alert(err);
-	 				//alert(err)
-	 			}	
-	 		}
-	 	});
+	 			}
+			}
+	 		});
     }else{
     	errorCallback("参数错误","02");
     }
-	
 }
 
 function resolveYwztResponse(data){

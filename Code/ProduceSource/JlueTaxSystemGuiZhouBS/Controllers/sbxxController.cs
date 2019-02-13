@@ -31,13 +31,13 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 {
                     foreach (GDTXGuiZhouUserYSBQC item in ysbqclist)
                     {
-                        if (item.SBZT == "未申报" || item.BDDM == "WCWBBBS")
+                        if (item.SBZT == "未申报" || item.BDDM == "cwbb_qy_kjzz_ybqy")
                         {
                             continue;
                         }
                         else if (item.BDDM == "YHSSB")
                         {
-                            GTXResult gr = GTXMethod.GetUserReportData(item.Id.ToString(), "");
+                            GTXResult gr = GTXMethod.GetUserReportData(item.Id.ToString(), item.BDDM);
                             if (gr.IsSuccess)
                             {
                                 JArray jarr = new JArray();

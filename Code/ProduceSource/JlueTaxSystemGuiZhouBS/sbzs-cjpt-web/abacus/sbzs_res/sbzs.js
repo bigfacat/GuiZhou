@@ -45,9 +45,25 @@ function tempSave() {
 				});
 				
             } else {
-                parent.layer.alert('尊敬的纳税人：暂存失败，请稍后再试！', {
-                    icon : 5
-                });
+            	var returnType = data.returnType;
+		    	if(returnType&&returnType==='refresh'){
+		    		var errMsg = data.errMsg;
+		    		parent.layer.confirm(errMsg,{
+	            		icon : 1,
+	            		title:'提示',
+	            		btn2noclose:1,
+	            		btn : ["是","否"]
+	            	},function(index){
+	            		$(top.document).find("body").unmask();
+	            		parent.layer.close(index);
+	            		window.location.reload();
+	            	});
+		    		return;
+		    	}else {
+	                parent.layer.alert('尊敬的纳税人：暂存失败，请稍后再试！', {
+	                    icon : 5
+	                });
+		    	}
             }
             $(top.document).find("body").unmask();
         },

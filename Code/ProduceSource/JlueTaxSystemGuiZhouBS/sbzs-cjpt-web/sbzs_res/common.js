@@ -859,8 +859,8 @@ function dqdeCalc2018Gs(rtnType, ysx, yssdl, zspmDm, jsbz, sjjyyf, hdjsyj, nsqxD
 	
 	// new: 新税率, old: 旧, transition: 过渡
 	var slRule = 'new';
-	var sSqq = sqq.substring(0, 7).replace('-', '');	// 格式化属期起(年月)
-	var sSqz = sqz.substring(0, 7).replace('-', '');	// 格式化属期止(年月)
+	var sSqq = sqq.substring(0, 7).replace('-', '').replace('-', '');	// 格式化属期起(年月)
+	var sSqz = sqz.substring(0, 7).replace('-', '').replace('-', '');	// 格式化属期止(年月)
 	if (sSqz < '201810') {
 		slRule = 'old';	// 税款属期在2018-10之前,旧税率处理
 	} else if (sSqq >= '201810') {
@@ -1062,7 +1062,7 @@ function tysbCalc2018Gs() {
 	// 2018-10前实际经营月份
 	var sjjyBefore = MAX(0, 10 - Number(jsqq.substring(5, 7)));
 	// 2018-10后实际经营月份
-	var sjjyAffter = MIN(3, 12 - Number(jsqq.substring(5, 7)) + 1);
+	var sjjyAfter = MIN(3, 12 - Number(jsqq.substring(5, 7)) + 1);
 	// 已申报月份
 	var ysbyf = Number(sqz.substring(5, 7)) - Number(jsqq.substring(5, 7)) + 1;
 	// 2018-10前已申报月份
@@ -1071,8 +1071,8 @@ function tysbCalc2018Gs() {
 	var ysbyfAfter = MIN(3, Number(sqz.substring(5, 7)) - MAX(10, Number(jsqq.substring(5, 7))) + 1);
 	
 	var slRule = 'new';
-	var sSqq = sqq.replace('-', '');	// 格式化属期起(年月)
-	var sSqz = sqz.replace('-', '');	// 格式化属期止(年月)
+	var sSqq = sqq.replace('-', '').replace('-', '');	// 格式化属期起(年月)
+	var sSqz = sqz.replace('-', '').replace('-', '');	// 格式化属期止(年月)
 	if (sSqz < '20181001') {
 		slRule = 'old';	
 	} else if (sSqq >= '20190101') {
@@ -1093,7 +1093,7 @@ function tysbCalc2018Gs() {
 	var ynse = 0;			// 应纳税额(默认值)
 	var dqjsFlag = 'N';		// 当期计税标志 Y|N(默认值)
 	
-	if (dqdehdFlag == 'true' && sfzrdxxbFlag == 'false') {
+	if (dqdehdFlag == 'true' || sfzrdxxbFlag == 'false') {
 		dqjsFlag = 'Y';
 	}
 	
@@ -2924,7 +2924,7 @@ function sfkyqsbCheck(gdslxDm, sbywbm, sbqx, skssqq, skssqz,yqsbbz,djxh,nsrsbh,t
 		params = '';
 	}
 	
-	if(test == 'true'){
+	if(test == 'test'){
         params += '&djxh='+djxh + '&nsrsbh=' + nsrsbh + '&test=' + test;
     }
 	
@@ -2932,8 +2932,10 @@ function sfkyqsbCheck(gdslxDm, sbywbm, sbqx, skssqq, skssqz,yqsbbz,djxh,nsrsbh,t
 		console.info("按次申报, 不进行校验. skssqq = " + skssqz + ", skssqz = " + skssqz);
 		params = '';
 	}	
-	 var sbiniturl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
-	yqsbVaildByUrl(sbiniturl);
+	if (params != '') {
+		 var sbiniturl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
+		 yqsbVaildByUrl(sbiniturl);
+	}
 }
 
 /**
@@ -2952,7 +2954,7 @@ function sfkyqsbCheckEx(gdslxDm, sbywbm, zsxmDm, skssqq, skssqz, nsqxDm, sbqxDm,
 		params = '';
 	}
 	
-	if(test == 'true'){
+	if(test == 'test'){
         params += '&djxh='+djxh + '&nsrsbh=' + nsrsbh + '&test=' + test;
     }
 	
@@ -2960,8 +2962,10 @@ function sfkyqsbCheckEx(gdslxDm, sbywbm, zsxmDm, skssqq, skssqz, nsqxDm, sbqxDm,
 		console.info("按次申报, 不进行校验. skssqq = " + skssqz + ", skssqz = " + skssqz);
 		params = '';
 	}	
-	 var sbiniturl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
-	yqsbVaildByUrl(sbiniturl);
+	if (params != '') {
+		 var sbiniturl = parent.pathRoot + '/biz/yqsb/yqsbqc/enterYqsbUrl?' + params;
+		 yqsbVaildByUrl(sbiniturl);
+	}
 }
 
 function yqsbVaildByUrl(sbiniturl){

@@ -11,9 +11,9 @@ function FormDebuging(){
     /**
      * Constant. 常量定义.
      */
-    FormDebuging.prototype.URL_SAVE_2_FILE = "formula/save.do";
-    FormDebuging.prototype.URL_SAVE_TBSM = "formula/savetbsm.do";
-    FormDebuging.prototype.URL_EXTRACT_TBSM = "formula/exttbsm.do";
+    FormDebuging.prototype.URL_SAVE_2_FILE = contextPath+"/formula/save.do";
+    FormDebuging.prototype.URL_SAVE_TBSM = contextPath+"/formula/savetbsm.do";
+    FormDebuging.prototype.URL_EXTRACT_TBSM = contextPath+"/formula/exttbsm.do";
     FormDebuging.prototype.TBSM_JSON = null;
     this.lastSelectedFormulaElement;// Last selected formula element.
     this.jpath = "";

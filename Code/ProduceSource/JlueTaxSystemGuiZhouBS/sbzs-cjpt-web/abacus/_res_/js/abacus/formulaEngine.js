@@ -183,11 +183,9 @@ function FormulaEngine(){
             _this.compileAll();
             
             if (flagDoInitial) {
-        		this.execApplyInitialFormulas();
+                var startTime = new Date().getTime();
+        		this.execApplyInitialFormulas(startTime);
             }
-            // Destroy:
-            this.procVerifyFormulas = null;
-            this.procVariableInStack = null;
             isInitialized = true;//已经初始化
         };
 
@@ -223,32 +221,32 @@ function FormulaEngine(){
             this.procVariableInStack = {}; // Temporary variable for processing: variable in calling-stack.
             // Do compile, calculate and verify            
             this.compileAll();
-            // Destroy:
-            this.procVerifyFormulas = null;
-            this.procVariableInStack = null;
         };
         
-        /*
+        /**
          * 针对ie8奔溃问题，采取分批编译公式
-         * */
-        FormulaEngine.prototype.execApplyInitialFormulas = function(){
+         * startTime : IE8下编译开始时间
+         */
+        FormulaEngine.prototype.execApplyInitialFormulas = function(startTime){
         	var _this = this;
         	//当公式编译完成后才执行公式 
         	//1.1存在减少附表的情况，则需要等减少附表对应的数据模型的公式编译完成后才执行公式
         	if(this.compleflag){
+                console.log("INFO:"+ startTime+"-"+new Date().getTime()+"-"+(new Date().getTime() - startTime)
+                    +"ms IE8下公式编译结束时间");
         		//不存在otherParams.jsfb参数，直接执行
         		if(otherParams && otherParams.jsfb ){
         			//存在formulaEngineJb，并且编译完成
         			if(formulaEngineJb && formulaEngineJb.compleflag){
         				this.applyInitialFormulas();
         			}else{
-        				setTimeout(function(){_this.execApplyInitialFormulas()},150);
+        				setTimeout(function(){_this.execApplyInitialFormulas(startTime)},150);
         			}
         		}else{
         			this.applyInitialFormulas();
         		}
     		}else{
-    			setTimeout(function(){_this.execApplyInitialFormulas()},150);
+    			setTimeout(function(){_this.execApplyInitialFormulas(startTime)},150);
     		}
         	
         };
@@ -450,6 +448,9 @@ function FormulaEngine(){
             var var2NoPass = this.idxVariable2NoPass[jpath];
             if(var2NoPass){
                 $.each(var2NoPass, function(id, FormulaObject){
+                    if(id === "idx"){
+                        return;
+                    }
                 	if(FormulaObject.lstTargetResolved && FormulaObject.lstTargetResolved.length > 0){
                 		//如果有target解析。则使用target进行删除
                 		/**
@@ -1085,9 +1086,9 @@ function FormulaEngine(){
             var _ms_ = new Date().getTime();
             for (var _t_ = 0; _t_ < _TEST_TIMES_; _t_++) {
                 // Initial:
-                this.procVerifyFormulas = []; // Temporary variable for processing: involved verify-formulas.
+                /*this.procVerifyFormulas = []; // Temporary variable for processing: involved verify-formulas.
                 this.procContorlFormulas = []; // Temporary variable for processing: involved control-formulas.
-                this.procVariableInStack = {}; // Temporary variable for processing: variable in calling-stack.
+                this.procVariableInStack = {}; // Temporary variable for processing: variable in calling-stack.*/
                 
                 var dynamicParams = dynamicIdx;
                 if(dynamicParams == null || typeof dynamicParams === "undefined"){
@@ -1132,9 +1133,9 @@ function FormulaEngine(){
                  */
                 this.applyAssociatedFormulaControl(dynamicParams);
                 // Destroy:
-                this.procVerifyFormulas = [];
+                /*this.procVerifyFormulas = [];
                 this.procContorlFormulas = [];
-                this.procVariableInStack = {};
+                this.procVariableInStack = {};*/
             }
             _ms_ = new Date().getTime() - _ms_;
             console.log("Calculate " + _TEST_TIMES_ + " in " + _ms_ + "ms, per: "
@@ -1174,6 +1175,14 @@ function FormulaEngine(){
          * @warning Currently only support one dynamic parameter. 目前仅支持一个动态参数值.
          */
         FormulaEngine.prototype.applyAssociatedFormulaControl = function(dynamicParams){
+            //业务中台自动化测试 记录执行的公式
+            if(flagYwztAutoTest && typeof parent.saveFormula === "function"){
+                var _this = this;
+                setTimeout(function() {
+                    parent.saveFormula(_this.procContorlFormulas);
+                });
+            }
+
             var controls = this.procContorlFormulas;
             if (controls) {
                 for (var c = 0; c < controls.length; c++) {
@@ -1251,6 +1260,14 @@ function FormulaEngine(){
          * @warning Currently only support one dynamic parameter. 目前仅支持一个动态参数值.
          */
         FormulaEngine.prototype.applyAssociatedFormulaVerify = function(dynamicParams){
+            //业务中台自动化测试 记录执行的公式
+            if(flagYwztAutoTest && typeof parent.saveFormula === "function"){
+                var _this = this;
+                setTimeout(function() {
+                    parent.saveFormula(_this.procVerifyFormulas);
+                });
+            }
+
             var verifies = this.procVerifyFormulas;
             if (verifies) {
                 for (var z = 0; z < verifies.length; z++) {
@@ -1288,20 +1305,24 @@ function FormulaEngine(){
 	                    		var tmpPass = pass[k];
 	                    		if(tmpPass instanceof Array) {
 	                    			for(var v = 0;v < tmpPass.length; v++){
+	                    			    //传入执行公式的下标
+	                    			    var idx = [k,v];
 	    	                            for (var i = 0; i < vars.length; i++) {
 	    	                                var name = vars[i];
 	    	                                
 	    	                                    name = name.replace(/\[##\]/, "[" + k + "]")
 	    	                                    	.replace(/\[#\]/, "[" + v + "]");
 	    	                          
-	    	                                this.updateIdx(tmpPass[v],name,objFormula);
+	    	                                this.updateIdx(tmpPass[v],name,objFormula,idx);
 	    	                            }
 	                        		}
 	                    		}else{
+                                    //传入执行公式的下标
+                                    var idx = [k];
 	                    			for (var i = 0; i < vars.length; i++) {
 		                                var name = vars[i];
 		                                name = name.replace(/\[#\]/, "[" + k + "]");
-		                                this.updateIdx(pass[k],name,objFormula);
+		                                this.updateIdx(pass[k],name,objFormula,idx);
 		                            }
 	                    		}
 	                    		
@@ -1327,18 +1348,26 @@ function FormulaEngine(){
          * 内部方法：更新idxVariable2NoPass和idxCurrentVariable2NoPass. M By C.Q 20180424
          * @param pass. 校验结果, 应为布尔值
          * @param name. jpath.
-         * @returns objFormula,Formula Object. 公式对象.
+         * @param objFormula,Formula Object. 公式对象.
+         * @param idx 执行公式下标
          */
-        FormulaEngine.prototype.updateIdx = function(pass, name, objFormula) {
+        FormulaEngine.prototype.updateIdx = function(pass, name, objFormula, idx) {
             if (pass) {
                 // Check relative variable and remove it.
                 if (this.idxVariable2NoPass[name]) {
                     if (this.idxVariable2NoPass[name][objFormula.id]) {
                         delete this.idxVariable2NoPass[name][objFormula.id];
+                        if(this.idxVariable2NoPass[name].idx){
+                            delete this.idxVariable2NoPass[name].idx;
+                        }
+
                         if (!this.idxCurrentVariable2NoPass[name]) {
                             this.idxCurrentVariable2NoPass[name] = {};
                         }
                         this.idxCurrentVariable2NoPass[name][objFormula.id] = objFormula;
+                        if(idx) {
+                            this.idxCurrentVariable2NoPass[name].idx = idx;
+                        }
                     }
                     if (!this.hasProperty(this.idxVariable2NoPass[name])) {
                         delete this.idxVariable2NoPass[name];
@@ -1351,12 +1380,21 @@ function FormulaEngine(){
                 }
                 if (!this.idxVariable2NoPass[name][objFormula.id] || this.idxVariable2NoPass[name][objFormula.id] !== objFormula) {
                     this.idxVariable2NoPass[name][objFormula.id] = objFormula;
+                    if(idx) {
+                        this.idxVariable2NoPass[name].idx = idx;
+                    }
+                }else if(idx && this.idxVariable2NoPass[name].idx && this.idxVariable2NoPass[name][objFormula.id]
+                    && idx.toString() !== this.idxVariable2NoPass[name].idx.toString()){
+                    this.idxVariable2NoPass[name].idx = idx;
                 }
 
                 if (!this.idxCurrentVariable2NoPass[name]) {
                     this.idxCurrentVariable2NoPass[name] = {};
                 }
                 this.idxCurrentVariable2NoPass[name][objFormula.id] = objFormula;
+                if(idx) {
+                    this.idxCurrentVariable2NoPass[name].idx = idx;
+                }
             }
         };
         /**
@@ -1782,6 +1820,13 @@ function FormulaEngine(){
          * @warning Currently only support one dynamic parameter. 目前仅支持一个动态参数值.
          */
         FormulaEngine.prototype.calculateAccordingPlan = function(lstPlanFormulas, flagInitial,iHandle){
+            //业务中台自动化测试 记录执行的公式
+            if(flagYwztAutoTest && typeof parent.saveFormula === "function"){
+                setTimeout(function() {
+                    parent.saveFormula(lstPlanFormulas);
+                });
+            }
+
             //自定义函数处理，过滤
             var handleFn=null;
             if(iHandle){
@@ -2322,10 +2367,7 @@ function FormulaEngine(){
                 throw "Did not setting JSON-Data basename."
             }
             var objFormula;
-            if(navigator.appName === "Microsoft Internet Explorer"
-        		&& (navigator.appVersion .split(";")[1].replace(/[ ]/g,"")==="MSIE8.0"
-        			||  navigator.appVersion .split(";")[1].replace(/[ ]/g,"")==="MSIE7.0")
-        		&& _this.lstAllFormulas.length > 200) {
+            if(this.isIE8() && this.lstAllFormulas.length > 200) {
             	 // Resolve all shorted-jpath to full-jpath.
                 _this.tmpLtAllFormulas = $.extend(true, [], _this.lstAllFormulas);
                 _this.splitFormulas(_this.tmpLtAllFormulas, _this);
@@ -2508,8 +2550,8 @@ function FormulaEngine(){
     	                var fullPath = this.jpathNodeCreate(prePath+stuffPath);
     	                if (fullPath) {
     	                    objFormula.strAssResolved = fullPath;
-                            //对中间节点增加索引
-                            this.jp.addToKVByFullPath(fullPath);
+                            //对中间节点增加索引 M by cq 暂时去掉解决ybnsrzzs赋值公式报错问题，左边变数组了
+                            //this.jp.addToKVByFullPath(fullPath);
     	                } else {
     	                    // Create node failed.
     	                    console.log("Failed while trying create assignment's json-node  [" + strAss
@@ -3334,7 +3376,17 @@ function FormulaEngine(){
                 + _ms_cleaning_ + "ms, calculating " + _ms_calculate_ + "ms. Total spend " + _ms_
                 + "ms.");
         };
-        
+
+        /**
+         * 内部方法：判断是否IE8
+         * @return 是否ie8, boolean., 布尔值.
+         */
+        FormulaEngine.prototype.isIE8 = function(){
+            return navigator.appName === "Microsoft Internet Explorer"
+                && (navigator.appVersion .split(";")[1].replace(/[ ]/g,"")==="MSIE8.0"
+                    ||  navigator.appVersion .split(";")[1].replace(/[ ]/g,"")==="MSIE7.0");
+        };
+
       //------------------执行某类型公式相关 end---------------------//
         // For not to do initialization twice.
         FormulaEngine._inited = true;

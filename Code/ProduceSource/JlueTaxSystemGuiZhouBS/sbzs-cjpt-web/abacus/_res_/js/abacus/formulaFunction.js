@@ -140,6 +140,16 @@ function SUM() {
     } else {
         ps = arguments;
     }
+
+    if(typeof(ps) === "string") {
+        //转数字
+        ps = Number(ps);
+        if (isNaN(ps)) {
+            throw "调用SUM方法，传入非数字类型参数：[" + ps + "]";
+            return;
+        }
+    }
+
     if (ps.length) {
         //定义返回值
         var ret = 0;
@@ -2569,11 +2579,17 @@ function INIT_WTDZSB_FORMCT() {
 	if (!$.isEmptyObject(wtdzskmxbGridlb2)) {
 		if (wtdzskmxbGridlb2.length > 0) {
 			for (var i = 0; i < wtdzskmxbGridlb2.length; i++) {
+				if(zspmJson[wtdzskmxbGridlb2[i].zspmDm]){
+					if(wtdzskmxbGridlb2[i].zszmDm != ''){
+						continue;
+					}
+				}
 				zspmJson[wtdzskmxbGridlb2[i].zspmDm] = wtdzskmxbGridlb2[i];
 			}
 		}
 	}
 	this.formCT.zspmCT = zspmJson;
+	this.formCT.zszmCT = {};
 
 	var pzxxGridlb = this.formData.qcs.formContent.swjszyb.body.swjszybGrid2.pzzlxx.pzxxGridlb;
 	if (!$.isEmptyObject(pzxxGridlb)) {

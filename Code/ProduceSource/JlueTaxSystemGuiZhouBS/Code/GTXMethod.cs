@@ -465,5 +465,35 @@ namespace JlueTaxSystemGuiZhouBS.Code
             }
         }
 
+        public static string getSbseFromJSON(string BDDM, JObject input_jo)
+        {
+            BDDM = BDDM.ToUpper();
+            string sbse = "";
+
+            switch (BDDM)
+            {
+                case "QYSDS_A_18YJD":
+                    sbse = input_jo.SelectToken("ht.qysdsczzsyjdSbbdxxVO.A200000Ywbd.sbbxxForm.ybtsdseLj").Value<string>();
+                    break;
+                case "YBNSRZZS":
+                    sbse = input_jo["zzsybsbSbbdxxVO"]["zzssyyybnsr_zb"]["zbGrid"]["zbGridlbVO"][0]["bqybtse"].Value<string>();
+                    break;
+                case "FJSSB":
+                    sbse = input_jo["fjsSbbdxxVO"]["fjssbb"]["sbxxGrid"]["sbxxGridlbVO"][0]["bqybtse"].Value<string>();
+                    break;
+                case "YHSSB":
+                    decimal dec = 0;
+                    JArray ja = (JArray)input_jo["yyssbbdxxVO"]["yhssb"]["yhssbGrid"]["yhssbGridlb"];
+                    foreach (JObject j in ja)
+                    {
+                        dec += decimal.Parse(j["bqybtse"].ToString());
+                    }
+                    sbse = dec.ToString();
+                    break;
+            }
+
+            return sbse;
+        }
+
     }
 }

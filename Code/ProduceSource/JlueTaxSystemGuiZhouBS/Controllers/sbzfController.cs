@@ -88,27 +88,10 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string str = "作废成功";
             try
             {
-                string id = "";
-                GTXResult resultq = GTXMethod.GetGuiZhouYSBQC();
-                if (resultq.IsSuccess)
-                {
-                    List<GDTXGuiZhouUserYSBQC> ysbqclist = JsonConvert.DeserializeObject<List<GDTXGuiZhouUserYSBQC>>(resultq.Data.ToString());
-                    if (ysbqclist.Count > 0)
-                    {
-                        foreach (GDTXGuiZhouUserYSBQC item in ysbqclist)
-                        {
-                            if (item.BDDM == sbblxDm)
-                            {
-                                id = item.Id.ToString();
-                            }
-                        }
-                    }
-                }
+                GDTXGuiZhouUserYSBQC ysbqc = GTXMethod.GetYSBQCByBDDM(sbblxDm);
 
-                GTXMethod.UpdateYSBQC(id, "未申报");
-                GTXMethod.DeleteUserReportData(id, sbblxDm);
-                GTXMethod.DeleteUserReportData(id, "");
-
+                GTXMethod.UpdateYSBQC(ysbqc.Id.ToString(), "未申报");
+                GTXMethod.DeleteUserReportData(ysbqc.Id.ToString(), sbblxDm);
             }
             catch (Exception ex)
             {

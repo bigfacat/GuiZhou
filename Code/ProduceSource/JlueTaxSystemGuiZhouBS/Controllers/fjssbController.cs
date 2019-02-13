@@ -14,6 +14,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 {
     public class fjssbController : Controller, IRequiresSessionState
     {
+        string BDDM = "FJSSB";
         public string begin()
         {
             string str = System.IO.File.ReadAllText(Server.MapPath("begin.html"));
@@ -50,7 +51,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
                 {
                     foreach (GDTXGuiZhouUserYSBQC item in ysbqclist)
                     {
-                        if (item.ZSXM == "城市维护建设税")
+                        if (item.BDDM == this.BDDM)
                         {
                             id = item.Id.ToString();
                             tbrq = item.HappenDate;
@@ -68,7 +69,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             JObject nsrxx_jo = GTXMethod.getNsrxx((JObject)re_jo_body["qcs"]["initData"]["nsrjbxx"]);
             re_jo_body["qcs"]["initData"]["nsrjbxx"] = nsrxx_jo;
 
-            GTXResult gr = GTXMethod.GetUserReportData(id, "");
+            GTXResult gr = GTXMethod.GetUserReportData(id, this.BDDM);
             if (gr.IsSuccess)
             {
                 JArray jarr = new JArray();
@@ -145,7 +146,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string _result = Convert.ToBase64String(bytes);
             nv.value = _result;
             nameList.Add(nv);
-            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), id, "");
+            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), id, this.BDDM);
             if (saveresult.IsSuccess)
             {
                 GTXMethod.UpdateSBSE(id, input_jo["fjsSbbdxxVO"]["fjssbb"]["sbxxGrid"]["sbxxGridlbVO"][0]["bqybtse"].ToString());

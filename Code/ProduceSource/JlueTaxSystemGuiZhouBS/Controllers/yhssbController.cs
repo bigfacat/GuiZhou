@@ -14,6 +14,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
 {
     public class yhssbController : Controller
     {
+        string BDDM = "YHSSB";
         public string begin()
         {
             string str = System.IO.File.ReadAllText(Server.MapPath("begin.html"));
@@ -69,7 +70,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             JObject nsrxx_jo = GTXMethod.getNsrxx((JObject)re_jo_body["qcs"]["initData"]["nsrjbxx"]);
             re_jo_body["qcs"]["initData"]["nsrjbxx"] = nsrxx_jo;
 
-            GTXResult gr = GTXMethod.GetUserReportData(id, "");
+            GTXResult gr = GTXMethod.GetUserReportData(id, this.BDDM);
             if (gr.IsSuccess)
             {
                 JArray jarr = new JArray();
@@ -146,7 +147,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             string _result = Convert.ToBase64String(bytes);
             nv.value = _result;
             nameList.Add(nv);
-            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), id, "");
+            GTXResult saveresult = GTXMethod.SaveUserReportData(JsonConvert.SerializeObject(nameList), id, this.BDDM);
             if (saveresult.IsSuccess)
             {
                 decimal dec = 0;
