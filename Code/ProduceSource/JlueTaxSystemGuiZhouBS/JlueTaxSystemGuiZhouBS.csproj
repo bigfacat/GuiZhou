@@ -212,9 +212,7 @@
     <Content Include="sbzs-cjpt-web\biz\cwbb\cwbb_qy_kjzz_ybqy\form\zcfzb.html" />
     <Content Include="sbzs-cjpt-web\biz\cwbb\cwbb_qy_kjzz_ybqy\make.html" />
     <Content Include="sbzs-cjpt-web\biz\sbqc\sbqc_aqsb.html" />
-    <Content Include="sbzs-cjpt-web\biz\sbqc\sbqc_aqsb\setting.html" />
     <Content Include="sbzs-cjpt-web\biz\sbqc\sbqc_qtsb.html" />
-    <Content Include="sbzs-cjpt-web\biz\sbqc\sbqc_qtsb\setting.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\fjssb.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\fjssb\begin.html" />
     <Content Include="sbzs-cjpt-web\biz\sbzs\fjssb\form\fjssb_BDA0610678.html" />
@@ -434,7 +432,9 @@
     <Content Include="Video\js\jquery-1.12.4.min.js" />
     <Content Include="Video\js\video.js" />
     <Content Include="Video\Video.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xxmh\html\index.html" />
     <Content Include="xxmh\html\index_login.aspx" />
     <Content Include="xxmh\html\index_login.html" />
@@ -635,6 +635,7 @@
     <Compile Include="Controllers\portalSerController.cs" />
     <Compile Include="Controllers\qysds_a_18yjdController.cs" />
     <Compile Include="Controllers\saveController.cs" />
+    <Compile Include="Controllers\sbqcController.cs" />
     <Compile Include="Controllers\sbqc_aqsbController.cs" />
     <Compile Include="Controllers\sbqc_qtsbController.cs" />
     <Compile Include="Controllers\sbxxController.cs" />
@@ -702,6 +703,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\formula\" />
+    <Folder Include="Views\sbqc\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ChuShiHua.ashx" />
@@ -876,7 +878,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="industry.json" />
-    <None Include="Properties\PublishProfiles\IISConfig.pubxml" />
     <Content Include="Views\sbqc_aqsb\setting.cshtml" />
     <Content Include="Views\sbqc_qtsb\setting.cshtml" />
     <Content Include="Views\sbxxcx\sbcxjdy.cshtml" />
@@ -891,6 +892,9 @@
     <Content Include="zyywn-cjpt-web\czgc\loadDataList.YBNSRZZS.json" />
     <Content Include="zyywn-cjpt-web\czgc\queryDataLoad.8acb6bd536aa4489bc64627eb67f8164.json" />
     <Content Include="zyywn-cjpt-web\czgc\queryDataLoad.b88b5a2a06dd413fbcc12edec4ca87ae.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\IIS.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

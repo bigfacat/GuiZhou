@@ -23,8 +23,8 @@
 <script type="text/javascript" src="/sbzs-cjpt-web/abacus/_res_/js/abacus/exAlert.js"></script>
 
 <!--4.0版本UI  -->
-<link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/resources4/layui/css/layui.css" id="layui_layer_skinlayercss"/>
-<script type="text/javascript" src="/sbzs-cjpt-web/resources4/layui/layui.js"></script>
+<link rel="stylesheet" type="text/css" href="/sbzs-cjpt-web/abacus/resources4/layui/css/layui.css" id="layui_layer_skinlayercss"/>
+<script type="text/javascript" src="/sbzs-cjpt-web/abacus/resources4/layui/layui.js"></script>
 
 
 <style>
@@ -57,7 +57,7 @@
 
 <script type="text/javascript">
     //获取url参数
-    var gdslxDm ='3';
+    var gdslxDm ='1';
     var tjNd ='';
     var tjYf ='';
     //财税管家参数
@@ -66,7 +66,7 @@
     var token ='';
 	//获取初始化日期  取服务器时间
 	//var date = new Date;
-	var time = 'Fri Nov 02 15:10:44 CST 2018';
+	var time = 'Wed Feb 13 14:54:43 CST 2019';
 	//不能直接把后台格式的时间转换，需要把CST时区换掉
 	var dateStr = $.trim(time).split(" ");  
 	var strGMT = dateStr[0]+" "+dateStr[1]+" "+dateStr[2]+" "+dateStr[5]+" "+dateStr[3]+" GMT+0800";      
@@ -82,12 +82,6 @@
 	}
 	function loadPage() {
 		var href = window.location.href;
-		
-		var pathname = window.location.pathname;
-		if (pathname.indexOf(".") > 0) {
-		    pathname = pathname.substr(0, pathname.indexOf("."));
-		}
-		
 		if (href.indexOf("?") > 0) {
 			href = href.substr(0, href.indexOf("?"));
 		}
@@ -95,7 +89,7 @@
 			href = href.substr(0, href.indexOf(";"));
 		}
 
-	window.location.href = window.location.protocol +"//"+ window.location.host + pathname + "/setting.html?tjNd=" + tjNd + "&tjYf=" + tjYf
+	window.location.href = href + "/setting?tjNd=" + tjNd + "&tjYf=" + tjYf
 				+ "&gdslxDm=" + gdslxDm + "&token=" + token + "&yypt_nsrsbh="
 				+ yypt_nsrsbh + "&appid=" + appid;
 	}

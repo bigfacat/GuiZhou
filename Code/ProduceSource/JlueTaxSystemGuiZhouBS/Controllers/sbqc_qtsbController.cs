@@ -15,7 +15,7 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
     {
         string BDDM = "YHSSB";
 
-        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/setting.html")]
+        [Route("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/setting")]
         public System.Web.Mvc.ActionResult setting()
         {
             GDTXGuiZhouUserYSBQC ysbqc = GTXMethod.GetYSBQCByBDDM(this.BDDM);

@@ -18,7 +18,7 @@ namespace JlueTaxSystemGuiZhouBS
             routes.MapMvcAttributeRoutes();
 
             routes.IgnoreRoute("xxmh/html/{*relpath}");
-            routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/{resource}.html");
+            //routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/{resource}.html");
             //routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_aqsb/{resource}.html");
             //routes.IgnoreRoute("sbzs-cjpt-web/biz/sbqc/sbqc_qtsb/{resource}.html");
 
