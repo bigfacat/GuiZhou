@@ -21,12 +21,13 @@ namespace JlueTaxSystemGuiZhouBS.Controllers
             return re_jo;
         }
 
-        public JObject getSubMenus()
+        public string getSubMenus()
         {
             JObject re_jo = new JObject();
             string str = System.IO.File.ReadAllText(Server.MapPath("getSubMenus.json"));
-            re_jo = JsonConvert.DeserializeObject<JObject>(str);
-            return re_jo;
+            JValue re_jv = new JValue(str);
+            Response.ContentType = "application/json;charset=UTF-8";
+            return JsonConvert.SerializeObject(re_jv);
         }
 
         public JObject getRootMenu()
