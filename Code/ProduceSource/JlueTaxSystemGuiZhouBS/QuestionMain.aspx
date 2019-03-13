@@ -15,8 +15,10 @@
     <script type="text/javascript" src="js/json2.js"></script>
     <script type="text/javascript" src="js/dump_src.js"></script>
 
-    <link href="css/ksindex.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="/css/H-ui.css" rel="stylesheet" />
+    <link href="/css/ksindex.css" rel="stylesheet" />
+    <link href="/css/stylenew.css" rel="stylesheet" />
+    <link href="/css/styleedit.css" rel="stylesheet" />
 
     <script src="/VideoManage/js/mask.js"></script>
     <link href="/VideoManage/css/QuestionMain.css" rel="stylesheet" />
@@ -154,7 +156,7 @@
                             var Gtxvideopath = "Video/Video.aspx?Id=" + v.QuestionId + "&CourseId=" + v.CourseId + "&VideoID=" + v.VideoID + "&ClassId=" + ClassId + "&userId=" + userId + "&model=0";
                             var Dtxvideopath = "Video/Video.aspx?Id=" + v.QuestionId + "&CourseId=" + v.CourseId + "&VideoID=" + v.VideoID + "&ClassId=" + ClassId + "&userId=" + userId + "&model=1";
                             str += '<th class="td5"><a target="_blank" onclick="checkvideo(\'' + Gtxvideopath + '\',\'' + v.VideoID + '\',\'国\')" style="display:none">国税</a><a target="_blank" onclick="checkvideo(\'' + Dtxvideopath + '\',\'' + v.VideoID + '\',\'地\')" style="display:none">地税</a></th>';
-                            str += '<th class="td6"><a onclick="togglearea(\'oper' + v.QuestionId + '\',this)">开始练习</a></th>';
+                            str += '<th class="td6"><div class="practice"><a onclick="togglearea(\'oper' + v.QuestionId + '\',this)">开始练习</a></th>';
                             str += '</tr>';
                             str += '</tbody>';
                             str += '</table>';
@@ -297,14 +299,12 @@
 
     <div class="tiyan_area">
         <div class="tk_title_area">
-            <div class="tk_title tk_title_active" id="h_bills" onclick="gotobill()">
-                涉税业务
+            <div class="tk_title tk_title_active" id="h_bills" >
+                <strong>涉税业务</strong>
             </div>
+            <div style="margin: 5px 65px 5px; padding: 5px; float: right;"><a id="a_ins" class="ksmc-dt radius box-shadow" target="_blank" style="margin-right: 10px;" href="/Instruction.html">使用说明</a><a id="videoa"  class="ksmc-dt radius box-shadow" style="margin-right: 10px;display:none"  href="#" onclick="showRight();return false;">税种视频</a><a href="http://d.kjcytk.com/SingleTax/SingleTax.zip" class="ksmc-dt radius box-shadow" style="margin-right: 10px">个税下载</a><a class="ksmc-dt radius box-shadow" onclick="DeleteAllTax()">重做所有题目</a></div>
         </div>
         <div class="ksmc-tabc" style="" id="bills">
-            <div style="margin: 5px 65px 5px; padding: 5px; float: right;"><a id="videoa" class="ksmc-dt radius box-shadow" style="margin-right: 10px; display: none" href="#" onclick="showRight();return false;">税种视频</a>
-                <a href="http://d.kjcytk.com/SingleTax/SingleTax.zip" class="ksmc-dt radius box-shadow" style="margin-right: 10px">个税下载</a>
-                <a class="ksmc-dt radius box-shadow" onclick="DeleteAllTax()">重做所有题目</a></div>
             <div style="clear: both"></div>
             <ul class="ksmc-zjlx" style="display: block" id="ulTax">
                 <li>

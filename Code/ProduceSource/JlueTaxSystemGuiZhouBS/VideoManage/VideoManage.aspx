@@ -42,7 +42,7 @@
     <script>
         function checkvideo(Id,VideoID, Model, CourseId) {
             if (VideoID != "null" && VideoID != "") {
-                window.open("/VideoManage/VideoGDTax.aspx?VideoID=" + VideoID + "&Id=" + Id + "&CourseId=" + CourseId);
+                window.open("<%=System.Web.Configuration.WebConfigurationManager.AppSettings["Practicepath"]%>/UIRES/VideoPlay.aspx?VideoID=" + VideoID + "&Id=" + Id + "&CourseId=" + CourseId);
             }
             else {
                     alert('暂无视频');

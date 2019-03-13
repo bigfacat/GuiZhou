@@ -81,8 +81,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\H-ui.css" />
     <Content Include="css\ksindex.css" />
     <Content Include="css\style.css" />
+    <Content Include="css\styleedit.css" />
+    <Content Include="css\stylenew.css" />
     <Content Include="Error\401.html" />
     <Content Include="Error\403.html" />
     <Content Include="Error\404.html" />
@@ -93,6 +96,9 @@
     <Content Include="Error\501.html" />
     <Content Include="Error\502.html" />
     <Content Include="Global.asax" />
+    <Content Include="image\kxrzd.png" />
+    <Content Include="image\zdyjb.png" />
+    <Content Include="Instruction.html" />
     <Content Include="js\common.js" />
     <Content Include="js\database.js" />
     <Content Include="js\dump_src.js" />
@@ -100,6 +106,7 @@
     <Content Include="js\jquery-1.11.3.min.js" />
     <Content Include="js\jquery.cookie.js" />
     <Content Include="js\json2.js" />
+    <Content Include="js\point_line.js" />
     <Content Include="QuestionMain.aspx" />
     <Content Include="resource\html\swzj\tzgg\tzggIndex.htm" />
     <Content Include="sbzs-cjpt-web\abacus\resources4\layui\css\layui.css" />
