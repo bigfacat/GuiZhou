@@ -1,1 +1,1 @@
-http://192.168.1.115:8012/QuestionMain.aspx?userid=GZ&username=%E6%B5%8B%E8%AF%95%E4%BA%BA%E5%91%98&classid=9&courseid=112&sortid=601
+http://192.168.1.115:8012

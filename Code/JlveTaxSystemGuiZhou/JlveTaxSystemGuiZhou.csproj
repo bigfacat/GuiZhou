@@ -13,12 +13,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JlveTaxSystemGuiZhou</RootNamespace>
     <AssemblyName>JlveTaxSystemGuiZhou</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +60,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -70,8 +72,6 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -101,13 +101,13 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Web.Http.WebHost">
@@ -449,7 +449,9 @@
     <Content Include="Video\js\jquery-1.12.4.min.js" />
     <Content Include="Video\js\video.js" />
     <Content Include="Video\Video.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xxmh\html\index.html" />
     <Content Include="xxmh\html\loading.html" />
     <Content Include="xxmh\html\qhsf.html" />
@@ -628,6 +630,9 @@
     <Compile Include="App_Start\AutofacWebApiConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="ChuShiHua.ashx.cs">
+      <DependentUpon>ChuShiHua.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\MyActionResult.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\IHttpContextAccessor.cs" />
@@ -663,6 +668,9 @@
     <Compile Include="Models\Sbzfmx.cs" />
     <Compile Include="Models\SessionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VideoManage\GetVideo.ashx.cs">
+      <DependentUpon>GetVideo.ashx</DependentUpon>
+    </Compile>
     <Compile Include="VideoManage\VideoGDTax.aspx.cs">
       <DependentUpon>VideoGDTax.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -830,13 +838,17 @@
     <Content Include="sbzs-cjpt-web\setting\saveData.CWBBYDY.json" />
     <Content Include="sbzs-cjpt-web\setting\saveData.YBNSRZZSXBSZ.json" />
     <Content Include="sbzs-cjpt-web\ywzt\getYsData.json" />
-    <Content Include="tycx-cjpt-web\cxpt\query.do" />
     <Content Include="tycx-cjpt-web\cxpt\query.dodo" />
     <Content Include="tycx-cjpt-web\cxpt\query.json" />
     <Content Include="tycx-cjpt-web\resources4\layui\font\iconfont.ttf" />
     <Content Include="tycx-cjpt-web\resources4\layui\font\iconfont.woff" />
     <Content Include="tycx-cjpt-web\viewsControlController\getCxShowGdsbz.json" />
     <Content Include="tycx-cjpt-web\view\sscx\yhscx\sbzscx\sbxxcx\sbxxcx.jsp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ChuShiHua.ashx" />
+    <None Include="Properties\PublishProfiles\IIS.pubxml" />
+    <Content Include="VideoManage\GetVideo.ashx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -76,6 +76,7 @@ namespace JlveTaxSystemGuiZhou.ApiControllers
         }
 
         [Route("sbzs-cjpt-web/nssb/sbzf/getsbzfmx.do")]
+        [HttpPost]
         public ResponseMessageResult getsbzfmx(int pzxh)
         {
             param.Add(action);
@@ -86,8 +87,10 @@ namespace JlveTaxSystemGuiZhou.ApiControllers
         }
 
         [Route("sbzs-cjpt-web/nssb/sbzf/sbZfSubmit.do")]
-        public IHttpActionResult sbZfSubmit(JObject reqParamsJSON)
+        public IHttpActionResult sbZfSubmit(JObject body)
         {
+            JObject reqParamsJSON = JObject.Parse(body["reqParamsJSON"].Value<string>());
+
             param.Add(action);
             retJtok = set.GetJsonObject(param);
             //JObject reqParamsJSON = JObject.Parse(Request.Form["reqParamsJSON"]);
@@ -136,6 +139,7 @@ namespace JlveTaxSystemGuiZhou.ApiControllers
         }
 
         [Route("sbzs-cjpt-web/nssb/sbzf/getSbqx.do")]
+        [HttpPost]
         public ResponseMessageResult getSbqx()
         {
             param.Add(action);

@@ -302,9 +302,9 @@ namespace JlveTaxSystemGuiZhou.Code
 
             if (xx.BusinessType == 1)//工业
             {
-                input[1]["ynsejze"] = "330";
-                input[1]["yshwxse"] = "13338803.25";
-                input[1]["jxse"] = "1241460.94";
+                input[1]["ynsejze"] = "280";
+                input[1]["yshwxse"] = "13397710.1";
+                input[1]["jxse"] = "903332.68";
             }
             else if (xx.BusinessType == 2)//商业
             {
